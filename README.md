@@ -1,13 +1,12 @@
 # EcoCuenca Panamá — Ciri Grande–Trinidad
 
-**Borrador de demostración** de una plataforma de diagnóstico ambiental de microcuencas,
-para un proyecto universitario de Ingeniería Ambiental.
+Plataforma de diagnóstico ambiental de la microcuenca **Ciri Grande–Trinidad**
+(Cuenca del Canal de Panamá), para un proyecto universitario de Ingeniería Ambiental.
 
-> ⚠️ Es una **maqueta de demostración**, no la versión final. Los valores, fechas,
-> contornos y ubicaciones son **ilustrativos** y no sustituyen datos GeoJSON reales
-> ni los diagnósticos oficiales de MiAmbiente / ACP / CICH.
+> Los valores, fechas, contornos y ubicaciones son **ilustrativos**: no sustituyen
+> datos GeoJSON reales ni los diagnósticos oficiales de MiAmbiente / ACP / CICH.
 
-🔗 **Demo en vivo:** https://diandlvr.github.io/Ecocuenca/
+🔗 **En vivo:** https://diandlvr.github.io/Ecocuenca/
 
 ---
 
@@ -39,7 +38,7 @@ las tipografías de Google Fonts y las **teselas de mapa** (Esri / OpenTopoMap).
 
 ```
 ┌─ Cabecera ──────────────────────────────────────────────┐
-│ Logo · lectura de coordenadas en vivo · "Demostración"  │
+│ Logo · lectura de coordenadas del cursor en vivo        │
 ├─────────────┬───────────────────────────────────────────┤
 │  PANEL      │  MAPA (Leaflet)                           │
 │  (ficha)    │   · base satélite por defecto            │
@@ -58,7 +57,7 @@ las tipografías de Google Fonts y las **teselas de mapa** (Esri / OpenTopoMap).
 2. **Puntos** — lista de los 6 puntos de interés. Al abrir uno se ve su ficha
    (foto, descripción, mini-datos, coordenadas, crédito de la imagen) y el mapa
    vuela hasta él. Botón para ampliar la foto en un visor.
-3. **Reportes** — reportes ciudadanos creados en la demo. Estado vacío con llamada
+3. **Reportes** — reportes ciudadanos creados desde la interfaz. Estado vacío con llamada
    a la acción; cada reporte se puede *Ver* (centra el mapa) o *Borrar* (con
    **Deshacer**). Se guardan en `localStorage` del navegador (ver nota abajo).
 
