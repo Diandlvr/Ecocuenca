@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="EcoCuenca">
+  <defs>
+    <linearGradient id="ec-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#123024"/>
+      <stop offset="1" stop-color="#0A1310"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="30" height="30" rx="8.5" fill="url(#ec-bg)" stroke="#6FBF8E" stroke-opacity="0.55"/>
+  <!-- Curvas de nivel de la cuenca (sección de valle) -->
+  <path d="M5 12.5C9 8 23 8 27 12.5" fill="none" stroke="#6FBF8E" stroke-opacity="0.35" stroke-width="1.4" stroke-linecap="round"/>
+  <path d="M6.5 16.5C10 12.7 22 12.7 25.5 16.5" fill="none" stroke="#6FBF8E" stroke-opacity="0.55" stroke-width="1.4" stroke-linecap="round"/>
+  <!-- Red dendrítica: río principal + afluentes -->
+  <path d="M16 23.4V19M16 19L11 14M16 19L21 14M11 14L8.5 10.5M11 14L13.5 10M21 14L18.5 10M21 14L23.5 10.5"
+        fill="none" stroke="#63ACCB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Hoja en una naciente -->
+  <path d="M8.5 10.5C6 9.6 4.9 6.7 5.4 4.3C7.9 4.2 10.7 5.9 11 8.6C11.2 10.2 9.9 10.9 8.5 10.5Z" fill="#BFDD70"/>
+  <path d="M6 5.2C7.6 6.4 9 8 9.7 9.7" fill="none" stroke="#123024" stroke-width="0.9" stroke-linecap="round"/>
+  <!-- Gota en la salida de la cuenca -->
+  <circle cx="16" cy="25" r="2.2" fill="#6FBF8E"/>
+</svg>

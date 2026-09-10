@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EcoCuenca Panamá — Ciri Grande–Trinidad</title>
+<meta name="description" content="Borrador de demostración: diagnóstico de la microcuenca Ciri Grande–Trinidad, Cuenca del Canal de Panamá." />
+<meta name="theme-color" content="#0A1310" />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="alternate icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230A1310'/%3E%3Cpath d='M16 23V19M16 19L11 14M16 19L21 14M11 14L8.5 10.5M11 14L13.5 10M21 14L18.5 10M21 14L23.5 10.5' stroke='%2363ACCB' stroke-width='1.8' stroke-linecap='round' fill='none'/%3E%3Cpath d='M8.5 10.5C6 9.6 4.9 6.7 5.4 4.3C7.9 4.2 10.7 5.9 11 8.6C11.2 10.2 9.9 10.9 8.5 10.5Z' fill='%23BFDD70'/%3E%3Ccircle cx='16' cy='25' r='2.2' fill='%236FBF8E'/%3E%3C/svg%3E" />
+<link rel="mask-icon" href="favicon.svg" color="#6FBF8E" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   ECOCUENCA PANAMÁ — "Levantamiento hidrográfico"
+   Dirección: atlas cartográfico / cuaderno de campo científico.
+   Tinta de bosque + papel envejecido, curvas de nivel, grano, marcas
+   de registro. Tipografía: Instrument Serif (display) · Spline Sans
+   (texto) · IBM Plex Mono (instrumento / datos).
+   ===================================================================== */
+
+:root{
+  /* Tintas */
+  --ink-900:#070D0B;
+  --ink-800:#0A1310;
+  --ink-700:#0E1B16;
+  --ink-600:#12241D;
+  --ink-500:#1A3128;
+  --ink-400:#244437;
+
+  /* Papel */
+  --paper:#F2ECDC;
+  --paper-2:#CBD2C2;
+  --paper-3:#93A093;
+
+  /* Acentos */
+  --moss:#6FBF8E;
+  --moss-deep:#2E7A56;
+  --lime:#BFDD70;
+  --river:#63ACCB;
+  --ochre:#E2AC42;
+  --clay:#E26E48;
+
+  --rule:rgba(242,236,220,.14);
+  --rule-2:rgba(242,236,220,.07);
+  --glass:rgba(14,27,22,.82);
+
+  --tap:44px;
+  --r-sm:6px;
+  --r-md:10px;
+  --r-lg:16px;
+
+  --panel-w:404px;
+
+  --ease:cubic-bezier(.22,.9,.26,1);
+  --ease-io:cubic-bezier(.65,.02,.28,1);
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family:'Spline Sans',system-ui,sans-serif;
+  font-weight:400;
+  color:var(--paper);
+  background:var(--ink-800);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+::selection{ background:var(--moss); color:var(--ink-900); }
+
+/* --- Atmósfera: resplandor + curvas de nivel + grano ------------------ */
+.atmos{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(1100px 700px at 78% -10%, rgba(111,191,142,.10), transparent 62%),
+    radial-gradient(900px 620px at 4% 104%, rgba(99,172,203,.09), transparent 60%);
+}
+.grain{
+  position:fixed; inset:0; z-index:900; pointer-events:none; opacity:.055;
+  mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+}
+.contours{
+  position:absolute; inset:0; pointer-events:none; opacity:.9;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='170' viewBox='0 0 260 170'><g fill='none' stroke='%23F2ECDC' stroke-opacity='0.055' stroke-width='1'><path d='M-20 26 Q 45 6 110 26 T 240 26 T 370 26'/><path d='M-20 60 Q 45 40 110 60 T 240 60 T 370 60'/><path d='M-20 94 Q 45 74 110 94 T 240 94 T 370 94'/><path d='M-20 128 Q 45 108 110 128 T 240 128 T 370 128'/><path d='M-20 162 Q 45 142 110 162 T 240 162 T 370 162'/></g></svg>");
+}
+
+/* --- Accesibilidad ---------------------------------------------------- */
+:focus{ outline:none; }
+:focus-visible{
+  outline:2px solid var(--lime);
+  outline-offset:3px;
+  border-radius:4px;
+}
+.sr-only{
+  position:absolute!important; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+.skip-link{
+  position:fixed; left:14px; top:-70px; z-index:999;
+  background:var(--lime); color:var(--ink-900);
+  padding:11px 16px; border-radius:var(--r-md);
+  font-size:13px; font-weight:600; text-decoration:none;
+  transition:top .2s var(--ease);
+}
+.skip-link:focus{ top:14px; }
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms!important; animation-iteration-count:1!important;
+    transition-duration:.001ms!important; scroll-behavior:auto!important;
+  }
+}
+
+/* --- Primitivas tipográficas ------------------------------------------ */
+.display{ font-family:'Instrument Serif',Georgia,serif; font-weight:400; letter-spacing:-.01em; }
+.mono{ font-family:'IBM Plex Mono',ui-monospace,monospace; }
+
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px; font-weight:500;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--paper-3);
+  display:flex; align-items:center; gap:10px;
+  margin:0 0 12px;
+}
+.eyebrow::after{
+  content:""; flex:1; height:1px;
+  background:linear-gradient(90deg,var(--rule),transparent);
+}
+
+/* Marcas de registro cartográfico en tarjetas */
+.regmark{ position:relative; }
+.regmark::before,.regmark::after{
+  content:""; position:absolute; width:7px; height:7px; pointer-events:none;
+  border-color:var(--rule); border-style:solid; opacity:.9;
+}
+.regmark::before{ top:-1px; left:-1px; border-width:1px 0 0 1px; }
+.regmark::after{ bottom:-1px; right:-1px; border-width:0 1px 1px 0; }
+
+/* =========================== SHELL =================================== */
+.app{
+  position:relative; z-index:1;
+  display:flex; flex-direction:column; height:100vh; width:100vw;
+}
+
+/* --------------------------- TOPBAR ---------------------------------- */
+.topbar{
+  position:relative; z-index:30; flex-shrink:0;
+  display:flex; align-items:center; justify-content:space-between; gap:18px;
+  padding:0 18px 0 20px; height:62px;
+  background:linear-gradient(180deg,var(--ink-700),var(--ink-800));
+  border-bottom:1px solid var(--rule);
+}
+.topbar::after{
+  content:""; position:absolute; left:0; right:0; bottom:-1px; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(111,191,142,.5),rgba(99,172,203,.35),transparent);
+}
+.brand{ display:flex; align-items:center; gap:13px; min-width:0; }
+.brand-mark{
+  width:38px; height:38px; flex-shrink:0;
+  display:grid; place-items:center;
+  border:1px solid var(--rule); border-radius:10px;
+  background:linear-gradient(150deg,rgba(111,191,142,.16),rgba(10,19,16,0) 72%);
+}
+.brand-mark svg{ width:30px; height:30px; }
+.brand-txt{ min-width:0; }
+.brand h1{
+  font-family:'Instrument Serif',Georgia,serif; font-weight:400;
+  font-size:23px; line-height:1.05; margin:0; letter-spacing:.1px;
+  white-space:nowrap;
+}
+.brand h1 em{ font-style:italic; color:var(--moss); }
+.brand .sub{
+  font-family:'IBM Plex Mono',monospace; font-size:9.5px;
+  letter-spacing:.19em; text-transform:uppercase; color:var(--paper-3);
+  margin-top:2px; white-space:nowrap;
+}
+.topbar-right{ display:flex; align-items:center; gap:9px; }
+
+.readout{
+  display:flex; align-items:center; gap:14px;
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px;
+  color:var(--paper-3); letter-spacing:.06em;
+  padding:7px 13px; border:1px solid var(--rule-2); border-radius:100px;
+  background:rgba(18,36,29,.5);
+}
+.readout b{ color:var(--paper-2); font-weight:500; }
+.readout .sep{ width:1px; height:12px; background:var(--rule); }
+
+.chip-draft{
+  display:flex; align-items:center; gap:7px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ochre);
+  border:1px solid rgba(226,172,66,.35); background:rgba(226,172,66,.09);
+  padding:7px 12px; border-radius:100px; white-space:nowrap;
+}
+.chip-draft .dot{
+  width:5px; height:5px; border-radius:50%; background:var(--ochre);
+  animation:beacon 2s ease-in-out infinite;
+}
+@keyframes beacon{ 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:.35; transform:scale(1.6);} }
+
+.icon-btn{
+  min-width:var(--tap); height:var(--tap);
+  display:none; align-items:center; justify-content:center; gap:8px;
+  padding:0 14px;
+  background:rgba(242,236,220,.06); border:1px solid var(--rule);
+  color:var(--paper); border-radius:var(--r-md); cursor:pointer;
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px;
+  letter-spacing:.14em; text-transform:uppercase;
+  transition:background .18s var(--ease),border-color .18s var(--ease);
+}
+.icon-btn:hover{ background:rgba(242,236,220,.11); border-color:rgba(242,236,220,.26); }
+.icon-btn svg{ width:16px; height:16px; }
+
+/* ---------------------------- MAIN ----------------------------------- */
+.main{ flex:1; display:flex; min-height:0; position:relative; }
+
+/* =========================== PANEL ==================================== */
+.panel{
+  position:relative; z-index:20; flex-shrink:0;
+  width:var(--panel-w);
+  display:flex; flex-direction:column;
+  background:var(--ink-700);
+  border-right:1px solid var(--rule);
+  transition:width .42s var(--ease);
+}
+.app.collapsed .panel{ width:0; border-right-color:transparent; }
+.panel-inner{
+  width:var(--panel-w); flex:1; min-height:0;
+  display:flex; flex-direction:column; overflow:hidden;
+  transition:opacity .25s var(--ease);
+}
+.app.collapsed .panel-inner{ opacity:0; pointer-events:none; }
+
+/* Botón de colapso en el borde (escritorio) */
+.edge-btn{
+  position:absolute; top:50%; right:-14px; transform:translateY(-50%);
+  width:28px; height:60px; z-index:22;
+  display:grid; place-items:center;
+  background:var(--ink-600); border:1px solid var(--rule); border-left:none;
+  border-radius:0 10px 10px 0; cursor:pointer; color:var(--paper-3);
+  transition:color .18s,background .18s;
+}
+.edge-btn:hover{ color:var(--paper); background:var(--ink-500); }
+.edge-btn svg{ width:14px; height:14px; transition:transform .42s var(--ease); }
+.app.collapsed .edge-btn svg{ transform:rotate(180deg); }
+
+/* --- Portada del panel ------------------------------------------------ */
+.cover{
+  position:relative; height:166px; flex-shrink:0; overflow:hidden;
+  background:var(--ink-600); border-bottom:1px solid var(--rule);
+}
+.cover img{
+  width:100%; height:100%; object-fit:cover; display:block;
+  opacity:0; transform:scale(1.08);
+  transition:opacity .9s var(--ease),transform 1.6s var(--ease);
+  filter:saturate(.82) contrast(1.05);
+}
+.cover img.loaded{ opacity:.62; transform:scale(1); }
+.cover .veil{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg,rgba(10,19,16,.25) 0%,rgba(10,19,16,.55) 45%,var(--ink-700) 100%);
+}
+.cover .cover-meta{
+  position:absolute; left:20px; right:20px; bottom:14px;
+  display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
+}
+.cover h2{
+  font-family:'Instrument Serif',Georgia,serif; font-weight:400;
+  font-size:31px; line-height:1.02; margin:0; letter-spacing:-.015em;
+}
+.cover .coord{
+  font-family:'IBM Plex Mono',monospace; font-size:9.5px;
+  letter-spacing:.13em; color:var(--paper-3); margin-top:6px;
+}
+.badge-illus{
+  position:absolute; top:12px; right:12px;
+  font-family:'IBM Plex Mono',monospace; font-size:8.5px;
+  letter-spacing:.13em; text-transform:uppercase;
+  color:var(--paper-2);
+  background:rgba(7,13,11,.68); border:1px solid var(--rule);
+  padding:4px 8px; border-radius:100px; backdrop-filter:blur(4px);
+}
+
+.status-line{
+  display:flex; align-items:center; gap:9px;
+  padding:11px 20px; flex-shrink:0;
+  border-bottom:1px solid var(--rule);
+  background:linear-gradient(90deg,rgba(111,191,142,.12),transparent 70%);
+  font-family:'IBM Plex Mono',monospace; font-size:10px;
+  letter-spacing:.15em; text-transform:uppercase; color:var(--moss);
+}
+.status-line .pulse{
+  width:6px; height:6px; border-radius:50%; background:var(--moss);
+  box-shadow:0 0 0 0 rgba(111,191,142,.6);
+  animation:ring 2.4s ease-out infinite;
+}
+@keyframes ring{ 0%{box-shadow:0 0 0 0 rgba(111,191,142,.55);} 70%{box-shadow:0 0 0 9px rgba(111,191,142,0);} 100%{box-shadow:0 0 0 0 rgba(111,191,142,0);} }
+
+/* --- Pestañas --------------------------------------------------------- */
+.tabs{
+  display:flex; flex-shrink:0; border-bottom:1px solid var(--rule);
+  background:var(--ink-800);
+}
+.tab{
+  flex:1; position:relative; min-height:46px;
+  background:none; border:none; cursor:pointer;
+  color:var(--paper-3);
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px;
+  letter-spacing:.14em; text-transform:uppercase;
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  transition:color .2s var(--ease),background .2s var(--ease);
+}
+.tab:hover{ color:var(--paper-2); background:rgba(242,236,220,.03); }
+.tab[aria-selected="true"]{ color:var(--paper); background:var(--ink-700); }
+.tab[aria-selected="true"]::after{
+  content:""; position:absolute; left:14px; right:14px; bottom:-1px; height:2px;
+  background:linear-gradient(90deg,var(--moss),var(--river)); border-radius:2px;
+}
+.tab .count{
+  font-size:9px; min-width:17px; height:17px; padding:0 5px;
+  border-radius:100px; display:grid; place-items:center;
+  background:rgba(242,236,220,.1); color:var(--paper-2);
+}
+.tab[aria-selected="true"] .count{ background:var(--moss); color:var(--ink-900); }
+
+.tabwrap{ flex:1; min-height:0; position:relative; }
+.tabpanel{
+  position:absolute; inset:0; overflow-y:auto; overscroll-behavior:contain;
+  padding:20px 20px 30px;
+}
+.tabpanel[hidden]{ display:none; }
+.tabpanel.enter{ animation:panelIn .34s var(--ease) both; }
+@keyframes panelIn{ from{opacity:0; transform:translateY(9px);} to{opacity:1; transform:none;} }
+
+/* Revelado escalonado */
+.reveal{ opacity:0; transform:translateY(10px); animation:revealIn .5s var(--ease) forwards; }
+@keyframes revealIn{ to{opacity:1; transform:none;} }
+
+/* --- Rejilla de indicadores ------------------------------------------ */
+.grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule-2); border:1px solid var(--rule); border-radius:var(--r-md); overflow:hidden; }
+.cell{ background:var(--ink-600); padding:13px 14px; }
+.cell .k{
+  font-family:'IBM Plex Mono',monospace; font-size:9px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--paper-3);
+}
+.cell .v{ font-size:16px; font-weight:500; margin-top:5px; color:var(--paper); }
+.cell .v.num{ font-family:'Instrument Serif',serif; font-size:23px; line-height:1; }
+
+.prose{ font-size:14px; line-height:1.72; color:var(--paper-2); margin:0; font-weight:300; }
+.prose strong{ color:var(--paper); font-weight:500; }
+
+/* --- Medidor de cobertura + control temporal -------------------------- */
+.cover-card{
+  border:1px solid var(--rule); border-radius:var(--r-md);
+  background:var(--ink-600); padding:16px 16px 14px;
+}
+.cover-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
+.cover-num{
+  font-family:'Instrument Serif',serif; font-size:52px; line-height:.86;
+  letter-spacing:-.02em; color:var(--moss);
+  font-variant-numeric:tabular-nums;
+  transition:color .5s var(--ease);
+}
+.cover-num small{ font-size:20px; opacity:.65; }
+.cover-year{
+  text-align:right;
+  font-family:'IBM Plex Mono',monospace; font-size:10px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--paper-3);
+}
+.cover-year b{ display:block; font-size:19px; color:var(--paper); letter-spacing:.04em; margin-top:3px; }
+
+.track{
+  height:8px; border-radius:100px; background:var(--ink-800);
+  border:1px solid var(--rule-2); overflow:hidden; margin:14px 0 4px;
+}
+.track .fill{
+  height:100%; width:0; border-radius:100px;
+  background:linear-gradient(90deg,var(--moss-deep),var(--moss));
+  transition:width .7s var(--ease),background .5s var(--ease);
+}
+.delta{
+  font-family:'IBM Plex Mono',monospace; font-size:10px;
+  color:var(--paper-3); letter-spacing:.06em; margin-top:9px;
+}
+.delta b{ color:var(--lime); }
+
+/* Deslizador de año */
+.scrub{ margin-top:16px; padding-top:14px; border-top:1px dashed var(--rule); }
+.scrub-label{
+  font-family:'IBM Plex Mono',monospace; font-size:9px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--paper-3);
+  margin-bottom:11px;
+}
+input[type=range]{
+  -webkit-appearance:none; appearance:none;
+  width:100%; background:transparent; margin:0; height:22px; cursor:pointer;
+}
+input[type=range]::-webkit-slider-runnable-track{
+  height:2px; background:var(--rule); border-radius:2px;
+}
+input[type=range]::-moz-range-track{ height:2px; background:var(--rule); border-radius:2px; }
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none; appearance:none;
+  width:16px; height:16px; margin-top:-7px; border-radius:50%;
+  background:var(--paper); border:3px solid var(--moss-deep);
+  box-shadow:0 0 0 4px rgba(111,191,142,.16);
+  transition:transform .18s var(--ease),box-shadow .18s var(--ease);
+}
+input[type=range]::-moz-range-thumb{
+  width:16px; height:16px; border-radius:50%;
+  background:var(--paper); border:3px solid var(--moss-deep);
+  box-shadow:0 0 0 4px rgba(111,191,142,.16);
+}
+input[type=range]:hover::-webkit-slider-thumb{ transform:scale(1.15); }
+input[type=range]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba(191,221,112,.35); }
+.ticks{
+  display:flex; justify-content:space-between; margin-top:7px;
+  font-family:'IBM Plex Mono',monospace; font-size:9px;
+  letter-spacing:.09em; color:var(--paper-3);
+}
+.ticks span{ transition:color .25s var(--ease); }
+.ticks span.on{ color:var(--lime); }
+
+/* --- Riesgos ---------------------------------------------------------- */
+.risks{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:1px; background:var(--rule-2); border:1px solid var(--rule); border-radius:var(--r-md); overflow:hidden; }
+.risk{ background:var(--ink-600); padding:12px 14px; display:flex; gap:12px; align-items:flex-start; }
+.risk .bars{ display:flex; gap:2.5px; align-items:flex-end; height:14px; margin-top:3px; flex-shrink:0; }
+.risk .bars i{ width:3.5px; border-radius:1px; background:var(--rule); display:block; }
+.risk .bars i:nth-child(1){ height:6px; } .risk .bars i:nth-child(2){ height:10px; } .risk .bars i:nth-child(3){ height:14px; }
+.risk.mid .bars i:nth-child(-n+2){ background:var(--ochre); }
+.risk.low .bars i:nth-child(1){ background:var(--moss); }
+.risk .rn{ font-size:13px; font-weight:500; color:var(--paper); }
+.risk .rd{ font-size:12px; color:var(--paper-3); line-height:1.55; margin-top:3px; font-weight:300; }
+.risk .rl{
+  font-family:'IBM Plex Mono',monospace; font-size:8.5px;
+  letter-spacing:.14em; text-transform:uppercase; margin-top:6px; display:inline-block;
+}
+.risk.mid .rl{ color:var(--ochre); } .risk.low .rl{ color:var(--moss); }
+
+/* --- Cronología ------------------------------------------------------- */
+.tl{ list-style:none; padding:0; margin:0; position:relative; }
+.tl::before{ content:""; position:absolute; left:5px; top:6px; bottom:8px; width:1px; background:var(--rule); }
+.tl li{ position:relative; padding:0 0 17px 22px; transition:opacity .3s var(--ease); }
+.tl li:last-child{ padding-bottom:0; }
+.tl li::before{
+  content:""; position:absolute; left:0; top:5px; width:11px; height:11px;
+  border-radius:50%; background:var(--ink-700); border:2px solid var(--rule);
+  transition:border-color .3s var(--ease),background .3s var(--ease),transform .3s var(--ease);
+}
+.tl li.on::before{ border-color:var(--lime); background:var(--lime); transform:scale(1.18); }
+.tl .y{
+  font-family:'IBM Plex Mono',monospace; font-size:10px;
+  letter-spacing:.16em; color:var(--paper-3); transition:color .3s var(--ease);
+}
+.tl li.on .y{ color:var(--lime); }
+.tl .t{ font-size:12.5px; color:var(--paper-2); line-height:1.6; margin-top:3px; font-weight:300; }
+
+/* --- Lista de puntos -------------------------------------------------- */
+.note-illus{
+  font-family:'IBM Plex Mono',monospace; font-size:9.5px; line-height:1.7;
+  letter-spacing:.05em; color:var(--paper-3);
+  border-left:2px solid var(--ochre); padding:9px 0 9px 12px; margin:0 0 16px;
+  background:linear-gradient(90deg,rgba(226,172,66,.07),transparent);
+}
+.poi-list{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:9px; }
+.poi-item{
+  width:100%; text-align:left; cursor:pointer;
+  display:flex; gap:12px; align-items:center;
+  padding:9px; min-height:var(--tap);
+  background:var(--ink-600); border:1px solid var(--rule); border-radius:var(--r-md);
+  color:inherit; font:inherit;
+  transition:transform .2s var(--ease),border-color .2s var(--ease),background .2s var(--ease);
+}
+.poi-item:hover{ transform:translateX(3px); border-color:rgba(242,236,220,.26); background:var(--ink-500); }
+.poi-item.active{ border-color:var(--moss); background:var(--ink-500); }
+.poi-thumb{
+  width:62px; height:50px; flex-shrink:0; border-radius:var(--r-sm);
+  overflow:hidden; background:var(--ink-800); position:relative;
+}
+.poi-thumb img{ width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .5s var(--ease); }
+.poi-thumb img.loaded{ opacity:.9; }
+.poi-txt{ min-width:0; flex:1; }
+.poi-txt .n{ font-size:13px; font-weight:500; line-height:1.3; }
+.poi-txt .k{
+  font-family:'IBM Plex Mono',monospace; font-size:8.5px;
+  letter-spacing:.15em; text-transform:uppercase; margin-top:5px;
+  display:flex; align-items:center; gap:6px; color:var(--paper-3);
+}
+.kdot{ width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.k-conservacion{ background:var(--moss); } .k-monitoreo{ background:var(--river); }
+.k-restauracion{ background:var(--lime); } .k-presion{ background:var(--ochre); }
+.poi-item .arrow{ color:var(--paper-3); flex-shrink:0; transition:transform .2s var(--ease); }
+.poi-item:hover .arrow{ transform:translateX(3px); color:var(--paper); }
+
+/* --- Detalle de punto ------------------------------------------------- */
+.back-btn{
+  display:inline-flex; align-items:center; gap:8px; min-height:36px;
+  padding:0 12px 0 8px; margin-bottom:14px;
+  background:rgba(242,236,220,.05); border:1px solid var(--rule);
+  border-radius:100px; color:var(--paper-2); cursor:pointer;
+  font-family:'IBM Plex Mono',monospace; font-size:9.5px;
+  letter-spacing:.14em; text-transform:uppercase;
+  transition:background .18s,color .18s;
+}
+.back-btn:hover{ background:rgba(242,236,220,.1); color:var(--paper); }
+.back-btn svg{ width:13px; height:13px; }
+
+.detail-hero{
+  position:relative; width:100%; aspect-ratio:16/10; border-radius:var(--r-md);
+  overflow:hidden; background:var(--ink-600); border:1px solid var(--rule);
+  cursor:zoom-in; display:block; padding:0;
+}
+.detail-hero img{ width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .6s var(--ease),transform .7s var(--ease); }
+.detail-hero img.loaded{ opacity:1; }
+.detail-hero:hover img{ transform:scale(1.04); }
+.detail-hero .zoomhint{
+  position:absolute; right:10px; bottom:10px;
+  font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.12em;
+  background:rgba(7,13,11,.75); border:1px solid var(--rule);
+  padding:5px 9px; border-radius:100px; color:var(--paper-2);
+}
+.detail-h{ font-family:'Instrument Serif',serif; font-size:26px; line-height:1.12; margin:15px 0 6px; letter-spacing:-.01em; }
+.kind-chip{
+  display:inline-flex; align-items:center; gap:7px;
+  font-family:'IBM Plex Mono',monospace; font-size:9px;
+  letter-spacing:.16em; text-transform:uppercase;
+  padding:5px 11px; border-radius:100px; border:1px solid var(--rule);
+  background:rgba(242,236,220,.04);
+}
+.coordline{
+  font-family:'IBM Plex Mono',monospace; font-size:10px;
+  letter-spacing:.1em; color:var(--paper-3); margin:11px 0 15px;
+  display:flex; align-items:center; gap:9px; flex-wrap:wrap;
+}
+.mini-facts{ display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:15px; }
+.mini{ border:1px solid var(--rule); border-radius:var(--r-sm); padding:10px 12px; background:var(--ink-600); }
+.mini .k{ font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:.15em; text-transform:uppercase; color:var(--paper-3); }
+.mini .v{ font-size:13.5px; margin-top:4px; font-weight:500; }
+
+/* --- Reportes --------------------------------------------------------- */
+.empty{
+  text-align:center; padding:44px 22px;
+  border:1px dashed var(--rule); border-radius:var(--r-md);
+  background:rgba(242,236,220,.02);
+}
+.empty svg{ width:38px; height:38px; color:var(--paper-3); opacity:.55; margin-bottom:14px; }
+.empty h4{ font-family:'Instrument Serif',serif; font-size:20px; font-weight:400; margin:0 0 7px; }
+.empty p{ font-size:12.5px; color:var(--paper-3); line-height:1.65; margin:0 0 18px; font-weight:300; }
+
+.rep-list{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:9px; }
+.rep{
+  border:1px solid var(--rule); border-radius:var(--r-md);
+  background:var(--ink-600); padding:13px 14px;
+  animation:revealIn .4s var(--ease) both;
+}
+.rep-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+.rep-type{
+  font-family:'IBM Plex Mono',monospace; font-size:9px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--clay);
+  display:flex; align-items:center; gap:7px;
+}
+.rep-time{ font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--paper-3); letter-spacing:.06em; }
+.rep-desc{ font-size:13px; line-height:1.6; color:var(--paper-2); font-weight:300; }
+.rep-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:11px; padding-top:10px; border-top:1px dashed var(--rule); }
+.rep-coord{ font-family:'IBM Plex Mono',monospace; font-size:9.5px; color:var(--paper-3); letter-spacing:.06em; }
+.rep-acts{ display:flex; gap:6px; }
+.mini-btn{
+  min-height:32px; padding:0 11px; border-radius:var(--r-sm);
+  background:rgba(242,236,220,.06); border:1px solid var(--rule);
+  color:var(--paper-2); cursor:pointer;
+  font-family:'IBM Plex Mono',monospace; font-size:9px;
+  letter-spacing:.12em; text-transform:uppercase;
+  transition:background .16s,color .16s,border-color .16s;
+}
+.mini-btn:hover{ background:rgba(242,236,220,.13); color:var(--paper); }
+.mini-btn.danger:hover{ background:rgba(226,110,72,.16); color:var(--clay); border-color:rgba(226,110,72,.4); }
+
+/* --- Pie del panel ---------------------------------------------------- */
+.panel-foot{
+  flex-shrink:0; padding:12px 20px;
+  border-top:1px solid var(--rule); background:var(--ink-800);
+  font-family:'IBM Plex Mono',monospace; font-size:8.5px; line-height:1.75;
+  letter-spacing:.07em; color:var(--paper-3);
+}
+
+/* --- Esqueleto de carga ---------------------------------------------- */
+.skel{ padding:20px; }
+.sk{
+  border-radius:var(--r-sm); margin-bottom:13px;
+  background:linear-gradient(100deg,var(--ink-600) 20%,var(--ink-500) 42%,var(--ink-600) 64%);
+  background-size:340% 100%; animation:shim 1.5s var(--ease-io) infinite;
+}
+.sk.h{ height:12px; } .sk.b{ height:96px; } .sk.t{ height:26px; }
+.sk.w40{ width:40%; } .sk.w65{ width:65%; } .sk.w85{ width:85%; }
+@keyframes shim{ 0%{background-position:120% 0;} 100%{background-position:-120% 0;} }
+
+/* ============================ MAPA ==================================== */
+.map-area{ position:relative; flex:1; min-width:0; }
+#map{ position:absolute; inset:0; background:var(--ink-900); }
+
+/* Viñeta sobre el mapa para integrarlo con la tinta del panel */
+.map-vignette{
+  position:absolute; inset:0; z-index:401; pointer-events:none;
+  box-shadow:inset 0 0 140px 30px rgba(7,13,11,.55);
+}
+
+.leaflet-container{ font-family:'Spline Sans',sans-serif; background:var(--ink-900); }
+.leaflet-control-attribution{
+  background:rgba(7,13,11,.8)!important; color:var(--paper-3)!important;
+  font-family:'IBM Plex Mono',monospace!important; font-size:8.5px!important;
+  border:1px solid var(--rule); border-right:none; border-bottom:none;
+  border-radius:8px 0 0 0; padding:3px 8px!important;
+}
+.leaflet-control-attribution a{ color:var(--paper-2)!important; }
+.leaflet-bar{ border:1px solid var(--rule)!important; box-shadow:none!important; border-radius:var(--r-md)!important; overflow:hidden; }
+.leaflet-bar a{
+  background:var(--glass)!important; color:var(--paper)!important;
+  border-bottom:1px solid var(--rule)!important;
+  width:38px!important; height:38px!important; line-height:38px!important;
+  backdrop-filter:blur(8px);
+}
+.leaflet-bar a:hover{ background:var(--ink-500)!important; }
+.leaflet-tooltip{
+  background:var(--glass)!important; color:var(--paper)!important;
+  border:1px solid var(--rule)!important; border-radius:var(--r-sm)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.5)!important;
+  font-family:'IBM Plex Mono',monospace!important; font-size:10px!important;
+  letter-spacing:.08em; padding:6px 10px!important; backdrop-filter:blur(8px);
+}
+.leaflet-tooltip::before{ border-top-color:var(--rule)!important; border-bottom-color:var(--rule)!important; }
+
+/* Trazo animado del límite */
+.zone-path{ transition:fill-opacity .9s var(--ease),fill .6s var(--ease),stroke .6s var(--ease); }
+
+/* --- Marcadores de punto de interés ---------------------------------- */
+.poi-pin{
+  display:block; width:26px; height:26px; position:relative; cursor:pointer;
+  animation:pinIn .5s var(--ease) both;
+}
+@keyframes pinIn{ from{opacity:0; transform:translateY(-14px) scale(.5);} to{opacity:1; transform:none;} }
+.poi-pin .core{
+  position:absolute; inset:8px; border-radius:50%;
+  border:2px solid var(--ink-900);
+  transition:transform .22s var(--ease);
+}
+.poi-pin .halo{
+  position:absolute; inset:0; border-radius:50%;
+  border:1px solid currentColor; opacity:.42;
+  transition:transform .28s var(--ease),opacity .28s var(--ease);
+}
+.poi-pin:hover .core{ transform:scale(1.35); }
+.poi-pin:hover .halo{ transform:scale(1.22); opacity:.85; }
+.poi-pin.c-conservacion{ color:var(--moss); } .poi-pin.c-conservacion .core{ background:var(--moss); }
+.poi-pin.c-monitoreo{ color:var(--river); }   .poi-pin.c-monitoreo .core{ background:var(--river); }
+.poi-pin.c-restauracion{ color:var(--lime); } .poi-pin.c-restauracion .core{ background:var(--lime); }
+.poi-pin.c-presion{ color:var(--ochre); }     .poi-pin.c-presion .core{ background:var(--ochre); }
+.poi-pin.sel .core{ transform:scale(1.5); }
+.poi-pin.sel .halo{ animation:haloPulse 1.9s ease-out infinite; }
+@keyframes haloPulse{ 0%{transform:scale(.85); opacity:.85;} 100%{transform:scale(2.4); opacity:0;} }
+.leaflet-marker-icon:focus-visible{ outline:2px solid var(--lime); outline-offset:4px; border-radius:50%; }
+
+/* --- Pin de reporte --------------------------------------------------- */
+.rep-pin{
+  width:15px; height:15px; border-radius:50% 50% 50% 0;
+  transform:rotate(-45deg); background:var(--clay);
+  border:2px solid var(--ink-900); box-shadow:0 3px 9px rgba(0,0,0,.6);
+}
+.rep-pin.drop{ animation:drop .55s cubic-bezier(.2,.9,.3,1.35); }
+@keyframes drop{
+  0%{ transform:rotate(-45deg) translateY(-26px) scale(.5); opacity:0; }
+  62%{ transform:rotate(-45deg) translateY(4px) scale(1.12); opacity:1; }
+  100%{ transform:rotate(-45deg) translateY(0) scale(1); }
+}
+.ripple{ width:14px; height:14px; border-radius:50%; background:rgba(226,110,72,.42); animation:rip 1.5s ease-out 2; }
+@keyframes rip{ 0%{transform:scale(.35); opacity:.9;} 100%{transform:scale(6.5); opacity:0;} }
+
+/* --- Controles flotantes del mapa ------------------------------------ */
+.map-tools{
+  position:absolute; top:14px; right:14px; z-index:410;
+  display:flex; flex-direction:column; align-items:flex-end; gap:9px;
+}
+.tool-btn{
+  min-width:var(--tap); height:var(--tap); padding:0 15px;
+  display:inline-flex; align-items:center; gap:9px;
+  background:var(--glass); backdrop-filter:blur(10px);
+  border:1px solid var(--rule); border-radius:var(--r-md);
+  color:var(--paper); cursor:pointer;
+  font-family:'IBM Plex Mono',monospace; font-size:10px;
+  letter-spacing:.14em; text-transform:uppercase;
+  transition:background .18s,border-color .18s;
+}
+.tool-btn:hover{ background:var(--ink-500); border-color:rgba(242,236,220,.3); }
+.tool-btn[aria-expanded="true"]{ background:var(--ink-500); border-color:var(--moss); }
+.tool-btn svg{ width:15px; height:15px; }
+
+.layers-pop{
+  width:224px; padding:14px;
+  background:var(--glass); backdrop-filter:blur(14px);
+  border:1px solid var(--rule); border-radius:var(--r-md);
+  box-shadow:0 22px 48px rgba(0,0,0,.55);
+  transform-origin:top right;
+  animation:popIn .22s var(--ease) both;
+}
+@keyframes popIn{ from{opacity:0; transform:scale(.93) translateY(-8px);} to{opacity:1; transform:none;} }
+.layers-pop h5{
+  font-family:'IBM Plex Mono',monospace; font-size:9px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--paper-3);
+  margin:0 0 10px; font-weight:500;
+}
+.layers-pop h5+h5{ margin-top:16px; }
+.lrow{
+  display:flex; align-items:center; gap:10px; min-height:34px;
+  font-size:12.5px; cursor:pointer; color:var(--paper-2); font-weight:300;
+}
+.lrow input{ position:absolute; opacity:0; width:0; height:0; }
+.lbox{
+  width:16px; height:16px; flex-shrink:0; border-radius:4px;
+  border:1px solid var(--rule); background:rgba(242,236,220,.04);
+  display:grid; place-items:center; transition:background .18s,border-color .18s;
+}
+.lbox svg{ width:10px; height:10px; opacity:0; transform:scale(.5); transition:.18s var(--ease); color:var(--ink-900); }
+.lrow input:checked+.lbox{ background:var(--moss); border-color:var(--moss); }
+.lrow input:checked+.lbox svg{ opacity:1; transform:scale(1); }
+.lrow input:focus-visible+.lbox{ outline:2px solid var(--lime); outline-offset:2px; }
+.lrow:hover{ color:var(--paper); }
+
+.base-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+.base-btn{
+  padding:8px 4px; border-radius:var(--r-sm); cursor:pointer;
+  background:rgba(242,236,220,.04); border:1px solid var(--rule);
+  color:var(--paper-3);
+  font-family:'IBM Plex Mono',monospace; font-size:8.5px;
+  letter-spacing:.1em; text-transform:uppercase;
+  transition:.18s var(--ease);
+}
+.base-btn:hover{ color:var(--paper); background:rgba(242,236,220,.09); }
+.base-btn[aria-pressed="true"]{ background:var(--moss); border-color:var(--moss); color:var(--ink-900); }
+
+/* --- Aviso / carga / error del mapa ---------------------------------- */
+.map-hint{
+  position:absolute; left:14px; top:14px; z-index:405;
+  max-width:288px; padding:10px 32px 10px 13px;
+  background:var(--glass); backdrop-filter:blur(10px);
+  border:1px solid var(--rule); border-radius:var(--r-md);
+  font-size:11.5px; line-height:1.6; color:var(--paper-2); font-weight:300;
+  animation:revealIn .5s var(--ease) both;
+}
+.map-hint kbd{
+  font-family:'IBM Plex Mono',monospace; font-size:9.5px;
+  border:1px solid var(--rule); border-bottom-width:2px; border-radius:4px;
+  padding:1px 5px; color:var(--paper); background:rgba(242,236,220,.06);
+}
+.map-hint .x{
+  position:absolute; top:6px; right:6px; width:22px; height:22px;
+  background:none; border:none; color:var(--paper-3); cursor:pointer; font-size:14px;
+  border-radius:4px;
+}
+.map-hint .x:hover{ color:var(--paper); background:rgba(242,236,220,.08); }
+
+.map-overlay{
+  position:absolute; inset:0; z-index:500;
+  background:var(--ink-800);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:18px; padding:28px; text-align:center;
+  transition:opacity .6s var(--ease),visibility .6s;
+}
+.map-overlay.gone{ opacity:0; visibility:hidden; }
+.surveyor{ width:54px; height:54px; position:relative; }
+.surveyor .ring{
+  position:absolute; inset:0; border-radius:50%;
+  border:1px solid var(--rule); border-top-color:var(--moss);
+  animation:spin 1.15s linear infinite;
+}
+.surveyor .ring:nth-child(2){ inset:11px; border-top-color:var(--river); animation-duration:1.7s; animation-direction:reverse; }
+.surveyor .ring:nth-child(3){ inset:22px; border-top-color:var(--ochre); animation-duration:2.3s; }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.map-overlay .msg{
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--paper-3);
+  max-width:340px; line-height:1.9;
+}
+.map-overlay.err .surveyor{ display:none; }
+.map-overlay .erricon{ display:none; width:46px; height:46px; color:var(--ochre); }
+.map-overlay.err .erricon{ display:block; }
+.map-overlay.err .msg{ text-transform:none; letter-spacing:.02em; font-size:12.5px; }
+.map-overlay .retry{ display:none; }
+.map-overlay.err .retry{ display:inline-flex; }
+
+/* --- Botón de reporte ------------------------------------------------- */
+.fab{
+  position:absolute; right:18px; bottom:18px; z-index:410;
+  display:inline-flex; align-items:center; gap:10px;
+  min-height:var(--tap); padding:0 20px;
+  background:var(--clay); color:#160805; border:none; border-radius:100px;
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; cursor:pointer;
+  box-shadow:0 12px 32px rgba(226,110,72,.34);
+  transition:transform .2s var(--ease),box-shadow .2s var(--ease);
+}
+.fab:hover{ transform:translateY(-3px); box-shadow:0 18px 40px rgba(226,110,72,.46); }
+.fab:active{ transform:translateY(-1px) scale(.98); }
+.fab svg{ width:15px; height:15px; }
+.fab[aria-pressed="true"]{ background:var(--ochre); box-shadow:0 12px 32px rgba(226,172,66,.38); }
+
+.placing{
+  position:absolute; top:14px; left:50%; z-index:420;
+  transform:translateX(-50%) translateY(-180%);
+  display:flex; align-items:center; gap:13px;
+  min-height:var(--tap); padding:0 8px 0 17px;
+  background:var(--ochre); color:var(--ink-900); border-radius:100px;
+  font-family:'IBM Plex Mono',monospace; font-size:10px;
+  letter-spacing:.13em; text-transform:uppercase;
+  box-shadow:0 12px 34px rgba(0,0,0,.45);
+  opacity:0; visibility:hidden; pointer-events:none;
+  transition:transform .32s var(--ease),opacity .24s var(--ease),visibility .24s;
+}
+.placing.show{
+  transform:translateX(-50%) translateY(0);
+  opacity:1; visibility:visible; pointer-events:auto;
+}
+.placing button{
+  min-height:32px; padding:0 12px; border-radius:100px;
+  background:rgba(7,13,11,.2); border:none; color:var(--ink-900); cursor:pointer;
+  font-family:inherit; font-size:9px; letter-spacing:.13em; text-transform:uppercase; font-weight:600;
+}
+.placing button:hover{ background:rgba(7,13,11,.34); }
+
+/* =========================== DIÁLOGOS ================================= */
+.overlay{
+  position:fixed; inset:0; z-index:800;
+  background:rgba(4,8,7,.74); backdrop-filter:blur(5px);
+  display:flex; align-items:center; justify-content:center; padding:24px;
+  opacity:0; pointer-events:none; transition:opacity .24s var(--ease);
+}
+.overlay.show{ opacity:1; pointer-events:auto; }
+
+.sheet{
+  width:452px; max-width:100%; max-height:88vh; overflow-y:auto;
+  background:var(--ink-700); border:1px solid var(--rule); border-radius:var(--r-lg);
+  padding:26px 26px 22px;
+  box-shadow:0 40px 90px rgba(0,0,0,.65);
+  transform:scale(.95) translateY(14px);
+  transition:transform .28s var(--ease);
+}
+.overlay.show .sheet{ transform:none; }
+.sheet h3{ font-family:'Instrument Serif',serif; font-weight:400; font-size:26px; margin:0 0 6px; letter-spacing:-.01em; }
+.sheet .sheet-sub{ font-size:12.5px; color:var(--paper-3); margin:0 0 22px; line-height:1.65; font-weight:300; }
+
+.field{ margin-bottom:17px; }
+.field>label{
+  display:block; margin-bottom:8px;
+  font-family:'IBM Plex Mono',monospace; font-size:9px;
+  letter-spacing:.17em; text-transform:uppercase; color:var(--paper-3);
+}
+.field select,.field textarea,.field input[type=text]{
+  width:100%; min-height:var(--tap);
+  padding:12px 13px; border-radius:var(--r-sm);
+  background:var(--ink-800); border:1px solid var(--rule);
+  color:var(--paper); font-family:'Spline Sans',sans-serif; font-size:14px;
+  transition:border-color .18s,box-shadow .18s;
+}
+.field select{ appearance:none; cursor:pointer;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2393A093' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat; background-position:right 13px center; background-size:16px; padding-right:38px;
+}
+.field textarea{ resize:vertical; min-height:82px; line-height:1.6; }
+.field select:focus,.field textarea:focus,.field input:focus{
+  border-color:var(--moss); box-shadow:0 0 0 3px rgba(111,191,142,.16);
+}
+.field .err{ display:none; margin-top:7px; color:var(--clay); font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.1em; }
+.field.bad .err{ display:block; }
+.field.bad select,.field.bad textarea,.field.bad input{ border-color:var(--clay); box-shadow:0 0 0 3px rgba(226,110,72,.14); }
+
+.coord-chip{
+  display:inline-flex; align-items:center; gap:9px;
+  min-height:38px; padding:0 14px; border-radius:100px;
+  background:var(--ink-800); border:1px dashed var(--rule);
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px;
+  letter-spacing:.09em; color:var(--paper-3);
+  transition:.25s var(--ease);
+}
+.coord-chip.set{ border-style:solid; border-color:var(--moss); color:var(--moss); background:rgba(111,191,142,.09); }
+.counter{ float:right; font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--paper-3); letter-spacing:.1em; }
+
+.acts{ display:flex; justify-content:flex-end; gap:10px; margin-top:8px; }
+.btn{
+  min-height:var(--tap); padding:0 20px; border-radius:var(--r-sm); border:1px solid transparent;
+  font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; cursor:pointer;
+  transition:transform .16s var(--ease),background .18s,opacity .18s;
+}
+.btn:active{ transform:scale(.98); }
+.btn-ghost{ background:transparent; border-color:var(--rule); color:var(--paper-2); }
+.btn-ghost:hover{ background:rgba(242,236,220,.07); color:var(--paper); }
+.btn-primary{ background:var(--moss); color:var(--ink-900); }
+.btn-primary:hover{ background:var(--lime); }
+.btn-primary[disabled]{ opacity:.4; cursor:not-allowed; }
+.btn-primary.busy{ pointer-events:none; opacity:.75; }
+
+/* --- Visor de imagen -------------------------------------------------- */
+.lightbox{
+  position:fixed; inset:0; z-index:850;
+  background:rgba(4,8,7,.95);
+  display:flex; align-items:center; justify-content:center; padding:64px 24px;
+  opacity:0; pointer-events:none; transition:opacity .24s var(--ease);
+}
+.lightbox.show{ opacity:1; pointer-events:auto; }
+.lightbox figure{ margin:0; max-width:1000px; width:100%; text-align:center; }
+.lightbox img{
+  max-width:100%; max-height:70vh; border-radius:var(--r-md);
+  border:1px solid var(--rule); box-shadow:0 40px 90px rgba(0,0,0,.7);
+}
+.lightbox figcaption{
+  margin-top:18px; display:flex; flex-direction:column; align-items:center; gap:9px;
+}
+.lightbox figcaption .cap{ font-family:'Instrument Serif',serif; font-size:19px; color:var(--paper); }
+.lightbox figcaption .meta{
+  font-family:'IBM Plex Mono',monospace; font-size:9.5px;
+  letter-spacing:.15em; text-transform:uppercase; color:var(--paper-3);
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:center;
+}
+.lb-btn{
+  position:absolute; width:var(--tap); height:var(--tap); border-radius:50%;
+  background:rgba(242,236,220,.07); border:1px solid var(--rule);
+  color:var(--paper); cursor:pointer; display:grid; place-items:center;
+  transition:background .18s,transform .18s;
+}
+.lb-btn:hover{ background:rgba(242,236,220,.16); transform:scale(1.07); }
+.lb-btn svg{ width:18px; height:18px; }
+.lb-x{ top:20px; right:20px; } .lb-p{ left:20px; top:50%; margin-top:-22px; } .lb-n{ right:20px; top:50%; margin-top:-22px; }
+
+/* --- Aviso emergente -------------------------------------------------- */
+.toast{
+  position:fixed; left:50%; bottom:26px; z-index:880;
+  transform:translateX(-50%) translateY(26px);
+  display:flex; align-items:center; gap:14px;
+  min-height:var(--tap); padding:0 8px 0 18px; max-width:92vw;
+  background:var(--ink-600); border:1px solid var(--rule); border-radius:100px;
+  box-shadow:0 20px 46px rgba(0,0,0,.6);
+  font-size:13px; color:var(--paper); font-weight:300;
+  opacity:0; pointer-events:none; transition:all .3s var(--ease);
+}
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto; }
+.toast .tick{
+  width:19px; height:19px; border-radius:50%; flex-shrink:0;
+  background:var(--moss); color:var(--ink-900);
+  display:grid; place-items:center; font-size:11px; font-weight:700;
+}
+.toast .undo{
+  min-height:32px; padding:0 13px; border-radius:100px;
+  background:rgba(242,236,220,.09); border:1px solid var(--rule);
+  color:var(--paper); cursor:pointer;
+  font-family:'IBM Plex Mono',monospace; font-size:9px;
+  letter-spacing:.13em; text-transform:uppercase;
+}
+.toast .undo:hover{ background:rgba(242,236,220,.18); }
+.toast .undo[hidden]{ display:none; }
+
+/* --- Barra de acción móvil ------------------------------------------- */
+.sheet-handle{ display:none; }
+
+::-webkit-scrollbar{ width:9px; height:9px; }
+::-webkit-scrollbar-track{ background:transparent; }
+::-webkit-scrollbar-thumb{ background:var(--ink-400); border-radius:9px; border:2px solid var(--ink-700); }
+::-webkit-scrollbar-thumb:hover{ background:var(--moss-deep); }
+
+/* ========================= RESPONSIVE ================================= */
+@media (max-width:1180px){ :root{ --panel-w:352px; } .readout{ display:none; } }
+
+@media (max-width:860px){
+  .topbar{ height:auto; padding:11px 14px; }
+  .brand h1{ font-size:19px; }
+  .brand .sub{ display:none; }
+  .chip-draft span.lbl{ display:none; }
+  .chip-draft{ padding:8px; }
+  .icon-btn{ display:inline-flex; }
+  .edge-btn{ display:none; }
+
+  .main{ display:block; height:100%; }
+  .map-area{ position:absolute; inset:0; }
+
+  /* El panel pasa a ser una hoja inferior con dos posiciones */
+  .panel{
+    position:fixed; left:0; right:0; bottom:0; width:100%;
+    height:86vh; max-height:86vh;
+    border-right:none; border-top:1px solid var(--rule);
+    border-radius:var(--r-lg) var(--r-lg) 0 0;
+    z-index:600; box-shadow:0 -22px 60px rgba(0,0,0,.6);
+    transform:translateY(calc(100% - 58px));
+    transition:transform .42s var(--ease);
+  }
+  .panel.peek{ transform:translateY(calc(100% - 58px)); }
+  .panel.open{ transform:translateY(0); }
+  .panel-inner{ width:100%; }
+  .sheet-handle{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    position:relative; height:58px; flex-shrink:0; cursor:pointer; width:100%;
+    background:none; border:none; color:var(--paper-2);
+    font-family:'IBM Plex Mono',monospace; font-size:10px;
+    letter-spacing:.15em; text-transform:uppercase;
+    border-bottom:1px solid var(--rule);
+  }
+  .sheet-handle::before{
+    content:""; position:absolute; top:8px; left:50%; transform:translateX(-50%);
+    width:40px; height:4px; border-radius:100px; background:var(--rule);
+  }
+  .sheet-handle svg{ width:14px; height:14px; transition:transform .35s var(--ease); }
+  .panel.open .sheet-handle svg{ transform:rotate(180deg); }
+  .cover{ height:132px; }
+  .cover h2{ font-size:25px; }
+  .fab{ bottom:74px; right:14px; }
+  .map-tools{ top:12px; right:12px; }
+  .map-hint{ left:12px; top:12px; max-width:calc(100% - 130px); font-size:11px; }
+  .toast{ bottom:74px; }
+}
+
+@media (max-width:520px){
+  .mini-facts,.grid-2{ grid-template-columns:1fr; }
+  .cover-num{ font-size:44px; }
+  .sheet{ padding:20px; }
+  .lightbox{ padding:64px 14px; }
+  .lb-p{ left:10px; } .lb-n{ right:10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="atmos" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<a class="skip-link" href="#map">Saltar al mapa</a>
+<div id="live" class="sr-only" role="status" aria-live="polite"></div>
+
+<div class="app" id="app">
+
+  <!-- ========================= TOPBAR ========================= -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 12.5C9 8 23 8 27 12.5" stroke="#6FBF8E" stroke-opacity="0.4" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M6.5 16.5C10 12.7 22 12.7 25.5 16.5" stroke="#6FBF8E" stroke-opacity="0.6" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M16 23.4V19M16 19L11 14M16 19L21 14M11 14L8.5 10.5M11 14L13.5 10M21 14L18.5 10M21 14L23.5 10.5" stroke="#63ACCB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M8.5 10.5C6 9.6 4.9 6.7 5.4 4.3C7.9 4.2 10.7 5.9 11 8.6C11.2 10.2 9.9 10.9 8.5 10.5Z" fill="#BFDD70"/>
+          <path d="M6 5.2C7.6 6.4 9 8 9.7 9.7" stroke="#0E1B16" stroke-width="0.9" stroke-linecap="round"/>
+          <circle cx="16" cy="25" r="2.2" fill="#6FBF8E"/>
+        </svg>
+      </div>
+      <div class="brand-txt">
+        <h1>Eco<em>Cuenca</em> Panamá</h1>
+        <div class="sub">Levantamiento hidrográfico · borrador</div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="readout" id="readout" aria-hidden="true">
+        <span>LAT <b id="roLat">—</b></span>
+        <span class="sep"></span>
+        <span>LON <b id="roLon">—</b></span>
+        <span class="sep"></span>
+        <span>Z <b id="roZ">—</b></span>
+      </div>
+      <button class="icon-btn" id="sheetToggle" aria-expanded="false" aria-controls="panel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <span>Ficha</span>
+      </button>
+      <div class="chip-draft"><span class="dot" aria-hidden="true"></span><span class="lbl">Demostración</span></div>
+    </div>
+  </header>
+
+  <div class="main">
+
+    <!-- ========================= PANEL ========================= -->
+    <aside class="panel peek" id="panel" aria-label="Ficha de la microcuenca">
+      <div class="contours" aria-hidden="true"></div>
+
+      <button class="sheet-handle" id="sheetHandle" aria-expanded="false" aria-controls="panelInner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+        <span id="handleLabel">Ver ficha de la microcuenca</span>
+      </button>
+
+      <button class="edge-btn" id="edgeBtn" aria-label="Contraer u expandir el panel lateral">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+
+      <!-- Esqueleto de carga -->
+      <div class="skel" id="skel" aria-hidden="true">
+        <div class="sk b"></div>
+        <div class="sk t w65"></div>
+        <div class="sk h w40"></div>
+        <div class="sk b"></div>
+        <div class="sk h w85"></div>
+        <div class="sk h w65"></div>
+        <div class="sk b"></div>
+      </div>
+
+      <div class="panel-inner" id="panelInner" hidden>
+
+        <div class="cover">
+          <img id="coverImg" alt="Río Chagres junto al Canal de Panamá — fotografía real de la Cuenca Hidrográfica del Canal, sistema al que pertenece la subcuenca del Ciri Grande." />
+          <div class="veil" aria-hidden="true"></div>
+          <span class="badge-illus" title="Foto real de la Cuenca del Canal de Panamá; no del punto exacto. Ver créditos en la ficha.">Cuenca del Canal · Wikimedia</span>
+          <div class="cover-meta">
+            <div>
+              <h2>Ciri Grande–Trinidad</h2>
+              <div class="coord mono">09°02′06″N · 079°56′49″W · CUENCA DEL CANAL</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-line"><span class="pulse" aria-hidden="true"></span> Gestionada y protegida</div>
+
+        <!-- Pestañas -->
+        <div class="tabs" role="tablist" aria-label="Secciones de la ficha">
+          <button class="tab" role="tab" id="tab-ficha" aria-controls="p-ficha" aria-selected="true">Ficha</button>
+          <button class="tab" role="tab" id="tab-puntos" aria-controls="p-puntos" aria-selected="false" tabindex="-1">Puntos <span class="count" id="cntPoints">6</span></button>
+          <button class="tab" role="tab" id="tab-rep" aria-controls="p-rep" aria-selected="false" tabindex="-1">Reportes <span class="count" id="cntReports">0</span></button>
+        </div>
+
+        <div class="tabwrap">
+
+          <!-- ---------------- FICHA ---------------- -->
+          <div class="tabpanel" role="tabpanel" id="p-ficha" aria-labelledby="tab-ficha" tabindex="0">
+
+            <section class="reveal" style="animation-delay:.02s">
+              <p class="eyebrow">Indicadores clave</p>
+              <div class="grid-2 regmark">
+                <div class="cell"><div class="k">Área</div><div class="v num">145<small style="font-size:13px"> km²</small></div></div>
+                <div class="cell"><div class="k">Río principal</div><div class="v">Ciri Grande</div></div>
+                <div class="cell"><div class="k">Comité de gestión</div><div class="v">Activo</div></div>
+                <div class="cell"><div class="k">Rango altitudinal</div><div class="v">40–620 m</div></div>
+                <div class="cell"><div class="k">Vierte hacia</div><div class="v">Río Trinidad</div></div>
+                <div class="cell"><div class="k">Puntos censados</div><div class="v num">6</div></div>
+              </div>
+            </section>
+
+            <section class="reveal" style="animation-delay:.09s; margin-top:26px">
+              <p class="eyebrow">Ficha ambiental</p>
+              <p class="prose">
+                La microcuenca <strong>Ciri Grande–Trinidad</strong> drena hacia el río Trinidad y el
+                lago Gatún, y aporta agua tanto a la operación del Canal como al abastecimiento de la
+                región metropolitana. Conserva bosque maduro continuo en las cabeceras y un mosaico de
+                bosque secundario, potreros y agricultura de subsistencia en la parte media. Cuenta con
+                un <strong>comité de gestión comunitario formalmente establecido</strong> y monitoreo
+                participativo periódico, lo que la sitúa entre las microcuencas mejor gestionadas de la
+                Cuenca del Canal.
+              </p>
+            </section>
+
+            <section class="reveal" style="animation-delay:.16s; margin-top:26px">
+              <p class="eyebrow">Cobertura boscosa</p>
+              <div class="cover-card regmark">
+                <div class="cover-head">
+                  <div class="cover-num" id="coverNum">72<small>%</small></div>
+                  <div class="cover-year">Año de referencia<b id="coverYear">2024</b></div>
+                </div>
+                <div class="track"><div class="fill" id="coverFill"></div></div>
+                <div class="delta mono" id="coverDelta">▲ <b>+14 pts</b> respecto a 2005</div>
+
+                <div class="scrub">
+                  <div class="scrub-label">Recorrer la serie temporal</div>
+                  <label class="sr-only" for="yearRange">Año de referencia de la cobertura boscosa</label>
+                  <input type="range" id="yearRange" min="0" max="4" step="1" value="4"
+                         aria-valuetext="2024, 72 por ciento de cobertura" />
+                  <div class="ticks" id="ticks" aria-hidden="true">
+                    <span>2005</span><span>2010</span><span>2015</span><span>2020</span><span>2024</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="reveal" style="animation-delay:.23s; margin-top:26px">
+              <p class="eyebrow">Riesgos identificados</p>
+              <ul class="risks">
+                <li class="risk mid">
+                  <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+                  <div><div class="rn">Avance de la frontera agrícola</div>
+                    <div class="rd">Presión sostenida por potreros y roza en la parte media de la cuenca.</div>
+                    <span class="rl">Nivel medio</span></div>
+                </li>
+                <li class="risk mid">
+                  <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+                  <div><div class="rn">Sedimentación de quebradas</div>
+                    <div class="rd">Erosión localizada en tramos que perdieron bosque de galería.</div>
+                    <span class="rl">Nivel medio</span></div>
+                </li>
+                <li class="risk low">
+                  <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+                  <div><div class="rn">Residuos sólidos</div>
+                    <div class="rd">Puntos aislados cerca de caminos y vados de río.</div>
+                    <span class="rl">Nivel bajo</span></div>
+                </li>
+                <li class="risk low">
+                  <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+                  <div><div class="rn">Incendios de pastizal</div>
+                    <div class="rd">Esporádicos en estación seca; sin afectación de bosque maduro.</div>
+                    <span class="rl">Nivel bajo</span></div>
+                </li>
+              </ul>
+            </section>
+
+            <section class="reveal" style="animation-delay:.3s; margin-top:26px">
+              <p class="eyebrow">Cronología de gestión</p>
+              <ul class="tl" id="timeline">
+                <li data-year="2005"><div class="y">2005</div><div class="t">Diagnóstico participativo inicial; se documenta pérdida de bosque de galería.</div></li>
+                <li data-year="2010"><div class="y">2010</div><div class="t">Se conforma el comité de gestión con juntas comunitarias de la microcuenca.</div></li>
+                <li data-year="2015"><div class="y">2015</div><div class="t">Programa de reforestación ribereña y acuerdos de uso de suelo en fincas.</div></li>
+                <li data-year="2020"><div class="y">2020</div><div class="t">Se instala la estación de aforo y arranca el monitoreo trimestral de caudal.</div></li>
+                <li data-year="2024"><div class="y">2024</div><div class="t">Cobertura boscosa estabilizada al alza; seis puntos de seguimiento activos.</div></li>
+              </ul>
+            </section>
+
+            <section class="reveal" style="animation-delay:.37s; margin-top:26px">
+              <p class="eyebrow">Procedencia</p>
+              <p class="prose" style="font-size:12px; line-height:1.75">
+                Elaboración propia a partir de literatura pública sobre la Cuenca Hidrográfica del
+                Canal de Panamá (ACP / CICH) y del Geoportal de MiAmbiente. <strong>Los valores,
+                fechas y contornos son aproximados y sirven únicamente a esta demostración</strong>;
+                no sustituyen los diagnósticos oficiales ni datos GeoJSON reales.
+              </p>
+              <p class="eyebrow" style="margin-top:20px">Créditos fotográficos</p>
+              <p class="prose" style="font-size:11.5px; line-height:1.7; margin-bottom:10px">
+                Fotografías reales de la Cuenca Hidrográfica del Canal de Panamá (sistema
+                Chagres–Pequení). Vía Wikimedia Commons — no corresponden al punto exacto rotulado.
+              </p>
+              <ul id="creditList" style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:6px"></ul>
+            </section>
+          </div>
+
+          <!-- ---------------- PUNTOS ---------------- -->
+          <div class="tabpanel" role="tabpanel" id="p-puntos" aria-labelledby="tab-puntos" tabindex="0" hidden>
+            <div id="poiListView">
+              <p class="eyebrow">Puntos de interés · 6 sitios</p>
+              <p class="note-illus">
+                Las fotografías son <strong>reales de la Cuenca Hidrográfica del Canal de Panamá</strong>
+                (sistema Chagres–Pequení, del que la subcuenca del Ciri Grande forma parte), tomadas de
+                Wikimedia Commons. <strong>No son el registro fotográfico del punto exacto</strong>
+                rotulado. Autoría y licencias al pie de la ficha.
+              </p>
+              <ul class="poi-list" id="poiList"></ul>
+            </div>
+            <div id="poiDetailView" hidden></div>
+          </div>
+
+          <!-- ---------------- REPORTES ---------------- -->
+          <div class="tabpanel" role="tabpanel" id="p-rep" aria-labelledby="tab-rep" tabindex="0" hidden>
+            <p class="eyebrow">Reportes ciudadanos</p>
+            <div id="repArea"></div>
+          </div>
+
+        </div>
+
+        <div class="panel-foot">
+          Borrador de demostración · una sola microcuenca · datos ilustrativos
+        </div>
+      </div>
+    </aside>
+
+    <!-- ========================== MAPA ========================== -->
+    <div class="map-area">
+      <div id="map" role="application" tabindex="-1"
+           aria-label="Mapa de la microcuenca Ciri Grande–Trinidad. Use las teclas de flecha para desplazar y más o menos para acercar."></div>
+      <div class="map-vignette" aria-hidden="true"></div>
+
+      <div class="map-hint" id="mapHint" hidden>
+        Toca los <strong>puntos de colores</strong> para ver cada sitio, o el contorno para encuadrar
+        la microcuenca. <kbd>Esc</kbd> cierra cualquier diálogo.
+        <button class="x" id="hintX" aria-label="Ocultar esta ayuda">✕</button>
+      </div>
+
+      <div class="map-tools">
+        <button class="tool-btn" id="layersBtn" aria-expanded="false" aria-controls="layersPop">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          Capas
+        </button>
+        <div id="layersPop" hidden></div>
+        <button class="tool-btn" id="fitBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 9V4h5M21 9V4h-5M3 15v5h5M21 15v5h-5"/></svg>
+          Encuadrar
+        </button>
+      </div>
+
+      <div class="map-overlay" id="mapOverlay">
+        <div class="surveyor" aria-hidden="true"><span class="ring"></span><span class="ring"></span><span class="ring"></span></div>
+        <svg class="erricon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20a15.3 15.3 0 0 1 0-20z"/><path d="M4 4l16 16" stroke="#E26E48" stroke-width="1.8"/></svg>
+        <p class="msg" id="overlayMsg">Cargando mapa base y capa de la microcuenca…</p>
+        <button class="btn btn-primary retry" id="retryBtn">Reintentar</button>
+      </div>
+
+      <div class="placing" id="placingBar" role="status">
+        <span>Toca un punto del mapa para ubicar el reporte</span>
+        <button id="cancelPlacing">Cancelar</button>
+      </div>
+
+      <button class="fab" id="fab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17.5h.01"/></svg>
+        Reportar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL DE REPORTE ===================== -->
+<div class="overlay" id="repOverlay">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="repTitle" id="repSheet">
+    <h3 id="repTitle">Reportar un problema</h3>
+    <p class="sheet-sub">Formulario de demostración — los datos se guardan solo en este navegador y no se envían a ningún servidor.</p>
+
+    <div class="field">
+      <label id="lblCoord">Ubicación registrada</label>
+      <span class="coord-chip" id="coordChip" aria-describedby="lblCoord">◎ Sin ubicar</span>
+    </div>
+
+    <div class="field" id="fType">
+      <label for="repType">Tipo de problema</label>
+      <select id="repType">
+        <option value="">Selecciona una opción…</option>
+        <option>Deforestación</option>
+        <option>Residuos sólidos</option>
+        <option>Contaminación del agua</option>
+        <option>Construcción no autorizada</option>
+        <option>Erosión / sedimentación</option>
+        <option>Otro</option>
+      </select>
+      <span class="err">Elige un tipo de problema.</span>
+    </div>
+
+    <div class="field" id="fDesc">
+      <label for="repDesc">Descripción <span class="counter" id="descCount">0 / 240</span></label>
+      <textarea id="repDesc" maxlength="240" placeholder="Describe brevemente lo que observaste…"></textarea>
+      <span class="err">Escribe al menos 4 caracteres.</span>
+    </div>
+
+    <div class="acts">
+      <button class="btn btn-ghost" id="repCancel" type="button">Cancelar</button>
+      <button class="btn btn-primary" id="repSubmit" type="button">Guardar reporte</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== VISOR ======================== -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Visor de imagen ampliada">
+  <button class="lb-btn lb-x" id="lbX" aria-label="Cerrar visor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  <button class="lb-btn lb-p" id="lbP" aria-label="Imagen anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+  <button class="lb-btn lb-n" id="lbN" aria-label="Imagen siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+  <figure>
+    <img id="lbImg" alt="" />
+    <figcaption>
+      <span class="cap" id="lbCap"></span>
+      <span class="meta"><span id="lbCredit"></span><span id="lbIdx"></span></span>
+    </figcaption>
+  </figure>
+</div>
+
+<!-- ======================== TOAST ======================== -->
+<div class="toast" id="toast" role="status">
+  <span class="tick" aria-hidden="true">✓</span>
+  <span id="toastMsg">Listo</span>
+  <button class="undo" id="toastUndo" hidden>Deshacer</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ===================================================================
+   1 · DATOS ILUSTRATIVOS
+   =================================================================== */
+
+var ZONE = {
+  name:'Ciri Grande–Trinidad',
+  /* Contorno aproximado: la cuenca del Ciri Grande queda al suroeste del
+     lago Gatún y drena hacia el norte, al río Trinidad. Trazo ilustrativo. */
+  center:[9.035,-79.947],
+  outline:[
+    [9.115,-79.945],[9.098,-79.905],[9.045,-79.892],[8.985,-79.905],
+    [8.952,-79.945],[8.975,-79.990],[9.035,-80.005],[9.092,-79.985]
+  ],
+  cover:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Chagres_River_near_the_Panama_Canal_-_Flickr_-_treegrow.jpg/1280px-Chagres_River_near_the_Panama_Canal_-_Flickr_-_treegrow.jpg'
+};
+
+/* Créditos de imagen — todas de Wikimedia Commons, de la Cuenca Hidrográfica
+   del Canal de Panamá (sistema Chagres–Pequení, del que la subcuenca del Ciri
+   Grande forma parte). Reales de la cuenca, no del punto exacto rotulado. */
+var CREDITS = [
+  ['Chagres River near the Panama Canal','Katja Schulz','CC BY 2.0','https://commons.wikimedia.org/wiki/File:Chagres_River_near_the_Panama_Canal_-_Flickr_-_treegrow.jpg'],
+  ['Río Pequení, Cuenca del Canal','Nadxiielii','CC0','https://commons.wikimedia.org/wiki/File:R%C3%ADo_Pequen%C3%AD.JPG'],
+  ['Ribera boscosa, área del Canal','«XEON»','CC BY 3.0','https://commons.wikimedia.org/wiki/File:Coast_-_panoramio_(3).jpg'],
+  ['Río Chagres en Gamboa','Julian Watkins','Dominio público','https://commons.wikimedia.org/wiki/File:Chagres.jpg'],
+  ['Región boscosa junto al Canal','«XEON»','CC BY 3.0','https://commons.wikimedia.org/wiki/File:Canal_De_Panama_-_panoramio_(1).jpg'],
+  ['Curso de agua, área del Canal','«XEON»','CC BY 3.0','https://commons.wikimedia.org/wiki/File:Canal_-_panoramio_(13).jpg'],
+  ['Lago Gatún, Cuenca del Canal','«XEON»','CC BY 3.0','https://commons.wikimedia.org/wiki/File:Gatun_Lake_-_panoramio.jpg']
+];
+
+var YEARS = [2005,2010,2015,2020,2024];
+var COVER = { 2005:58, 2010:61, 2015:64, 2020:69, 2024:72 };
+
+var KINDS = {
+  conservacion:{ label:'Conservación', color:'#6FBF8E' },
+  monitoreo:   { label:'Monitoreo',    color:'#63ACCB' },
+  restauracion:{ label:'Restauración', color:'#BFDD70' },
+  presion:     { label:'Presión',      color:'#E2AC42' }
+};
+
+var POINTS = [
+  { id:'p1', kind:'conservacion', name:'Cabecera del río Ciri Grande',
+    ll:[8.966,-79.950],
+    desc:'Nacientes del cauce principal, dentro del bloque de bosque maduro continuo de la cuenca alta. Es la zona con mayor integridad ecológica de la microcuenca y la que sostiene el caudal en estación seca.',
+    facts:[['Cobertura','Bosque maduro'],['Altitud','~590 m'],['Intervención','Muy baja'],['Acceso','Sendero'] ],
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/R%C3%ADo_Pequen%C3%AD.JPG/1280px-R%C3%ADo_Pequen%C3%AD.JPG',
+    alt:'Río Pequení discurriendo entre bosque en la Cuenca Hidrográfica del Canal de Panamá.',
+    credit:1 },
+
+  { id:'p2', kind:'conservacion', name:'Bosque de galería — quebrada Las Palmas',
+    ll:[9.028,-79.912],
+    desc:'Franja de vegetación ribereña bien conservada a lo largo de una quebrada tributaria. Actúa como corredor biológico y como filtro natural de sedimentos antes de que lleguen al cauce principal.',
+    facts:[['Ancho de franja','25–40 m'],['Estado','Conservado'],['Función','Corredor / filtro'],['Especies','Ribereñas nativas']],
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Coast_-_panoramio_%283%29.jpg/1280px-Coast_-_panoramio_%283%29.jpg',
+    alt:'Ribera cubierta de bosque en el área de la Cuenca del Canal de Panamá.',
+    credit:2 },
+
+  { id:'p3', kind:'monitoreo', name:'Estación de aforo hidrológico',
+    ll:[9.048,-79.950],
+    desc:'Punto de medición de caudal y turbidez instalado con el comité de gestión. Alimenta el monitoreo trimestral y sirve de referencia para evaluar el efecto de las lluvias sobre el arrastre de sedimentos.',
+    facts:[['Instalada','2020'],['Frecuencia','Trimestral'],['Variables','Caudal · turbidez'],['Operador','Comité local']],
+    img:'https://upload.wikimedia.org/wikipedia/commons/c/cf/Chagres.jpg',
+    alt:'Río Chagres a su paso por Gamboa, Cuenca del Canal de Panamá.',
+    credit:3 },
+
+  { id:'p4', kind:'restauracion', name:'Vivero y parcelas de reforestación',
+    ll:[9.026,-79.984],
+    desc:'Parcelas restauradas desde 2015 con especies nativas producidas en un vivero comunitario. Es el motor principal de la recuperación de cobertura observada en la serie 2015–2024.',
+    facts:[['Desde','2015'],['Superficie','~110 ha'],['Manejo','Comunitario'],['Especies','Nativas']],
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Canal_De_Panama_-_panoramio_%281%29.jpg/1280px-Canal_De_Panama_-_panoramio_%281%29.jpg',
+    alt:'Región boscosa próxima al Canal de Panamá.',
+    credit:4 },
+
+  { id:'p5', kind:'presion', name:'Frontera agrícola — parte media',
+    ll:[8.995,-79.910],
+    desc:'Mosaico de potreros y cultivos de subsistencia que avanza sobre bosque secundario. Es el foco de presión más relevante de la microcuenca y donde se concentran los acuerdos de uso de suelo con fincas.',
+    facts:[['Presión','Media'],['Uso','Potrero · cultivo'],['Tendencia','Estable'],['Acuerdos','En vigor']],
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Canal_-_panoramio_%2813%29.jpg/1280px-Canal_-_panoramio_%2813%29.jpg',
+    alt:'Curso de agua y vegetación en el área de la Cuenca del Canal de Panamá.',
+    credit:5 },
+
+  { id:'p6', kind:'monitoreo', name:'Confluencia con el río Trinidad',
+    ll:[9.106,-79.944],
+    desc:'Salida de la microcuenca hacia el río Trinidad y, aguas abajo, hacia el lago Gatún. Aquí se evalúa la calidad del agua que la microcuenca entrega al sistema del Canal.',
+    facts:[['Rol','Punto de salida'],['Destino','Lago Gatún'],['Control','Calidad de agua'],['Prioridad','Alta']],
+    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Gatun_Lake_-_panoramio.jpg/1280px-Gatun_Lake_-_panoramio.jpg',
+    alt:'Lago Gatún, cuerpo de agua receptor de la Cuenca del Canal de Panamá.',
+    credit:6 }
+];
+
+/* ===================================================================
+   2 · UTILIDADES
+   =================================================================== */
+
+function $(id){ return document.getElementById(id); }
+function el(tag, cls){ var n=document.createElement(tag); if(cls) n.className=cls; return n; }
+
+var liveEl = $('live');
+function announce(msg){ liveEl.textContent=''; window.setTimeout(function(){ liveEl.textContent=msg; },40); }
+
+/* Marcador de posición dibujado localmente: la interfaz nunca se rompe sin red */
+function placeholder(label){
+  var svg =
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 260'>"+
+    "<rect width='400' height='260' fill='%230E1B16'/>"+
+    "<g fill='none' stroke='%236FBF8E' stroke-opacity='0.22' stroke-width='1'>"+
+    "<path d='M-20 70 Q 60 40 140 70 T 300 70 T 460 70'/>"+
+    "<path d='M-20 120 Q 60 90 140 120 T 300 120 T 460 120'/>"+
+    "<path d='M-20 170 Q 60 140 140 170 T 300 170 T 460 170'/>"+
+    "<path d='M-20 220 Q 60 190 140 220 T 300 220 T 460 220'/></g>"+
+    "<text x='200' y='134' fill='%2393A093' font-family='monospace' font-size='11'"+
+    " letter-spacing='2' text-anchor='middle'>"+label+"</text></svg>";
+  return "data:image/svg+xml;utf8,"+svg;
+}
+
+function loadImg(node, src, fallbackLabel){
+  var probe = new Image();
+  probe.onload = function(){ node.src = src; node.classList.add('loaded'); };
+  probe.onerror = function(){ node.src = placeholder(fallbackLabel||'SIN%20IMAGEN'); node.classList.add('loaded'); };
+  probe.src = src;
+}
+
+function lerpColor(a,b,t){
+  function hex(c){ return [parseInt(c.slice(1,3),16),parseInt(c.slice(3,5),16),parseInt(c.slice(5,7),16)]; }
+  var A=hex(a), B=hex(b);
+  var r=Math.round(A[0]+(B[0]-A[0])*t), g=Math.round(A[1]+(B[1]-A[1])*t), bl=Math.round(A[2]+(B[2]-A[2])*t);
+  return 'rgb('+r+','+g+','+bl+')';
+}
+
+function relTime(ts){
+  var s=Math.floor((Date.now()-ts)/1000);
+  if(s<60) return 'hace instantes';
+  if(s<3600) return 'hace '+Math.floor(s/60)+' min';
+  if(s<86400) return 'hace '+Math.floor(s/3600)+' h';
+  return 'hace '+Math.floor(s/86400)+' d';
+}
+
+function fmt(ll){ return ll.lat.toFixed(4)+'°, '+ll.lng.toFixed(4)+'°'; }
+
+var isNarrow = function(){ return window.matchMedia('(max-width:860px)').matches; };
+
+/* ===================================================================
+   3 · ARRANQUE DEL PANEL (esqueleto → contenido)
+   =================================================================== */
+
+window.setTimeout(function(){
+  $('skel').setAttribute('hidden','');
+  $('panelInner').removeAttribute('hidden');
+  loadImg($('coverImg'), ZONE.cover, 'BOSQUE%20HUMEDO%20TROPICAL');
+  window.requestAnimationFrame(function(){ setYear(4, true); });
+  buildPoiList();
+  buildCredits();
+  renderReports();
+}, 620);
+
+function buildCredits(){
+  var ul=$('creditList'); if(!ul) return;
+  ul.innerHTML = CREDITS.map(function(c){
+    return '<li style="font-family:\'IBM Plex Mono\',monospace; font-size:10px; line-height:1.5; color:var(--paper-3)">'+
+      c[0]+' — '+c[1]+' · '+c[2]+' · '+
+      '<a href="'+c[3]+'" target="_blank" rel="noopener" style="color:var(--river)">Commons</a></li>';
+  }).join('');
+}
+
+/* ===================================================================
+   4 · MAPA — bases, capas, estados de carga y error
+   =================================================================== */
+
+var map = L.map('map', {
+  zoomControl:false, attributionControl:true,
+  center:ZONE.center, zoom:11.4, zoomSnap:.25, minZoom:9, maxZoom:17
+});
+L.control.zoom({ position:'bottomleft' }).addTo(map);
+
+/* Todas las fuentes son de acceso libre y sin clave de API. */
+var ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
+var ATTR_ESRI = 'Teselas &copy; Esri · HERE · Garmin · &copy; OpenStreetMap';
+
+var darkBase = L.tileLayer(ESRI+'Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+                { maxZoom:19, maxNativeZoom:16, attribution:ATTR_ESRI });
+var darkRef  = L.tileLayer(ESRI+'Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+                { maxZoom:19, maxNativeZoom:16, opacity:.9 });
+var topo     = L.tileLayer('https://tile.opentopomap.org/{z}/{x}/{y}.png',
+                { maxZoom:19, maxNativeZoom:16, attribution:'&copy; OpenTopoMap · &copy; OpenStreetMap' });
+var sat      = L.tileLayer(ESRI+'World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                { maxZoom:19, maxNativeZoom:18, attribution:'Imágenes &copy; Esri · Maxar · Earthstar Geographics' });
+var satRef   = L.tileLayer(ESRI+'Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+                { maxZoom:19, maxNativeZoom:18, opacity:.85 });
+
+var BASES = {
+  oscuro:  { group:L.layerGroup([darkBase, darkRef]), tiles:[darkBase] },
+  relieve: { group:L.layerGroup([topo]),              tiles:[topo] },
+  satelite:{ group:L.layerGroup([sat, satRef]),       tiles:[sat] }
+};
+var currentBase = 'satelite';
+BASES.satelite.group.addTo(map);
+
+var outlineGroup = L.layerGroup().addTo(map);
+var poiGroup     = L.layerGroup().addTo(map);
+var repGroup     = L.layerGroup().addTo(map);
+
+var mapOverlay=$('mapOverlay'), overlayMsg=$('overlayMsg');
+var tileErrors=0, mapReady=false, settled=false, guard=null;
+
+function watchBase(layer){
+  layer.on('load', function(){ if(!settled) settle(); });
+  layer.on('tileerror', function(){
+    tileErrors++;
+    if(tileErrors>=5 && !settled) fail();
+  });
+}
+Object.keys(BASES).forEach(function(k){ BASES[k].tiles.forEach(watchBase); });
+
+guard = window.setTimeout(function(){
+  if(!settled){ navigator.onLine ? settle() : fail(); }
+}, 7000);
+
+function settle(){
+  settled=true; mapReady=true;
+  window.clearTimeout(guard);
+  mapOverlay.classList.remove('err');
+  mapOverlay.classList.add('gone');
+  $('mapHint').removeAttribute('hidden');
+  // Secuencia de entrada: encuadrar, luego trazar el límite, luego los puntos.
+  // El trazo animado necesita que el vuelo haya terminado para no recalcularse a medias.
+  window.setTimeout(function(){ map.invalidateSize(); fitZone(false); }, 220);
+  window.setTimeout(function(){ fitZone(true); }, 520);
+  window.setTimeout(drawOutline, 1750);
+  window.setTimeout(addPoiMarkers, 2450);
+  announce('Mapa cargado. Microcuenca Ciri Grande–Trinidad con 6 puntos de interés.');
+}
+
+function fail(){
+  settled=true; mapReady=false;
+  window.clearTimeout(guard);
+  mapOverlay.classList.remove('gone');
+  mapOverlay.classList.add('err');
+  overlayMsg.textContent='No se pudo cargar el mapa base. Revisa tu conexión a internet y vuelve a intentarlo — la ficha de la microcuenca sigue disponible en el panel.';
+  announce('Error: el mapa base no pudo cargarse.');
+}
+
+$('retryBtn').addEventListener('click', function(){
+  tileErrors=0; settled=false;
+  mapOverlay.classList.remove('err');
+  overlayMsg.textContent='Reintentando…';
+  guard = window.setTimeout(function(){ if(!settled){ navigator.onLine ? settle() : fail(); } }, 7000);
+  BASES[currentBase].tiles.forEach(function(t){ t.redraw(); });
+});
+window.addEventListener('offline', function(){ if(!mapReady) fail(); });
+
+function fitZone(anim){
+  var b = L.latLngBounds(ZONE.outline);
+  var size = map.getSize();
+  // Si el contenedor todavía no tiene tamaño (layout en curso, panel en
+  // transición), flyToBounds calcularía un zoom NaN. Reintenta en el siguiente frame.
+  if(!size.x || !size.y){
+    map.invalidateSize();
+    window.requestAnimationFrame(function(){ fitZone(anim); });
+    return;
+  }
+  var opts = { padding:[52,52], maxZoom:13 };
+  if(anim===false){ map.fitBounds(b, opts); }
+  else { opts.duration=1.15; map.flyToBounds(b, opts); }
+}
+$('fitBtn').addEventListener('click', function(){
+  fitZone(); announce('Vista encuadrada sobre la microcuenca.');
+});
+
+/* --- Contorno con trazo animado ------------------------------------- */
+var zonePoly=null;
+
+function coverColor(pct){
+  var t = Math.max(0, Math.min(1, (pct-56)/(74-56)));
+  return lerpColor('#C98E2E','#6FBF8E',t);
+}
+
+/* El satélite necesita un trazo más marcado; los mapas planos, más fino. */
+function outlineWeight(){ return currentBase==='satelite' ? 3 : 2; }
+
+function drawOutline(){
+  if(zonePoly) return;
+  zonePoly = L.polygon(ZONE.outline, {
+    className:'zone-path', color:'#EAF7C8', weight:outlineWeight(),
+    fillColor:coverColor(COVER[2024]), fillOpacity:0
+  }).addTo(outlineGroup);
+
+  zonePoly.bindTooltip('Microcuenca Ciri Grande–Trinidad · 145 km²', { sticky:true });
+  zonePoly.on('mouseover', function(){ zonePoly.setStyle({ weight:outlineWeight()+1.5 }); });
+  zonePoly.on('mouseout',  function(){ zonePoly.setStyle({ weight:outlineWeight() }); });
+  zonePoly.on('click', function(){ fitZone(); if(isNarrow()) openSheet(); });
+
+  var path = zonePoly._path;
+  if(path && path.getTotalLength){
+    var len = path.getTotalLength();
+    path.style.strokeDasharray = len+' '+len;
+    path.style.strokeDashoffset = len;
+    path.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(.6,.05,.2,1)';
+    window.requestAnimationFrame(function(){ path.style.strokeDashoffset='0'; });
+    window.setTimeout(function(){
+      path.style.strokeDasharray='7 5';
+      path.style.transition='';
+      applyYearToMap();
+    }, 1550);
+  } else {
+    applyYearToMap();
+  }
+}
+
+/* --- Marcadores de puntos ------------------------------------------- */
+var poiMarkers={};
+
+function addPoiMarkers(){
+  POINTS.forEach(function(p,i){
+    var icon = L.divIcon({
+      className:'',
+      html:'<span class="poi-pin c-'+p.kind+'" style="animation-delay:'+(i*0.075)+'s">'+
+           '<span class="halo"></span><span class="core"></span></span>',
+      iconSize:[26,26], iconAnchor:[13,13]
+    });
+    var m = L.marker(p.ll, { icon:icon, keyboard:true, title:p.name, alt:p.name+' — '+KINDS[p.kind].label, riseOnHover:true });
+    m.bindTooltip(p.name+' · '+KINDS[p.kind].label.toUpperCase(), { direction:'top', offset:[0,-14] });
+    m.on('click', function(){ selectPoi(p.id, true); });
+    m.addTo(poiGroup);
+    poiMarkers[p.id]=m;
+  });
+}
+
+function markSelected(id){
+  Object.keys(poiMarkers).forEach(function(k){
+    var pin = poiMarkers[k].getElement && poiMarkers[k].getElement();
+    if(pin){ var s=pin.querySelector('.poi-pin'); if(s) s.classList.toggle('sel', k===id); }
+  });
+}
+
+/* --- Lectura de coordenadas en la cabecera --------------------------- */
+var roLat=$('roLat'), roLon=$('roLon'), roZ=$('roZ');
+map.on('mousemove', function(e){
+  roLat.textContent = e.latlng.lat.toFixed(4);
+  roLon.textContent = e.latlng.lng.toFixed(4);
+});
+map.on('zoomend', function(){ roZ.textContent = map.getZoom().toFixed(1); });
+roZ.textContent = map.getZoom().toFixed(1);
+
+$('hintX').addEventListener('click', function(){ $('mapHint').setAttribute('hidden',''); });
+
+/* ===================================================================
+   5 · CONTROL DE CAPAS Y MAPAS BASE
+   =================================================================== */
+
+var layersBtn=$('layersBtn'), layersPop=$('layersPop');
+
+function checkSvg(){ return "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3.4'><polyline points='20 6 9 17 4 12'/></svg>"; }
+
+layersPop.innerHTML =
+  '<div class="layers-pop">'+
+    '<h5>Capas</h5>'+
+    '<label class="lrow"><input type="checkbox" id="lyOutline" checked><span class="lbox">'+checkSvg()+'</span>Límite de microcuenca</label>'+
+    '<label class="lrow"><input type="checkbox" id="lyPoints" checked><span class="lbox">'+checkSvg()+'</span>Puntos de interés</label>'+
+    '<label class="lrow"><input type="checkbox" id="lyReports" checked><span class="lbox">'+checkSvg()+'</span>Reportes ciudadanos</label>'+
+    '<h5>Mapa base</h5>'+
+    '<div class="base-grid">'+
+      '<button class="base-btn" data-base="satelite" aria-pressed="true">Satélite</button>'+
+      '<button class="base-btn" data-base="relieve" aria-pressed="false">Relieve</button>'+
+      '<button class="base-btn" data-base="oscuro" aria-pressed="false">Oscuro</button>'+
+    '</div>'+
+  '</div>';
+
+function toggleLayers(open){
+  var willOpen = (typeof open==='boolean') ? open : layersPop.hasAttribute('hidden');
+  if(willOpen){ layersPop.removeAttribute('hidden'); layersBtn.setAttribute('aria-expanded','true'); }
+  else { layersPop.setAttribute('hidden',''); layersBtn.setAttribute('aria-expanded','false'); }
+}
+layersBtn.addEventListener('click', function(){ toggleLayers(); });
+document.addEventListener('click', function(e){
+  if(layersPop.hasAttribute('hidden')) return;
+  if(!layersPop.contains(e.target) && e.target!==layersBtn && !layersBtn.contains(e.target)) toggleLayers(false);
+});
+
+function bindLayer(chkId, group, label){
+  $(chkId).addEventListener('change', function(){
+    if(this.checked){ map.addLayer(group); } else { map.removeLayer(group); }
+    announce(label+(this.checked?' visible':' oculta'));
+  });
+}
+bindLayer('lyOutline', outlineGroup, 'Capa de límite');
+bindLayer('lyPoints',  poiGroup,     'Capa de puntos');
+bindLayer('lyReports', repGroup,     'Capa de reportes');
+
+Array.prototype.forEach.call(layersPop.querySelectorAll('.base-btn'), function(b){
+  b.addEventListener('click', function(){
+    var key=b.dataset.base;
+    if(key===currentBase) return;
+    map.removeLayer(BASES[currentBase].group);
+    BASES[key].group.addTo(map);
+    BASES[key].tiles.forEach(function(t){ t.bringToBack(); });
+    currentBase=key;
+    applyYearToMap();             // reajusta grosor/opacidad del límite al nuevo fondo
+    Array.prototype.forEach.call(layersPop.querySelectorAll('.base-btn'), function(x){
+      x.setAttribute('aria-pressed', String(x.dataset.base===key));
+    });
+    announce('Mapa base: '+b.textContent);
+  });
+});
+
+/* ===================================================================
+   6 · PESTAÑAS DEL PANEL
+   =================================================================== */
+
+var TABS=[['tab-ficha','p-ficha'],['tab-puntos','p-puntos'],['tab-rep','p-rep']];
+
+function selectTab(idx){
+  TABS.forEach(function(pair,i){
+    var t=$(pair[0]), p=$(pair[1]), on=(i===idx);
+    t.setAttribute('aria-selected', String(on));
+    t.tabIndex = on ? 0 : -1;
+    if(on){ p.removeAttribute('hidden'); p.classList.remove('enter'); void p.offsetWidth; p.classList.add('enter'); }
+    else { p.setAttribute('hidden',''); }
+  });
+}
+TABS.forEach(function(pair,i){
+  $(pair[0]).addEventListener('click', function(){ selectTab(i); });
+  $(pair[0]).addEventListener('keydown', function(e){
+    var d = e.key==='ArrowRight' ? 1 : e.key==='ArrowLeft' ? -1 : e.key==='Home' ? -99 : e.key==='End' ? 99 : 0;
+    if(!d) return;
+    e.preventDefault();
+    var n = d===-99 ? 0 : d===99 ? TABS.length-1 : (i+d+TABS.length)%TABS.length;
+    selectTab(n); $(TABS[n][0]).focus();
+  });
+});
+
+/* ===================================================================
+   7 · SERIE TEMPORAL DE COBERTURA
+   =================================================================== */
+
+var yearRange=$('yearRange'), coverNum=$('coverNum'), coverFill=$('coverFill');
+var coverYear=$('coverYear'), coverDelta=$('coverDelta'), ticksEl=$('ticks');
+var activeYear = 2024;
+
+function applyYearToMap(){
+  if(!zonePoly) return;
+  var c = coverColor(COVER[activeYear]);
+  // Trazo claro fijo (legible sobre satélite); solo el relleno refleja el año.
+  var base = currentBase==='satelite' ? 0.10 : 0.14;
+  var op = base + (COVER[activeYear]-56)/(74-56)*0.16;
+  zonePoly.setStyle({ color:'#EAF7C8', weight:outlineWeight(), fillColor:c, fillOpacity:op });
+}
+
+function setYear(idx, silent){
+  var y = YEARS[idx], pct = COVER[y];
+  activeYear = y;
+
+  coverNum.innerHTML = pct+'<small>%</small>';
+  coverNum.style.color = coverColor(pct);
+  coverYear.textContent = y;
+  coverFill.style.width = pct+'%';
+  coverFill.style.background = 'linear-gradient(90deg, rgba(0,0,0,.25), '+coverColor(pct)+')';
+
+  var d = pct - COVER[2005];
+  coverDelta.innerHTML = (y===2005)
+    ? 'Año base de la serie ilustrativa'
+    : '▲ <b>+'+d+' pts</b> respecto a 2005';
+
+  Array.prototype.forEach.call(ticksEl.children, function(s,i){ s.classList.toggle('on', i===idx); });
+  Array.prototype.forEach.call($('timeline').children, function(li){
+    li.classList.toggle('on', li.dataset.year===String(y));
+  });
+
+  yearRange.setAttribute('aria-valuetext', y+', '+pct+' por ciento de cobertura');
+  applyYearToMap();
+  if(!silent) announce(y+': '+pct+' por ciento de cobertura boscosa.');
+}
+yearRange.addEventListener('input', function(){ setYear(parseInt(this.value,10)); });
+
+/* ===================================================================
+   8 · PUNTOS DE INTERÉS — lista y detalle
+   =================================================================== */
+
+var poiListView=$('poiListView'), poiDetailView=$('poiDetailView');
+var selectedPoi=null;
+
+function buildPoiList(){
+  var ul=$('poiList'); ul.innerHTML='';
+  POINTS.forEach(function(p,i){
+    var li=el('li');
+    var btn=el('button','poi-item regmark');
+    btn.type='button'; btn.dataset.id=p.id;
+    btn.style.animation='revealIn .45s var(--ease) '+(i*0.05)+'s both';
+    btn.setAttribute('aria-label', p.name+'. '+KINDS[p.kind].label+'. Abrir detalle y centrar el mapa.');
+    btn.innerHTML =
+      '<span class="poi-thumb"><img alt="" /></span>'+
+      '<span class="poi-txt">'+
+        '<span class="n">'+p.name+'</span>'+
+        '<span class="k"><i class="kdot k-'+p.kind+'"></i>'+KINDS[p.kind].label+'</span>'+
+      '</span>'+
+      '<svg class="arrow" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>';
+    btn.addEventListener('click', function(){ selectPoi(p.id, false); });
+    li.appendChild(btn); ul.appendChild(li);
+    loadImg(btn.querySelector('img'), p.img, 'SIN%20IMAGEN');
+  });
+}
+
+function selectPoi(id, fromMap){
+  var p = POINTS.filter(function(x){ return x.id===id; })[0];
+  if(!p) return;
+  selectedPoi = id;
+
+  selectTab(1);
+  renderPoiDetail(p);
+  markSelected(id);
+
+  if(mapReady) map.flyTo(p.ll, Math.max(map.getZoom(), 13.5), { duration:.85 });
+  if(fromMap && isNarrow()) openSheet();
+  announce('Punto seleccionado: '+p.name+'. '+KINDS[p.kind].label+'.');
+}
+
+function renderPoiDetail(p){
+  poiListView.setAttribute('hidden','');
+  poiDetailView.removeAttribute('hidden');
+
+  var facts = p.facts.map(function(f){
+    return '<div class="mini"><div class="k">'+f[0]+'</div><div class="v">'+f[1]+'</div></div>';
+  }).join('');
+
+  poiDetailView.innerHTML =
+    '<button class="back-btn" id="poiBack">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>'+
+      'Todos los puntos</button>'+
+    '<button class="detail-hero regmark" id="poiHero" aria-label="Ampliar la fotografía de la Cuenca del Canal asociada a '+p.name+'">'+
+      '<img alt="'+p.alt+'" />'+
+      '<span class="badge-illus">Cuenca del Canal · no es el punto exacto</span>'+
+      '<span class="zoomhint mono">Ampliar ⤢</span>'+
+    '</button>'+
+    '<h3 class="detail-h">'+p.name+'</h3>'+
+    '<span class="kind-chip"><i class="kdot k-'+p.kind+'"></i>'+KINDS[p.kind].label+'</span>'+
+    '<div class="coordline"><span>◎ '+p.ll[0].toFixed(4)+'°N, '+Math.abs(p.ll[1]).toFixed(4)+'°W</span>'+
+      '<span style="opacity:.4">|</span><span>Ciri Grande–Trinidad</span></div>'+
+    '<div class="coordline" style="margin-top:-8px"><span>Foto: '+CREDITS[p.credit][0]+' · '+CREDITS[p.credit][1]+' · '+CREDITS[p.credit][2]+' · '+
+      '<a href="'+CREDITS[p.credit][3]+'" target="_blank" rel="noopener" style="color:var(--river)">Wikimedia Commons</a></span></div>'+
+    '<p class="prose">'+p.desc+'</p>'+
+    '<div class="mini-facts">'+facts+'</div>'+
+    '<div style="margin-top:18px; display:flex; gap:8px; flex-wrap:wrap">'+
+      '<button class="mini-btn" id="poiCenter">Centrar en el mapa</button>'+
+      '<button class="mini-btn" id="poiNext">Siguiente punto →</button>'+
+    '</div>';
+
+  loadImg(poiDetailView.querySelector('.detail-hero img'), p.img, 'IMAGEN%20ILUSTRATIVA');
+
+  $('poiBack').addEventListener('click', backToPoiList);
+  $('poiHero').addEventListener('click', function(){ openLightbox(POINTS.indexOf(p)); });
+  $('poiCenter').addEventListener('click', function(){
+    if(mapReady){ map.flyTo(p.ll, 14.5, { duration:.8 }); announce('Mapa centrado en '+p.name+'.'); }
+  });
+  $('poiNext').addEventListener('click', function(){
+    var n = POINTS[(POINTS.indexOf(p)+1)%POINTS.length];
+    selectPoi(n.id, false);
+  });
+
+  poiDetailView.scrollTop = 0;
+  $('p-puntos').scrollTop = 0;
+}
+
+function backToPoiList(){
+  poiDetailView.setAttribute('hidden','');
+  poiListView.removeAttribute('hidden');
+  selectedPoi=null; markSelected(null);
+  var b = $('poiList').querySelector('.poi-item');
+  if(b) b.focus();
+}
+
+/* ===================================================================
+   9 · REPORTES CIUDADANOS (persistidos en el navegador)
+   =================================================================== */
+
+var STORE='ecocuenca.reports.v2';
+var reports=[];
+try{ reports = JSON.parse(localStorage.getItem(STORE)) || []; }catch(e){ reports=[]; }
+
+function persist(){ try{ localStorage.setItem(STORE, JSON.stringify(reports)); }catch(e){} }
+
+var repMarkers={};
+
+function repIcon(drop){
+  return L.divIcon({ className:'', html:'<span class="rep-pin'+(drop?' drop':'')+'"></span>',
+                     iconSize:[15,15], iconAnchor:[7,15] });
+}
+
+function addRepMarker(r, drop){
+  var m = L.marker([r.lat,r.lng], { icon:repIcon(drop), keyboard:true, alt:'Reporte: '+r.type });
+  m.bindTooltip(r.type.toUpperCase(), { direction:'top', offset:[0,-14] });
+  m.on('click', function(){ selectTab(2); });
+  m.addTo(repGroup);
+  repMarkers[r.id]=m;
+}
+
+function renderReports(){
+  var area=$('repArea');
+  $('cntReports').textContent = String(reports.length);
+
+  if(!reports.length){
+    area.innerHTML =
+      '<div class="empty">'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17.5h.01"/></svg>'+
+        '<h4>Todavía no hay reportes</h4>'+
+        '<p>Usa <em>Reportar</em> para marcar un problema sobre el mapa. Los reportes de esta demostración se guardan solo en este navegador.</p>'+
+        '<button class="btn btn-primary" id="emptyCta">Crear el primero</button>'+
+      '</div>';
+    $('emptyCta').addEventListener('click', startPlacing);
+    return;
+  }
+
+  var html='<ul class="rep-list">';
+  reports.slice().reverse().forEach(function(r,i){
+    html +=
+      '<li class="rep regmark" style="animation-delay:'+(i*0.04)+'s">'+
+        '<div class="rep-top">'+
+          '<span class="rep-type"><i class="kdot" style="background:var(--clay)"></i>'+r.type+'</span>'+
+          '<span class="rep-time">'+relTime(r.ts)+'</span>'+
+        '</div>'+
+        '<div class="rep-desc">'+r.desc.replace(/[<>]/g,'')+'</div>'+
+        '<div class="rep-foot">'+
+          '<span class="rep-coord">◎ '+r.lat.toFixed(4)+', '+r.lng.toFixed(4)+'</span>'+
+          '<span class="rep-acts">'+
+            '<button class="mini-btn" data-go="'+r.id+'">Ver</button>'+
+            '<button class="mini-btn danger" data-del="'+r.id+'">Borrar</button>'+
+          '</span>'+
+        '</div>'+
+      '</li>';
+  });
+  html+='</ul>';
+  area.innerHTML=html;
+
+  Array.prototype.forEach.call(area.querySelectorAll('[data-go]'), function(b){
+    b.addEventListener('click', function(){
+      var r = reports.filter(function(x){ return x.id===b.dataset.go; })[0];
+      if(r && mapReady){
+        map.flyTo([r.lat,r.lng], 15, { duration:.8 });
+        var m=repMarkers[r.id];
+        if(m && m.getElement()){ var pin=m.getElement().querySelector('.rep-pin'); if(pin){ pin.classList.remove('drop'); void pin.offsetWidth; pin.classList.add('drop'); } }
+        if(isNarrow()) closeSheet();
+      }
+    });
+  });
+  Array.prototype.forEach.call(area.querySelectorAll('[data-del]'), function(b){
+    b.addEventListener('click', function(){ deleteReport(b.dataset.del); });
+  });
+}
+
+var lastDeleted=null;
+function deleteReport(id){
+  var i = reports.map(function(r){ return r.id; }).indexOf(id);
+  if(i<0) return;
+  lastDeleted = { r:reports[i], i:i };
+  reports.splice(i,1);
+  if(repMarkers[id]){ repGroup.removeLayer(repMarkers[id]); delete repMarkers[id]; }
+  persist(); renderReports();
+  showToast('Reporte eliminado', true);
+  announce('Reporte eliminado. Puedes deshacer.');
+}
+function undoDelete(){
+  if(!lastDeleted) return;
+  reports.splice(lastDeleted.i, 0, lastDeleted.r);
+  addRepMarker(lastDeleted.r, true);
+  lastDeleted=null;
+  persist(); renderReports(); hideToast();
+  announce('Reporte restaurado.');
+}
+
+/* Restaurar marcadores guardados una vez que el mapa esté listo */
+function restoreRepMarkers(){ reports.forEach(function(r){ addRepMarker(r,false); }); }
+
+/* ===================================================================
+   10 · FLUJO DE REPORTE
+   =================================================================== */
+
+var fab=$('fab'), placingBar=$('placingBar');
+var repOverlay=$('repOverlay'), repSheet=$('repSheet');
+var coordChip=$('coordChip'), repType=$('repType'), repDesc=$('repDesc');
+var fType=$('fType'), fDesc=$('fDesc'), descCount=$('descCount');
+var placing=false, pendingLL=null, ghostMarker=null, lastFocus=null;
+
+function startPlacing(){
+  if(!mapReady){ showToast('El mapa aún no está disponible.'); return; }
+  placing=true;
+  placingBar.classList.add('show');
+  fab.setAttribute('aria-pressed','true');
+  map.getContainer().style.cursor='crosshair';
+  if(isNarrow()) closeSheet();
+  announce('Modo de ubicación activo. Toca el mapa para colocar el reporte.');
+}
+function stopPlacing(){
+  placing=false;
+  placingBar.classList.remove('show');
+  fab.removeAttribute('aria-pressed');
+  map.getContainer().style.cursor='';
+}
+fab.addEventListener('click', function(){ placing ? stopPlacing() : startPlacing(); });
+$('cancelPlacing').addEventListener('click', stopPlacing);
+
+map.on('click', function(e){
+  if(!placing) return;
+  pendingLL = e.latlng;
+  stopPlacing();
+
+  var rip = L.marker(pendingLL, {
+    icon:L.divIcon({ className:'', html:'<span class="ripple"></span>', iconSize:[14,14], iconAnchor:[7,7] }),
+    interactive:false
+  }).addTo(map);
+  window.setTimeout(function(){ map.removeLayer(rip); }, 1600);
+
+  if(ghostMarker) map.removeLayer(ghostMarker);
+  ghostMarker = L.marker(pendingLL, { icon:repIcon(true), interactive:false }).addTo(map);
+
+  coordChip.textContent = '◎ '+fmt(pendingLL);
+  coordChip.classList.add('set');
+  openRepModal();
+});
+
+function openRepModal(){
+  lastFocus = document.activeElement;
+  repOverlay.classList.add('show');
+  fType.classList.remove('bad'); fDesc.classList.remove('bad');
+  window.setTimeout(function(){ repType.focus(); }, 70);
+}
+function closeRepModal(){
+  repOverlay.classList.remove('show');
+  if(ghostMarker){ map.removeLayer(ghostMarker); ghostMarker=null; }
+  if(lastFocus && lastFocus.focus) lastFocus.focus();
+}
+$('repCancel').addEventListener('click', closeRepModal);
+repOverlay.addEventListener('click', function(e){ if(e.target===repOverlay) closeRepModal(); });
+
+repDesc.addEventListener('input', function(){
+  descCount.textContent = this.value.length+' / 240';
+  if(this.value.trim().length>3) fDesc.classList.remove('bad');
+});
+repType.addEventListener('change', function(){ if(this.value) fType.classList.remove('bad'); });
+
+$('repSubmit').addEventListener('click', function(){
+  var btn=this;
+  var okT=!!repType.value, okD=repDesc.value.trim().length>3;
+  fType.classList.toggle('bad', !okT);
+  fDesc.classList.toggle('bad', !okD);
+
+  if(!pendingLL){ showToast('Primero ubica el reporte en el mapa.'); return; }
+  if(!okT){ repType.focus(); announce('Falta elegir el tipo de problema.'); return; }
+  if(!okD){ repDesc.focus(); announce('Falta la descripción del reporte.'); return; }
+
+  btn.classList.add('busy'); btn.textContent='Guardando…';
+
+  window.setTimeout(function(){
+    var r = {
+      id:'r'+Date.now()+Math.floor(Math.random()*999),
+      type:repType.value, desc:repDesc.value.trim(),
+      lat:pendingLL.lat, lng:pendingLL.lng, ts:Date.now()
+    };
+    reports.push(r); persist();
+    if(ghostMarker){ map.removeLayer(ghostMarker); ghostMarker=null; }
+    addRepMarker(r, true);
+    renderReports();
+
+    btn.classList.remove('busy'); btn.textContent='Guardar reporte';
+    repOverlay.classList.remove('show');
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+
+    repDesc.value=''; repType.value=''; descCount.textContent='0 / 240';
+    coordChip.textContent='◎ Sin ubicar'; coordChip.classList.remove('set');
+    pendingLL=null;
+
+    selectTab(2);
+    showToast('Reporte registrado — gracias por contribuir');
+    announce('Reporte guardado. Ahora hay '+reports.length+' reportes.');
+  }, 620);
+});
+
+/* ===================================================================
+   11 · AVISO EMERGENTE
+   =================================================================== */
+
+var toast=$('toast'), toastMsg=$('toastMsg'), toastUndo=$('toastUndo'), toastTimer=null;
+function showToast(msg, withUndo){
+  toastMsg.textContent=msg;
+  if(withUndo) toastUndo.removeAttribute('hidden'); else toastUndo.setAttribute('hidden','');
+  toast.classList.add('show');
+  window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(hideToast, withUndo ? 6500 : 3600);
+}
+function hideToast(){ toast.classList.remove('show'); }
+toastUndo.addEventListener('click', undoDelete);
+
+/* ===================================================================
+   12 · VISOR DE IMAGEN
+   =================================================================== */
+
+var lightbox=$('lightbox'), lbImg=$('lbImg'), lbCap=$('lbCap'), lbIdx=$('lbIdx');
+var lbI=0, lbFocus=null;
+
+function openLightbox(i){
+  lbI=i; lbFocus=document.activeElement;
+  paintLightbox();
+  lightbox.classList.add('show');
+  window.setTimeout(function(){ $('lbX').focus(); }, 70);
+}
+function paintLightbox(){
+  var p=POINTS[lbI], c=CREDITS[p.credit];
+  lbImg.classList.remove('loaded');
+  lbImg.alt = p.alt;
+  loadImg(lbImg, p.img, 'FOTO%20NO%20DISPONIBLE');
+  lbCap.textContent = p.name;
+  $('lbCredit').textContent = 'Cuenca del Canal · '+c[1]+' · '+c[2];
+  lbIdx.textContent = (lbI+1)+' / '+POINTS.length+' · '+KINDS[p.kind].label;
+}
+function closeLightbox(){
+  lightbox.classList.remove('show');
+  if(lbFocus && lbFocus.focus) lbFocus.focus();
+}
+function lbStep(d){ lbI=(lbI+d+POINTS.length)%POINTS.length; paintLightbox(); }
+$('lbX').addEventListener('click', closeLightbox);
+$('lbP').addEventListener('click', function(){ lbStep(-1); });
+$('lbN').addEventListener('click', function(){ lbStep(1); });
+lightbox.addEventListener('click', function(e){ if(e.target===lightbox) closeLightbox(); });
+
+/* ===================================================================
+   13 · PANEL: COLAPSO (escritorio) Y HOJA INFERIOR (móvil)
+   =================================================================== */
+
+var app=$('app'), panel=$('panel'), edgeBtn=$('edgeBtn');
+var sheetToggle=$('sheetToggle'), sheetHandle=$('sheetHandle'), handleLabel=$('handleLabel');
+
+edgeBtn.addEventListener('click', function(){
+  app.classList.toggle('collapsed');
+  var col = app.classList.contains('collapsed');
+  edgeBtn.setAttribute('aria-label', col ? 'Expandir el panel lateral' : 'Contraer el panel lateral');
+  announce(col ? 'Panel contraído.' : 'Panel expandido.');
+});
+panel.addEventListener('transitionend', function(e){
+  if(e.propertyName==='width' || e.propertyName==='transform') map.invalidateSize();
+});
+
+function openSheet(){
+  panel.classList.add('open'); panel.classList.remove('peek');
+  sheetToggle.setAttribute('aria-expanded','true');
+  sheetHandle.setAttribute('aria-expanded','true');
+  handleLabel.textContent='Ocultar ficha';
+}
+function closeSheet(){
+  panel.classList.remove('open'); panel.classList.add('peek');
+  sheetToggle.setAttribute('aria-expanded','false');
+  sheetHandle.setAttribute('aria-expanded','false');
+  handleLabel.textContent='Ver ficha de la microcuenca';
+}
+function toggleSheet(){ panel.classList.contains('open') ? closeSheet() : openSheet(); }
+sheetToggle.addEventListener('click', toggleSheet);
+sheetHandle.addEventListener('click', toggleSheet);
+
+/* ===================================================================
+   14 · TECLADO GLOBAL
+   =================================================================== */
+
+document.addEventListener('keydown', function(e){
+  /* Escape: cierra en orden de profundidad */
+  if(e.key==='Escape'){
+    if(lightbox.classList.contains('show')) return closeLightbox();
+    if(repOverlay.classList.contains('show')) return closeRepModal();
+    if(!layersPop.hasAttribute('hidden')) return toggleLayers(false);
+    if(placing) return stopPlacing();
+    if(poiDetailView && !poiDetailView.hasAttribute('hidden')) return backToPoiList();
+    if(isNarrow() && panel.classList.contains('open')) return closeSheet();
+  }
+
+  /* Navegación del visor */
+  if(lightbox.classList.contains('show')){
+    if(e.key==='ArrowLeft'){ e.preventDefault(); lbStep(-1); }
+    if(e.key==='ArrowRight'){ e.preventDefault(); lbStep(1); }
+    if(e.key==='Tab'){ e.preventDefault(); }
+    return;
+  }
+
+  /* Retención de foco en el modal */
+  if(repOverlay.classList.contains('show') && e.key==='Tab'){
+    var f = repSheet.querySelectorAll('button, select, textarea, input, [href]');
+    if(!f.length) return;
+    var first=f[0], last=f[f.length-1];
+    if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+    return;
+  }
+
+  /* Atajos (fuera de campos de texto) */
+  var tag=(e.target.tagName||'').toLowerCase();
+  if(tag==='input'||tag==='textarea'||tag==='select') return;
+  if(e.key==='r'||e.key==='R'){ e.preventDefault(); placing ? stopPlacing() : startPlacing(); }
+  if(e.key==='f'||e.key==='F'){ e.preventDefault(); if(mapReady) fitZone(); }
+});
+
+/* ===================================================================
+   15 · CIERRE
+   =================================================================== */
+
+restoreRepMarkers();
+window.addEventListener('resize', function(){ map.invalidateSize(); });
+
+})();
+</script>
+
+</body>
+</html>
