@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>EcoCuenca Panamá — Ciri Grande–Trinidad</title>
 <meta name="description" content="Diagnóstico de la microcuenca Ciri Grande–Trinidad, Cuenca del Canal de Panamá." />
 <meta name="theme-color" content="#0A1310" />
@@ -54,6 +54,7 @@
   --r-lg:16px;
 
   --panel-w:404px;
+  --peek:56px;                /* altura visible de la hoja inferior en móvil */
 
   --ease:cubic-bezier(.22,.9,.26,1);
   --ease-io:cubic-bezier(.65,.02,.28,1);
@@ -960,59 +961,145 @@ input[type=range]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba
 ::-webkit-scrollbar-thumb:hover{ background:var(--moss-deep); }
 
 /* ========================= RESPONSIVE ================================= */
+
+/* Área de toque ampliada para los marcadores del mapa (no cambia lo visible) */
+.poi-pin::after{ content:""; position:absolute; inset:-10px; border-radius:50%; }
+
 @media (max-width:1180px){ :root{ --panel-w:352px; } .readout{ display:none; } }
 
+/* ---------- TABLET / MÓVIL: panel = hoja inferior ---------- */
 @media (max-width:860px){
-  .topbar{ height:auto; padding:11px 14px; }
-  .brand h1{ font-size:19px; }
+  .topbar{ height:auto; min-height:56px; padding:10px 12px; padding-top:calc(10px + env(safe-area-inset-top)); }
+  .brand{ gap:10px; }
+  .brand-mark{ width:34px; height:34px; }
+  .brand h1{ font-size:18px; }
   .brand .sub{ display:none; }
   .icon-btn{ display:inline-flex; }
   .edge-btn{ display:none; }
 
   .main{ display:block; height:100%; }
-  .map-area{ position:absolute; inset:0; }
 
-  /* El panel pasa a ser una hoja inferior con dos posiciones */
+  /* El mapa termina justo encima del asa de la hoja (así se ven zoom y créditos) */
+  .map-area{ position:absolute; left:0; right:0; top:0; bottom:var(--peek); }
+
+  /* Hoja inferior con dos posiciones: asomada (peek) y abierta */
   .panel{
     position:fixed; left:0; right:0; bottom:0; width:100%;
-    height:86vh; max-height:86vh;
+    height:86vh; height:86dvh; max-height:none;
     border-right:none; border-top:1px solid var(--rule);
     border-radius:var(--r-lg) var(--r-lg) 0 0;
-    z-index:600; box-shadow:0 -22px 60px rgba(0,0,0,.6);
-    transform:translateY(calc(100% - 58px));
-    transition:transform .42s var(--ease);
+    z-index:600; box-shadow:0 -22px 60px rgba(0,0,0,.55);
+    transform:translateY(calc(100% - var(--peek)));
+    transition:transform .4s var(--ease);
+    will-change:transform;
   }
-  .panel.peek{ transform:translateY(calc(100% - 58px)); }
+  .panel.peek{ transform:translateY(calc(100% - var(--peek))); }
   .panel.open{ transform:translateY(0); }
   .panel-inner{ width:100%; }
+
+  /* Con la hoja abierta el mapa queda de fondo: se ocultan sus controles
+     flotantes (incluidos los de Leaflet, que van por encima en z-index). */
+  .panel.open ~ .map-area .leaflet-control-container,
+  .panel.open ~ .map-area .map-tools,
+  .panel.open ~ .map-area .map-hint,
+  .panel.open ~ .map-area .fab{
+    opacity:0; pointer-events:none; transition:opacity .2s var(--ease);
+  }
+
   .sheet-handle{
-    display:flex; align-items:center; justify-content:center; gap:10px;
-    position:relative; height:58px; flex-shrink:0; cursor:pointer; width:100%;
-    background:none; border:none; color:var(--paper-2);
-    font-family:'IBM Plex Mono',monospace; font-size:10px;
-    letter-spacing:.15em; text-transform:uppercase;
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    position:relative; height:var(--peek); flex-shrink:0; cursor:pointer; width:100%;
+    background:var(--ink-700); border:none; color:var(--paper-2);
+    font-family:'IBM Plex Mono',monospace; font-size:9.5px;
+    letter-spacing:.14em; text-transform:uppercase;
     border-bottom:1px solid var(--rule);
+    border-radius:var(--r-lg) var(--r-lg) 0 0;
+    -webkit-tap-highlight-color:transparent;
   }
   .sheet-handle::before{
-    content:""; position:absolute; top:8px; left:50%; transform:translateX(-50%);
-    width:40px; height:4px; border-radius:100px; background:var(--rule);
+    content:""; position:absolute; top:7px; left:50%; transform:translateX(-50%);
+    width:38px; height:4px; border-radius:100px; background:var(--paper-3); opacity:.5;
   }
-  .sheet-handle svg{ width:14px; height:14px; transition:transform .35s var(--ease); }
+  .sheet-handle svg{ width:13px; height:13px; transition:transform .35s var(--ease); }
   .panel.open .sheet-handle svg{ transform:rotate(180deg); }
-  .cover{ height:132px; }
-  .cover h2{ font-size:25px; }
-  .fab{ bottom:74px; right:14px; }
-  .map-tools{ top:12px; right:12px; }
-  .map-hint{ left:12px; top:12px; max-width:calc(100% - 130px); font-size:11px; }
-  .toast{ bottom:74px; }
+
+  /* Espacio inferior seguro dentro de la ficha al abrir la hoja */
+  .tabpanel{ padding:18px 16px calc(30px + env(safe-area-inset-bottom)); }
+  .panel-foot{ padding-bottom:calc(12px + env(safe-area-inset-bottom)); }
+
+  .cover{ height:128px; }
+  .cover h2{ font-size:23px; }
+  .cover .cover-meta{ left:16px; right:16px; }
+
+  /* Controles del mapa: fila compacta arriba-derecha */
+  .map-tools{ top:10px; right:10px; gap:8px; }
+  .tool-btn{ padding:0 12px; height:40px; min-width:40px; font-size:9px; letter-spacing:.1em; }
+  .layers-pop{ width:min(240px, 78vw); }
+
+  /* Aviso: nunca invade los controles ni el borde */
+  .map-hint{
+    left:10px; top:10px; right:auto;
+    max-width:min(58vw, 240px); padding:9px 30px 9px 11px;
+    font-size:11px; line-height:1.5;
+  }
+
+  /* Zoom y créditos de Leaflet, por encima del asa */
+  .leaflet-bottom.leaflet-left{ bottom:6px; }
+  .leaflet-bar a{ width:40px!important; height:40px!important; line-height:40px!important; }
+  .leaflet-control-attribution{ font-size:8px!important; }
+
+  .fab{ right:12px; bottom:calc(var(--peek) + 12px + env(safe-area-inset-bottom)); padding:0 16px; }
+  .placing{
+    top:60px; left:10px; right:10px; transform:translateY(-180%);
+    max-width:none; justify-content:space-between; padding:0 8px 0 14px;
+    font-size:9px; letter-spacing:.08em;
+  }
+  .placing.show{ transform:translateY(0); }
+  .placing span{ min-width:0; }
+  .toast{ bottom:calc(var(--peek) + 14px + env(safe-area-inset-bottom)); left:12px; right:12px; transform:translateY(24px); max-width:none; }
+  .toast.show{ transform:translateY(0); }
+
+  /* Diálogos como hoja inferior, más cómodos con el pulgar */
+  .overlay{ align-items:flex-end; padding:0; }
+  .sheet{
+    width:100%; max-width:none; max-height:90vh; max-height:90dvh;
+    border-radius:var(--r-lg) var(--r-lg) 0 0;
+    padding:22px 18px calc(20px + env(safe-area-inset-bottom));
+  }
+  .overlay .sheet{ transform:translateY(16px); }
+  .overlay.show .sheet{ transform:translateY(0); }
+
+  .lightbox{ padding:56px 12px calc(24px + env(safe-area-inset-bottom)); }
+  .lb-x{ top:14px; right:14px; } .lb-p{ left:8px; } .lb-n{ right:8px; }
+  .lightbox img{ max-height:64vh; }
 }
 
+/* ---------- MÓVIL ESTRECHO ---------- */
 @media (max-width:520px){
-  .mini-facts,.grid-2{ grid-template-columns:1fr; }
-  .cover-num{ font-size:44px; }
-  .sheet{ padding:20px; }
-  .lightbox{ padding:64px 14px; }
-  .lb-p{ left:10px; } .lb-n{ right:10px; }
+  .brand h1{ font-size:16.5px; }
+  .icon-btn span{ display:none; }          /* botón "Ficha" del encabezado: solo icono */
+  .icon-btn{ padding:0; min-width:40px; }
+  .tb-label{ display:none; }                /* Capas / Encuadrar: solo icono */
+  .tool-btn{ padding:0; width:40px; justify-content:center; }
+
+  .grid-2{ grid-template-columns:1fr 1fr; }
+  .mini-facts{ grid-template-columns:1fr 1fr; }
+  .compare{ grid-template-columns:1fr; }
+  .gallery{ grid-template-columns:1fr 1fr; }
+  .cover-num{ font-size:42px; }
+  .cover-card{ padding:14px; }
+
+  .tab{ font-size:9.5px; letter-spacing:.08em; gap:5px; }
+  .tab .count{ min-width:15px; height:15px; }
+
+  .fab{ font-size:10px; }
+  .map-hint{ max-width:62vw; }
+}
+
+/* Pantallas muy bajas (móvil apaisado): la hoja abierta ocupa casi todo */
+@media (max-height:520px) and (max-width:900px){
+  .panel{ height:94vh; height:94dvh; }
+  .cover{ height:96px; }
 }
 </style>
 </head>
@@ -1254,20 +1341,20 @@ input[type=range]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba
       <div class="map-vignette" aria-hidden="true"></div>
 
       <div class="map-hint" id="mapHint" hidden>
-        Toca los <strong>puntos de colores</strong> para ver cada sitio, o el contorno para encuadrar
-        la microcuenca. <kbd>Esc</kbd> cierra cualquier diálogo.
+        Toca un <strong>punto</strong> o el <strong>contorno</strong> del mapa.
+        <kbd>Esc</kbd> cierra los diálogos.
         <button class="x" id="hintX" aria-label="Ocultar esta ayuda">✕</button>
       </div>
 
       <div class="map-tools">
-        <button class="tool-btn" id="layersBtn" aria-expanded="false" aria-controls="layersPop">
+        <button class="tool-btn" id="layersBtn" aria-expanded="false" aria-controls="layersPop" aria-label="Capas y mapa base">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-          Capas
+          <span class="tb-label">Capas</span>
         </button>
         <div id="layersPop" hidden></div>
-        <button class="tool-btn" id="fitBtn">
+        <button class="tool-btn" id="fitBtn" aria-label="Encuadrar la microcuenca">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 9V4h5M21 9V4h-5M3 15v5h5M21 15v5h-5"/></svg>
-          Encuadrar
+          <span class="tb-label">Encuadrar</span>
         </button>
       </div>
 
