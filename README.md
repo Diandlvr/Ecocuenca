@@ -44,7 +44,7 @@ eliminó junto con la lista de zonas, el buscador entre zonas y el filtro "solo 
 ### Semáforo (por sector)
 Sector = tramo de río de orden ≥ 3 + sus laderas (22 sectores). Puntaje 0–100 = cobertura arbórea 30 % + árboles en ribera 20 % + ladera empinada sin árboles 15 % + pérdida forestal 2014–2023 15 % + condición aguas arriba 20 %. **Verde ≥ 70, amarillo 50–69, rojo < 50.** Resultado: índice general 72 (verde), 21 % del área en rojo, todo en la cuenca baja. Pendiente de campo: calidad del agua, caudal, comité por sector.
 
-**Datos:** SRTM (NASA), ESA WorldCover 2021 (CC BY 4.0), Hansen/UMD GFC v1.11 (CC BY 4.0). Scripts reproducibles en  (ver orden en ); salida: .
+**Datos:** SRTM (NASA), ESA WorldCover 2021 (CC BY 4.0), Hansen/UMD GFC v1.11 (CC BY 4.0). Scripts reproducibles en la carpeta tools/ (orden en tools/README.md); salida: cuenca_data.js.
 
 ---
 

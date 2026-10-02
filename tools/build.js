@@ -88,7 +88,7 @@ const data = {
   }
 };
 fs.writeFileSync('../cuenca_data.js', 'window.ECO_DATA = ' + JSON.stringify(data) + ';\n');
-console.log('../cuenca_data.js', (fs.statSync('cuenca_data.js').size / 1024).toFixed(0), 'KB');
+console.log('../cuenca_data.js', (fs.statSync('../cuenca_data.js').size / 1024).toFixed(0), 'KB');
 console.log('stats', JSON.stringify(data.stats).slice(0, 900));
 console.log('poi', poi.map(p => p.name + ' ' + p.ll.join(',')).join(' | '));
 console.log('polígonos: union', pU[1].length, 'partes; sectores', Object.keys(pX).length, 'vértices sectores', sectorFeatures.reduce((a, f) => a + JSON.stringify(f.geometry).length, 0));
