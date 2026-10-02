@@ -28,6 +28,26 @@ eliminó junto con la lista de zonas, el buscador entre zonas y el filtro "solo 
 
 ---
 
+## Límite de la microcuenca y semáforo (v2)
+
+**Alcance real:** la microcuenca *Ciri Grande–Trinidad* reúne dos subcuencas vecinas que desembocan por separado en el lago Gatún: río **Cirí Grande** (203.7 km²) y río **Trinidad** (198.2 km²), total **401.8 km²** (perímetro 147.7 km, Kc = 2.08, muy alargada).
+
+### Cómo se delimitó (no es un polígono dibujado)
+1. DEM SRTM 30 m (AWS Terrain Tiles).
+2. Relleno de depresiones (Priority-Flood) + dirección de flujo D8 + acumulación de flujo.
+3. Cauces = celdas con ≥ 0.25 km² drenando; orden de Strahler: ríos (≥5), riachuelos (3–4), quebradas (1–2).
+4. Puntos de salida donde cada río entra al lago; la cuenca es todo lo que drena a ese punto (divisorio de aguas).
+5. Suavizado leve (< 40 m).
+
+**Limitación:** es un cálculo de gabinete (celdas de ~38 m). En la planicie del lago el divisorio es menos preciso. Para el informe final: contrastar con el polígono oficial ACP/MiAmbiente y con GPS en campo.
+
+### Semáforo (por sector)
+Sector = tramo de río de orden ≥ 3 + sus laderas (22 sectores). Puntaje 0–100 = cobertura arbórea 30 % + árboles en ribera 20 % + ladera empinada sin árboles 15 % + pérdida forestal 2014–2023 15 % + condición aguas arriba 20 %. **Verde ≥ 70, amarillo 50–69, rojo < 50.** Resultado: índice general 72 (verde), 21 % del área en rojo, todo en la cuenca baja. Pendiente de campo: calidad del agua, caudal, comité por sector.
+
+**Datos:** SRTM (NASA), ESA WorldCover 2021 (CC BY 4.0), Hansen/UMD GFC v1.11 (CC BY 4.0). Scripts reproducibles en  (ver orden en ); salida: .
+
+---
+
 ## Cómo funciona
 
 Es **un solo archivo HTML** (`ecocuenca_demo.html`) sin proceso de build. Todo el

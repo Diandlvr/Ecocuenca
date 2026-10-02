@@ -1,0 +1,13 @@
+node_modules
+*.bin
+*.tif
+*.png
+dem.json
+wc*.json
+hansen.json
+outlets.json
+metrics.json
+scored.json
+sector_down.json
+streams.geojson
+boundary.geojson

@@ -960,6 +960,105 @@ input[type=range]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba
 ::-webkit-scrollbar-thumb{ background:var(--ink-400); border-radius:9px; border:2px solid var(--ink-700); }
 ::-webkit-scrollbar-thumb:hover{ background:var(--moss-deep); }
 
+/* ===================== SEMÁFORO / DELIMITACIÓN ======================= */
+:root{ --sv:#4CCB84; --sa:#F5BE3A; --sr:#F25C3F; }
+.c-verde{ --c:var(--sv); } .c-amarillo{ --c:var(--sa); } .c-rojo{ --c:var(--sr); }
+
+.sem-hero{ border:1px solid var(--rule); border-radius:var(--r-md); background:var(--ink-600); padding:16px; }
+.sem-top{ display:flex; align-items:flex-end; justify-content:space-between; gap:14px; }
+.sem-score{ font-family:'Instrument Serif',serif; font-size:56px; line-height:.85; letter-spacing:-.02em; color:var(--c,var(--paper)); }
+.sem-score small{ font-size:20px; opacity:.6; margin-left:2px; }
+.sem-badge{
+  display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:100px;
+  border:1px solid color-mix(in srgb, var(--c) 55%, transparent);
+  background:color-mix(in srgb, var(--c) 14%, transparent); color:var(--c);
+  font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; white-space:nowrap;
+}
+.sem-badge i{ width:8px; height:8px; border-radius:50%; background:var(--c); }
+.stackbar{ display:flex; height:10px; border-radius:100px; overflow:hidden; background:var(--ink-800); margin:14px 0 8px; border:1px solid var(--rule-2); }
+.stackbar span{ display:block; height:100%; transition:width .8s var(--ease); }
+.stackbar .s-verde{ background:var(--sv); } .stackbar .s-amarillo{ background:var(--sa); } .stackbar .s-rojo{ background:var(--sr); }
+.stack-legend{ display:flex; flex-wrap:wrap; gap:6px 14px; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.06em; color:var(--paper-3); }
+.stack-legend b{ color:var(--paper-2); font-weight:500; }
+.stack-legend i{ display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:6px; vertical-align:-1px; }
+.sem-note{ font-size:12.5px; line-height:1.65; color:var(--paper-2); font-weight:300; margin:12px 0 0; }
+.sem-note strong{ color:var(--paper); font-weight:500; }
+
+details.sem-how{ margin-top:14px; border:1px solid var(--rule); border-radius:var(--r-md); background:var(--ink-600); }
+details.sem-how summary{
+  list-style:none; cursor:pointer; min-height:var(--tap); padding:0 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--paper-2);
+}
+details.sem-how summary::-webkit-details-marker{ display:none; }
+details.sem-how summary::after{ content:"+"; font-size:16px; color:var(--paper-3); transition:transform .25s var(--ease); }
+details.sem-how[open] summary::after{ transform:rotate(45deg); }
+.how-body{ padding:2px 14px 16px; }
+.how-body p{ font-size:12.5px; line-height:1.7; color:var(--paper-2); font-weight:300; margin:0 0 12px; }
+.how-body p strong{ color:var(--paper); font-weight:500; }
+.ptable{ display:flex; flex-direction:column; gap:1px; background:var(--rule-2); border:1px solid var(--rule); border-radius:var(--r-sm); overflow:hidden; margin:0 0 12px; }
+.prow{ background:var(--ink-700); padding:10px 12px; }
+.prow .pt{ display:flex; justify-content:space-between; gap:10px; font-size:12.5px; font-weight:500; }
+.prow .pw{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--lime); letter-spacing:.06em; white-space:nowrap; }
+.prow .pr{ font-size:11.5px; color:var(--paper-3); line-height:1.55; margin-top:4px; font-weight:300; }
+.thr{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px; }
+.thr div{ border:1px solid color-mix(in srgb, var(--c) 45%, transparent); background:color-mix(in srgb, var(--c) 10%, transparent); border-radius:var(--r-sm); padding:8px 10px; }
+.thr b{ display:block; font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--c); }
+.thr span{ font-size:12px; color:var(--paper-2); }
+
+.zone-h{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin:20px 0 9px; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--paper-3); }
+.zone-h:first-child{ margin-top:2px; }
+.zone-h em{ font-style:normal; color:var(--paper-3); letter-spacing:.06em; }
+.sector-list{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:7px; }
+.sector-item{
+  width:100%; text-align:left; cursor:pointer; display:grid; grid-template-columns:auto 1fr auto; gap:11px; align-items:center;
+  min-height:var(--tap); padding:9px 12px; background:var(--ink-600); border:1px solid var(--rule); border-radius:var(--r-md); color:inherit; font:inherit;
+  transition:transform .2s var(--ease),border-color .2s var(--ease),background .2s var(--ease);
+}
+.sector-item:hover{ transform:translateX(3px); border-color:rgba(242,236,220,.26); background:var(--ink-500); }
+.sector-item.active{ border-color:var(--c); background:var(--ink-500); }
+.sector-item .dot{ width:12px; height:12px; border-radius:50%; background:var(--c); box-shadow:0 0 0 4px color-mix(in srgb, var(--c) 22%, transparent); }
+.sector-item .n{ font-size:13px; font-weight:500; line-height:1.3; }
+.sector-item .k{ font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.08em; color:var(--paper-3); margin-top:3px; }
+.sector-item .sc{ font-family:'Instrument Serif',serif; font-size:24px; color:var(--c); line-height:1; }
+
+.comp{ margin:0 0 13px; }
+.comp-top{ display:flex; justify-content:space-between; gap:10px; font-size:12.5px; }
+.comp-top span:last-child{ font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--paper-3); letter-spacing:.05em; white-space:nowrap; }
+.comp .bar{ height:7px; border-radius:100px; background:var(--ink-800); border:1px solid var(--rule-2); margin:7px 0 4px; overflow:hidden; }
+.comp .bar i{ display:block; height:100%; border-radius:100px; transition:width .6s var(--ease); }
+.comp .cv{ font-size:11px; color:var(--paper-3); font-weight:300; line-height:1.5; }
+.why{ border-left:2px solid var(--c); background:linear-gradient(90deg,color-mix(in srgb, var(--c) 10%, transparent),transparent); padding:10px 12px; font-size:12.5px; line-height:1.65; color:var(--paper-2); font-weight:300; margin:14px 0; }
+.why strong{ color:var(--paper); font-weight:500; }
+
+.chart{ display:block; width:100%; height:74px; margin-top:12px; }
+.chart rect{ fill:var(--ink-400); transition:fill .2s; }
+.chart rect.on{ fill:var(--lime); } .chart rect.past{ fill:rgba(191,221,112,.38); }
+.stat-row{ display:flex; justify-content:space-between; gap:10px; font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.06em; color:var(--paper-3); margin-top:6px; }
+
+.mgrid{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--rule-2); border:1px solid var(--rule); border-radius:var(--r-md); overflow:hidden; }
+.mgrid .cell .v{ font-size:15px; }
+.steps{ margin:12px 0 0; padding:0; list-style:none; counter-reset:st; display:flex; flex-direction:column; gap:9px; }
+.steps li{ counter-increment:st; position:relative; padding-left:30px; font-size:12.5px; line-height:1.6; color:var(--paper-2); font-weight:300; }
+.steps li::before{ content:counter(st); position:absolute; left:0; top:1px; width:20px; height:20px; border-radius:50%; border:1px solid var(--rule); display:grid; place-items:center; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--lime); }
+.steps strong{ color:var(--paper); font-weight:500; }
+.src-list{ list-style:none; padding:0; margin:8px 0 0; display:flex; flex-direction:column; gap:5px; font-family:'IBM Plex Mono',monospace; font-size:10px; line-height:1.55; color:var(--paper-3); }
+
+.map-legend{
+  position:absolute; left:14px; bottom:104px; z-index:405; width:178px; padding:11px 12px;
+  background:var(--glass); backdrop-filter:blur(10px); border:1px solid var(--rule); border-radius:var(--r-md);
+  font-size:11px; color:var(--paper-2);
+}
+.map-legend h6{ margin:0 0 7px; font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:.17em; text-transform:uppercase; color:var(--paper-3); font-weight:500; }
+.map-legend h6:not(:first-child){ margin-top:11px; }
+.map-legend .lg{ display:flex; align-items:center; gap:9px; min-height:19px; }
+.map-legend .sw{ width:14px; height:10px; border-radius:2px; flex-shrink:0; border:1px solid rgba(0,0,0,.35); }
+.map-legend .ln{ width:20px; flex-shrink:0; border-top-style:solid; border-color:#7CC8F0; }
+.map-legend .ln.r{ border-top-width:3.5px; } .map-legend .ln.a{ border-top-width:2px; } .map-legend .ln.q{ border-top-width:1px; opacity:.8; }
+.sector-path{ transition:fill-opacity .9s var(--ease); }
+
+.tab{ padding:0 4px; }
+@media (min-width:861px){ .tab{ font-size:10px; letter-spacing:.1em; } }
+
 /* ========================= RESPONSIVE ================================= */
 
 /* Área de toque ampliada para los marcadores del mapa (no cambia lo visible) */
@@ -1021,6 +1120,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba
     width:38px; height:4px; border-radius:100px; background:var(--paper-3); opacity:.5;
   }
   .sheet-handle svg{ width:13px; height:13px; transition:transform .35s var(--ease); }
+  .map-legend{ display:none; }
   .panel.open .sheet-handle svg{ transform:rotate(180deg); }
 
   /* Espacio inferior seguro dentro de la ficha al abrir la hoja */
@@ -1089,8 +1189,8 @@ input[type=range]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba
   .cover-num{ font-size:42px; }
   .cover-card{ padding:14px; }
 
-  .tab{ font-size:9.5px; letter-spacing:.08em; gap:5px; }
-  .tab .count{ min-width:15px; height:15px; }
+  .tab{ font-size:9px; letter-spacing:.04em; gap:4px; }
+  .tab .count{ display:none; }
 
   .fab{ font-size:10px; }
   .map-hint{ max-width:62vw; }
@@ -1181,16 +1281,17 @@ input[type=range]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba
           <div class="cover-meta">
             <div>
               <h2>Ciri Grande–Trinidad</h2>
-              <div class="coord mono">09°02′06″N · 079°56′49″W · CUENCA DEL CANAL</div>
+              <div class="coord mono" id="coverCoord">CUENCA DEL CANAL · LAGO GATÚN</div>
             </div>
           </div>
         </div>
 
-        <div class="status-line"><span class="pulse" aria-hidden="true"></span> Gestionada y protegida</div>
+        <div class="status-line" id="statusLine"><span class="pulse" aria-hidden="true"></span> <span id="statusText">Calculando semáforo…</span></div>
 
         <!-- Pestañas -->
         <div class="tabs" role="tablist" aria-label="Secciones de la ficha">
           <button class="tab" role="tab" id="tab-ficha" aria-controls="p-ficha" aria-selected="true">Ficha</button>
+          <button class="tab" role="tab" id="tab-sem" aria-controls="p-sem" aria-selected="false" tabindex="-1">Semáforo</button>
           <button class="tab" role="tab" id="tab-puntos" aria-controls="p-puntos" aria-selected="false" tabindex="-1">Puntos <span class="count" id="cntPoints">6</span></button>
           <button class="tab" role="tab" id="tab-rep" aria-controls="p-rep" aria-selected="false" tabindex="-1">Reportes <span class="count" id="cntReports">0</span></button>
         </div>
@@ -1202,107 +1303,110 @@ input[type=range]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba
 
             <section class="reveal" style="animation-delay:.02s">
               <p class="eyebrow">Indicadores clave</p>
-              <div class="grid-2 regmark">
-                <div class="cell"><div class="k">Área</div><div class="v num">145<small style="font-size:13px"> km²</small></div></div>
-                <div class="cell"><div class="k">Río principal</div><div class="v">Ciri Grande</div></div>
-                <div class="cell"><div class="k">Comité de gestión</div><div class="v">Activo</div></div>
-                <div class="cell"><div class="k">Rango altitudinal</div><div class="v">40–620 m</div></div>
-                <div class="cell"><div class="k">Vierte hacia</div><div class="v">Río Trinidad</div></div>
-                <div class="cell"><div class="k">Puntos censados</div><div class="v num">6</div></div>
-              </div>
+              <div class="grid-2 regmark" id="kpiGrid"></div>
             </section>
 
             <section class="reveal" style="animation-delay:.09s; margin-top:26px">
               <p class="eyebrow">Ficha ambiental</p>
-              <p class="prose">
-                La microcuenca <strong>Ciri Grande–Trinidad</strong> drena hacia el río Trinidad y el
-                lago Gatún, y aporta agua tanto a la operación del Canal como al abastecimiento de la
-                región metropolitana. Conserva bosque maduro continuo en las cabeceras y un mosaico de
-                bosque secundario, potreros y agricultura de subsistencia en la parte media. Cuenta con
-                un <strong>comité de gestión comunitario formalmente establecido</strong> y monitoreo
-                participativo periódico, lo que la sitúa entre las microcuencas mejor gestionadas de la
-                Cuenca del Canal.
-              </p>
+              <p class="prose" id="fichaProse"></p>
             </section>
 
             <section class="reveal" style="animation-delay:.16s; margin-top:26px">
-              <p class="eyebrow">Cobertura boscosa</p>
-              <div class="cover-card regmark">
-                <div class="cover-head">
-                  <div class="cover-num" id="coverNum">72<small>%</small></div>
-                  <div class="cover-year">Año de referencia<b id="coverYear">2024</b></div>
-                </div>
-                <div class="track"><div class="fill" id="coverFill"></div></div>
-                <div class="delta mono" id="coverDelta">▲ <b>+14 pts</b> respecto a 2005</div>
-
-                <div class="scrub">
-                  <div class="scrub-label">Recorrer la serie temporal</div>
-                  <label class="sr-only" for="yearRange">Año de referencia de la cobertura boscosa</label>
-                  <input type="range" id="yearRange" min="0" max="4" step="1" value="4"
-                         aria-valuetext="2024, 72 por ciento de cobertura" />
-                  <div class="ticks" id="ticks" aria-hidden="true">
-                    <span>2005</span><span>2010</span><span>2015</span><span>2020</span><span>2024</span>
-                  </div>
-                </div>
-              </div>
+              <p class="eyebrow">Delimitación y morfometría</p>
+              <div class="mgrid regmark" id="morfoGrid"></div>
+              <p class="prose" style="margin-top:14px; font-size:13px">
+                El límite <strong>no es un polígono dibujado a mano</strong>: se calculó siguiendo el
+                <strong>divisorio de aguas</strong> (la línea de cumbres que separa hacia dónde corre el agua).
+              </p>
+              <ol class="steps">
+                <li><strong>Relieve:</strong> modelo digital de elevación SRTM de 30 m (celdas de ~38 m en esta vista).</li>
+                <li><strong>Hidrología:</strong> se rellenan depresiones falsas y se asigna a cada celda su dirección de flujo (D8, hacia el vecino más bajo).</li>
+                <li><strong>Red hídrica:</strong> se acumula el flujo; las celdas que reciben el drenaje de ≥ 0,25 km² forman cauces, clasificados por orden de Strahler en ríos, riachuelos y quebradas.</li>
+                <li><strong>Punto de salida:</strong> se ubica donde cada río entra al lago Gatún; la microcuenca es <strong>todo el terreno cuya agua pasa por ese punto</strong>.</li>
+                <li><strong>Suavizado:</strong> el contorno se simplifica y suaviza ligeramente (&lt; 40 m) para quitar los “escalones” de la cuadrícula.</li>
+              </ol>
+              <p class="prose" style="margin-top:12px; font-size:12px; color:var(--paper-3)">
+                Es un cálculo de gabinete con datos públicos. Para el documento final conviene contrastarlo con el polígono
+                oficial de la ACP / MiAmbiente y con recorrido de campo (ver README).
+              </p>
             </section>
 
             <section class="reveal" style="animation-delay:.23s; margin-top:26px">
-              <p class="eyebrow">Riesgos identificados</p>
-              <ul class="risks">
-                <li class="risk mid">
-                  <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
-                  <div><div class="rn">Avance de la frontera agrícola</div>
-                    <div class="rd">Presión sostenida por potreros y roza en la parte media de la cuenca.</div>
-                    <span class="rl">Nivel medio</span></div>
-                </li>
-                <li class="risk mid">
-                  <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
-                  <div><div class="rn">Sedimentación de quebradas</div>
-                    <div class="rd">Erosión localizada en tramos que perdieron bosque de galería.</div>
-                    <span class="rl">Nivel medio</span></div>
-                </li>
-                <li class="risk low">
-                  <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
-                  <div><div class="rn">Residuos sólidos</div>
-                    <div class="rd">Puntos aislados cerca de caminos y vados de río.</div>
-                    <span class="rl">Nivel bajo</span></div>
-                </li>
-                <li class="risk low">
-                  <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
-                  <div><div class="rn">Incendios de pastizal</div>
-                    <div class="rd">Esporádicos en estación seca; sin afectación de bosque maduro.</div>
-                    <span class="rl">Nivel bajo</span></div>
-                </li>
-              </ul>
+              <p class="eyebrow">Cobertura del suelo (2021)</p>
+              <div class="cover-card regmark">
+                <div class="cover-head">
+                  <div class="cover-num" id="coverNum">—<small>%</small></div>
+                  <div class="cover-year">Superficie con árboles<b id="coverSub">ESA WorldCover</b></div>
+                </div>
+                <div class="track"><div class="fill" id="coverFill"></div></div>
+                <div class="delta mono" id="coverDelta"></div>
+              </div>
             </section>
 
             <section class="reveal" style="animation-delay:.3s; margin-top:26px">
-              <p class="eyebrow">Cronología de gestión</p>
-              <ul class="tl" id="timeline">
-                <li data-year="2005"><div class="y">2005</div><div class="t">Diagnóstico participativo inicial; se documenta pérdida de bosque de galería.</div></li>
-                <li data-year="2010"><div class="y">2010</div><div class="t">Se conforma el comité de gestión con juntas comunitarias de la microcuenca.</div></li>
-                <li data-year="2015"><div class="y">2015</div><div class="t">Programa de reforestación ribereña y acuerdos de uso de suelo en fincas.</div></li>
-                <li data-year="2020"><div class="y">2020</div><div class="t">Se instala la estación de aforo y arranca el monitoreo trimestral de caudal.</div></li>
-                <li data-year="2024"><div class="y">2024</div><div class="t">Cobertura boscosa estabilizada al alza; seis puntos de seguimiento activos.</div></li>
-              </ul>
+              <p class="eyebrow">Pérdida de cobertura arbórea 2001–2023</p>
+              <div class="cover-card regmark">
+                <div class="cover-head">
+                  <div class="cover-num" id="lossNum" style="color:var(--ochre)">—<small> ha</small></div>
+                  <div class="cover-year" id="lossYearBox">Acumulado hasta<b id="lossYear">2023</b></div>
+                </div>
+                <svg class="chart" id="lossChart" viewBox="0 0 230 74" preserveAspectRatio="none" role="img" aria-label="Pérdida anual de cobertura arbórea, 2001 a 2023"></svg>
+                <div class="stat-row"><span>2001</span><span id="lossAnnual"></span><span>2023</span></div>
+                <div class="delta mono" id="lossDelta" style="margin-top:12px"></div>
+                <div class="scrub">
+                  <div class="scrub-label">Recorrer los años</div>
+                  <label class="sr-only" for="yearRange">Año hasta el que se acumula la pérdida de cobertura arbórea</label>
+                  <input type="range" id="yearRange" min="1" max="23" step="1" value="23" aria-valuetext="2023" />
+                  <div class="ticks" aria-hidden="true"><span>2001</span><span>2008</span><span>2015</span><span>2023</span></div>
+                </div>
+              </div>
+              <p class="prose" style="margin-top:10px; font-size:11.5px; color:var(--paper-3)">
+                Hansen/UMD mide <em>pérdida</em> de dosel (≥ 30 % en el año 2000) a ~30 m. No cuenta la regeneración posterior,
+                por eso no es comparable punto a punto con la cobertura de 2021.
+              </p>
             </section>
 
             <section class="reveal" style="animation-delay:.37s; margin-top:26px">
-              <p class="eyebrow">Procedencia</p>
-              <p class="prose" style="font-size:12px; line-height:1.75">
-                Elaboración propia a partir de literatura pública sobre la Cuenca Hidrográfica del
-                Canal de Panamá (ACP / CICH) y del Geoportal de MiAmbiente. <strong>Los valores,
-                fechas y contornos son aproximados y de referencia</strong>; no sustituyen los
-                diagnósticos oficiales ni datos GeoJSON reales.
-              </p>
-              <p class="eyebrow" style="margin-top:20px">Créditos fotográficos</p>
+              <p class="eyebrow">Presiones detectadas</p>
+              <ul class="risks" id="pressureList"></ul>
+            </section>
+
+            <section class="reveal" style="animation-delay:.44s; margin-top:26px">
+              <p class="eyebrow">Gestión y antecedentes</p>
+              <ul class="tl" id="timeline">
+                <li class="on"><div class="y">Comité de gestión</div><div class="t">Activo, según la propuesta del proyecto (pendiente de documentar con el acta o resolución correspondiente).</div></li>
+                <li><div class="y">2013 – 2016</div><div class="t">Fundación Natura ejecutó un proyecto de conservación y recuperación de bosques de galería en la microcuenca de la quebrada La Honda, subcuenca del río Cirí Grande.
+                  <a href="https://naturapanama.org/en/aumento-de-la-cobertura-boscosa/" target="_blank" rel="noopener" style="color:var(--river)">Fuente</a></div></li>
+              </ul>
+            </section>
+
+            <section class="reveal" style="animation-delay:.5s; margin-top:26px">
+              <p class="eyebrow">Procedencia de los datos</p>
+              <ul class="src-list" id="srcList"></ul>
+              <p class="eyebrow" style="margin-top:22px">Créditos fotográficos</p>
               <p class="prose" style="font-size:11.5px; line-height:1.7; margin-bottom:10px">
                 Fotografías reales de la Cuenca Hidrográfica del Canal de Panamá (sistema
                 Chagres–Pequení). Vía Wikimedia Commons — no corresponden al punto exacto rotulado.
               </p>
               <ul id="creditList" style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:6px"></ul>
             </section>
+          </div>
+
+          <!-- ---------------- SEMÁFORO ---------------- -->
+          <div class="tabpanel" role="tabpanel" id="p-sem" aria-labelledby="tab-sem" tabindex="0" hidden>
+            <div id="semListView">
+              <p class="eyebrow">Semáforo de la microcuenca</p>
+              <div class="sem-hero regmark" id="semHero"></div>
+
+              <details class="sem-how" id="semHow">
+                <summary>¿Cómo se calcula?</summary>
+                <div class="how-body" id="semHowBody"></div>
+              </details>
+
+              <p class="eyebrow" style="margin-top:26px">Sectores · de la cabecera a la parte baja</p>
+              <div id="semSectors"></div>
+            </div>
+            <div id="semDetailView" hidden></div>
           </div>
 
           <!-- ---------------- PUNTOS ---------------- -->
@@ -1329,7 +1433,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba
         </div>
 
         <div class="panel-foot">
-          Microcuenca Ciri Grande–Trinidad · Cuenca del Canal de Panamá · datos ilustrativos
+          Microcuenca Ciri Grande–Trinidad · Cuenca del Canal de Panamá · límite calculado a partir de datos públicos
         </div>
       </div>
     </aside>
@@ -1341,7 +1445,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba
       <div class="map-vignette" aria-hidden="true"></div>
 
       <div class="map-hint" id="mapHint" hidden>
-        Toca un <strong>punto</strong> o el <strong>contorno</strong> del mapa.
+        Toca un <strong>sector de color</strong> o un <strong>punto</strong> para ver su detalle.
         <kbd>Esc</kbd> cierra los diálogos.
         <button class="x" id="hintX" aria-label="Ocultar esta ayuda">✕</button>
       </div>
@@ -1357,6 +1461,8 @@ input[type=range]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba
           <span class="tb-label">Encuadrar</span>
         </button>
       </div>
+
+      <div class="map-legend" id="mapLegend" aria-label="Leyenda del mapa"></div>
 
       <div class="map-overlay" id="mapOverlay">
         <div class="surveyor" aria-hidden="true"><span class="ring"></span><span class="ring"></span><span class="ring"></span></div>
@@ -1438,29 +1544,36 @@ input[type=range]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="cuenca_data.js"></script>
 <script>
 (function(){
 "use strict";
 
 /* ===================================================================
-   1 · DATOS ILUSTRATIVOS
+   1 · DATOS (generados por script a partir de DEM, WorldCover y Hansen)
    =================================================================== */
+
+if(!window.ECO_DATA){
+  var ov=document.getElementById('mapOverlay'), om=document.getElementById('overlayMsg');
+  if(ov&&om){ ov.classList.add('err'); om.textContent='No se encontró cuenca_data.js junto a esta página. Sin ese archivo no hay límite ni semáforo que mostrar.'; }
+  return;
+}
+
+var ECO = window.ECO_DATA, ST = ECO.stats, CFG = ECO.config;
 
 var ZONE = {
   name:'Ciri Grande–Trinidad',
-  /* Contorno aproximado: la cuenca del Ciri Grande queda al suroeste del
-     lago Gatún y drena hacia el norte, al río Trinidad. Trazo ilustrativo. */
-  center:[9.035,-79.947],
-  outline:[
-    [9.115,-79.945],[9.098,-79.905],[9.045,-79.892],[8.985,-79.905],
-    [8.952,-79.945],[8.975,-79.990],[9.035,-80.005],[9.092,-79.985]
-  ],
   cover:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Chagres_River_near_the_Panama_Canal_-_Flickr_-_treegrow.jpg/1280px-Chagres_River_near_the_Panama_Canal_-_Flickr_-_treegrow.jpg'
 };
 
+var SEM_COLOR = { verde:'#4CCB84', amarillo:'#F5BE3A', rojo:'#F25C3F' };
+var SEM_LABEL = { verde:'Verde', amarillo:'Amarillo', rojo:'Rojo' };
+var ZONA_LABEL = { alta:'Cuenca alta', media:'Cuenca media', baja:'Cuenca baja' };
+function semOf(score){ return score>=CFG.umbral.verde ? 'verde' : score>=CFG.umbral.amarillo ? 'amarillo' : 'rojo'; }
+
 /* Créditos de imagen — todas de Wikimedia Commons, de la Cuenca Hidrográfica
-   del Canal de Panamá (sistema Chagres–Pequení, del que la subcuenca del Ciri
-   Grande forma parte). Reales de la cuenca, no del punto exacto rotulado. */
+   del Canal de Panamá (sistema Chagres–Pequení). Reales de la cuenca, no del
+   punto exacto rotulado. */
 var CREDITS = [
   ['Chagres River near the Panama Canal','Katja Schulz','CC BY 2.0','https://commons.wikimedia.org/wiki/File:Chagres_River_near_the_Panama_Canal_-_Flickr_-_treegrow.jpg'],
   ['Río Pequení, Cuenca del Canal','Nadxiielii','CC0','https://commons.wikimedia.org/wiki/File:R%C3%ADo_Pequen%C3%AD.JPG'],
@@ -1470,9 +1583,14 @@ var CREDITS = [
   ['Curso de agua, área del Canal','«XEON»','CC BY 3.0','https://commons.wikimedia.org/wiki/File:Canal_-_panoramio_(13).jpg'],
   ['Lago Gatún, Cuenca del Canal','«XEON»','CC BY 3.0','https://commons.wikimedia.org/wiki/File:Gatun_Lake_-_panoramio.jpg']
 ];
-
-var YEARS = [2005,2010,2015,2020,2024];
-var COVER = { 2005:58, 2010:61, 2015:64, 2020:69, 2024:72 };
+var CREDIT_IMG = {
+  1:{ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/R%C3%ADo_Pequen%C3%AD.JPG/1280px-R%C3%ADo_Pequen%C3%AD.JPG', alt:'Río Pequení discurriendo entre bosque en la Cuenca Hidrográfica del Canal de Panamá.' },
+  2:{ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Coast_-_panoramio_%283%29.jpg/1280px-Coast_-_panoramio_%283%29.jpg', alt:'Ribera cubierta de bosque en el área de la Cuenca del Canal de Panamá.' },
+  3:{ img:'https://upload.wikimedia.org/wikipedia/commons/c/cf/Chagres.jpg', alt:'Río Chagres a su paso por Gamboa, Cuenca del Canal de Panamá.' },
+  4:{ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Canal_De_Panama_-_panoramio_%281%29.jpg/1280px-Canal_De_Panama_-_panoramio_%281%29.jpg', alt:'Región boscosa próxima al Canal de Panamá.' },
+  5:{ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Canal_-_panoramio_%2813%29.jpg/1280px-Canal_-_panoramio_%2813%29.jpg', alt:'Curso de agua y vegetación en el área de la Cuenca del Canal de Panamá.' },
+  6:{ img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Gatun_Lake_-_panoramio.jpg/1280px-Gatun_Lake_-_panoramio.jpg', alt:'Lago Gatún, cuerpo de agua receptor de la Cuenca del Canal de Panamá.' }
+};
 
 var KINDS = {
   conservacion:{ label:'Conservación', color:'#6FBF8E' },
@@ -1481,55 +1599,42 @@ var KINDS = {
   presion:     { label:'Presión',      color:'#E2AC42' }
 };
 
-var POINTS = [
-  { id:'p1', kind:'conservacion', name:'Cabecera del río Ciri Grande',
-    ll:[8.966,-79.950],
-    desc:'Nacientes del cauce principal, dentro del bloque de bosque maduro continuo de la cuenca alta. Es la zona con mayor integridad ecológica de la microcuenca y la que sostiene el caudal en estación seca.',
-    facts:[['Cobertura','Bosque maduro'],['Altitud','~590 m'],['Intervención','Muy baja'],['Acceso','Sendero'] ],
-    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/R%C3%ADo_Pequen%C3%AD.JPG/1280px-R%C3%ADo_Pequen%C3%AD.JPG',
-    alt:'Río Pequení discurriendo entre bosque en la Cuenca Hidrográfica del Canal de Panamá.',
-    credit:1 },
+var SECS = ECO.sectors.features;
+function secProps(id){ for(var i=0;i<SECS.length;i++){ if(SECS[i].properties.id===id) return SECS[i].properties; } return null; }
+function riverOf(sub){ return sub==='ciri' ? 'Cirí Grande' : 'Trinidad'; }
+function f1(n){ return (+n).toLocaleString('es-PA',{ minimumFractionDigits:1, maximumFractionDigits:1 }); }
+function f0(n){ return Math.round(+n).toLocaleString('es-PA'); }
 
-  { id:'p2', kind:'conservacion', name:'Bosque de galería — quebrada Las Palmas',
-    ll:[9.028,-79.912],
-    desc:'Franja de vegetación ribereña bien conservada a lo largo de una quebrada tributaria. Actúa como corredor biológico y como filtro natural de sedimentos antes de que lleguen al cauce principal.',
-    facts:[['Ancho de franja','25–40 m'],['Estado','Conservado'],['Función','Corredor / filtro'],['Especies','Ribereñas nativas']],
-    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Coast_-_panoramio_%283%29.jpg/1280px-Coast_-_panoramio_%283%29.jpg',
-    alt:'Ribera cubierta de bosque en el área de la Cuenca del Canal de Panamá.',
-    credit:2 },
-
-  { id:'p3', kind:'monitoreo', name:'Estación de aforo hidrológico',
-    ll:[9.048,-79.950],
-    desc:'Punto de medición de caudal y turbidez instalado con el comité de gestión. Alimenta el monitoreo trimestral y sirve de referencia para evaluar el efecto de las lluvias sobre el arrastre de sedimentos.',
-    facts:[['Instalada','2020'],['Frecuencia','Trimestral'],['Variables','Caudal · turbidez'],['Operador','Comité local']],
-    img:'https://upload.wikimedia.org/wikipedia/commons/c/cf/Chagres.jpg',
-    alt:'Río Chagres a su paso por Gamboa, Cuenca del Canal de Panamá.',
-    credit:3 },
-
-  { id:'p4', kind:'restauracion', name:'Vivero y parcelas de reforestación',
-    ll:[9.026,-79.984],
-    desc:'Parcelas restauradas desde 2015 con especies nativas producidas en un vivero comunitario. Es el motor principal de la recuperación de cobertura observada en la serie 2015–2024.',
-    facts:[['Desde','2015'],['Superficie','~110 ha'],['Manejo','Comunitario'],['Especies','Nativas']],
-    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Canal_De_Panama_-_panoramio_%281%29.jpg/1280px-Canal_De_Panama_-_panoramio_%281%29.jpg',
-    alt:'Región boscosa próxima al Canal de Panamá.',
-    credit:4 },
-
-  { id:'p5', kind:'presion', name:'Frontera agrícola — parte media',
-    ll:[8.995,-79.910],
-    desc:'Mosaico de potreros y cultivos de subsistencia que avanza sobre bosque secundario. Es el foco de presión más relevante de la microcuenca y donde se concentran los acuerdos de uso de suelo con fincas.',
-    facts:[['Presión','Media'],['Uso','Potrero · cultivo'],['Tendencia','Estable'],['Acuerdos','En vigor']],
-    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Canal_-_panoramio_%2813%29.jpg/1280px-Canal_-_panoramio_%2813%29.jpg',
-    alt:'Curso de agua y vegetación en el área de la Cuenca del Canal de Panamá.',
-    credit:5 },
-
-  { id:'p6', kind:'monitoreo', name:'Confluencia con el río Trinidad',
-    ll:[9.106,-79.944],
-    desc:'Salida de la microcuenca hacia el río Trinidad y, aguas abajo, hacia el lago Gatún. Aquí se evalúa la calidad del agua que la microcuenca entrega al sistema del Canal.',
-    facts:[['Rol','Punto de salida'],['Destino','Lago Gatún'],['Control','Calidad de agua'],['Prioridad','Alta']],
-    img:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Gatun_Lake_-_panoramio.jpg/1280px-Gatun_Lake_-_panoramio.jpg',
-    alt:'Lago Gatún, cuerpo de agua receptor de la Cuenca del Canal de Panamá.',
-    credit:6 }
-];
+/* Puntos de interés: posiciones calculadas sobre la geometría (nacimientos,
+   desembocaduras, sectores extremos). Las fotos son ilustrativas de la cuenca. */
+var POINTS = (function(){
+  var credit = { p1:1, p2:3, p3:6, p4:2, p5:5, p6:4 };
+  return ECO.poi.map(function(p){
+    var sp = secProps(p.sec), c = credit[p.id], im = CREDIT_IMG[c];
+    var sub = (p.id==='p1'||p.id==='p3') ? 'ciri' : 'trinidad';
+    var semTxt = sp ? (sp.score+'/100 · '+SEM_LABEL[sp.color]) : '—';
+    var desc, facts;
+    if(p.tipo==='nacimiento'){
+      desc = 'Extremo más alejado del cauce principal del río '+riverOf(sub)+', hallado siguiendo el camino del agua desde la salida hasta el punto más distante de su subcuenca. '+
+             'Queda en el borde sur de la microcuenca, a unos '+f0(p.extra.elev)+' m de altitud; desde aquí el agua recorre '+f1(p.extra.len)+' km hasta el lago Gatún. '+
+             (sp ? 'Pertenece al sector «'+sp.nombre+'», con '+f0(sp.tree)+' % de cobertura arbórea.' : '');
+      facts = [['Altitud','~'+f0(p.extra.elev)+' m'],['Recorrido al lago',f1(p.extra.len)+' km'],['Sector',sp?sp.nombre:'—'],['Semáforo',semTxt]];
+    } else if(p.tipo==='salida'){
+      desc = 'Punto de cierre calculado de la subcuenca del río '+riverOf(sub)+': aquí el agua entra al lago Gatún tras drenar '+f1(p.extra.km2)+' km². '+
+             'Es el lugar natural para medir cuánta agua —y de qué calidad— entrega la subcuenca al sistema del Canal.';
+      facts = [['Área drenada',f1(p.extra.km2)+' km²'],['Destino','Lago Gatún'],['Sector',sp?sp.nombre:'—'],['Semáforo',semTxt]];
+    } else if(p.tipo==='peor'){
+      desc = 'Es el sector con el puntaje más bajo del semáforo ('+sp.score+'/100): solo '+f0(sp.tree)+' % de cobertura arbórea y '+f0(sp.grass)+' % de pastos. '+
+             'Además recibe el agua de '+f0(sp.upKm2)+' km² aguas arriba, donde el promedio de árboles es '+f0(sp.upTree)+' %. Es donde conviene priorizar restauración ribereña y verificación en campo.';
+      facts = [['Árboles',f0(sp.tree)+' %'],['Pastos',f0(sp.grass)+' %'],['Ribera con árboles',f0(sp.ripTree)+' %'],['Altitud media',f0(sp.elevMean)+' m']];
+    } else {
+      desc = 'Es el sector mejor puntuado ('+sp.score+'/100): '+f0(sp.tree)+' % de cobertura arbórea, '+f0(sp.ripTree)+' % de árboles en la franja ribereña y las laderas empinadas casi siempre bajo bosque. '+
+             'Sirve de referencia de conservación para el resto de la microcuenca.';
+      facts = [['Árboles',f0(sp.tree)+' %'],['Ribera con árboles',f0(sp.ripTree)+' %'],['Área',f1(sp.km2)+' km²'],['Altitud media',f0(sp.elevMean)+' m']];
+    }
+    return { id:p.id, kind:p.kind, name:p.name, ll:p.ll.slice().reverse(), sec:p.sec, desc:desc, facts:facts, img:im.img, alt:im.alt, credit:c };
+  });
+})();
 
 /* ===================================================================
    2 · UTILIDADES
@@ -1590,7 +1695,9 @@ window.setTimeout(function(){
   $('skel').setAttribute('hidden','');
   $('panelInner').removeAttribute('hidden');
   loadImg($('coverImg'), ZONE.cover, 'BOSQUE%20HUMEDO%20TROPICAL');
-  window.requestAnimationFrame(function(){ setYear(4, true); });
+  fillFicha();
+  buildSemaforo();
+  setYear(23, true);
   buildPoiList();
   buildCredits();
   renderReports();
@@ -1611,7 +1718,7 @@ function buildCredits(){
 
 var map = L.map('map', {
   zoomControl:false, attributionControl:true,
-  center:ZONE.center, zoom:11.4, zoomSnap:.25, minZoom:9, maxZoom:17
+  center:[8.83,-80.03], zoom:11, zoomSnap:.25, minZoom:9, maxZoom:17
 });
 L.control.zoom({ position:'bottomleft' }).addTo(map);
 
@@ -1638,6 +1745,15 @@ var BASES = {
 var currentBase = 'satelite';
 BASES.satelite.group.addTo(map);
 
+map.createPane('sectors'); map.getPane('sectors').style.zIndex = 410;
+map.createPane('streams'); map.getPane('streams').style.zIndex = 425;
+map.createPane('divide');  map.getPane('divide').style.zIndex  = 432;
+map.createPane('outline'); map.getPane('outline').style.zIndex = 440;
+var sectorGroup  = L.layerGroup().addTo(map);
+var divideGroup  = L.layerGroup().addTo(map);
+var riverGroup   = L.layerGroup().addTo(map);
+var creekGroup   = L.layerGroup().addTo(map);
+var gullyGroup   = L.layerGroup().addTo(map);
 var outlineGroup = L.layerGroup().addTo(map);
 var poiGroup     = L.layerGroup().addTo(map);
 var repGroup     = L.layerGroup().addTo(map);
@@ -1668,9 +1784,9 @@ function settle(){
   // El trazo animado necesita que el vuelo haya terminado para no recalcularse a medias.
   window.setTimeout(function(){ map.invalidateSize(); fitZone(false); }, 220);
   window.setTimeout(function(){ fitZone(true); }, 520);
-  window.setTimeout(drawOutline, 1750);
-  window.setTimeout(addPoiMarkers, 2450);
-  announce('Mapa cargado. Microcuenca Ciri Grande–Trinidad con 6 puntos de interés.');
+  window.setTimeout(drawLayers, 1500);
+  window.setTimeout(addPoiMarkers, 2900);
+  announce('Mapa cargado. Microcuenca Ciri Grande–Trinidad: '+f0(ST.areaKm2)+' kilómetros cuadrados, '+SECS.length+' sectores y 6 puntos de interés.');
 }
 
 function fail(){
@@ -1692,7 +1808,7 @@ $('retryBtn').addEventListener('click', function(){
 window.addEventListener('offline', function(){ if(!mapReady) fail(); });
 
 function fitZone(anim){
-  var b = L.latLngBounds(ZONE.outline);
+  var b = unionBounds();
   var size = map.getSize();
   // Si el contenedor todavía no tiene tamaño (layout en curso, panel en
   // transición), flyToBounds calcularía un zoom NaN. Reintenta en el siguiente frame.
@@ -1709,44 +1825,119 @@ $('fitBtn').addEventListener('click', function(){
   fitZone(); announce('Vista encuadrada sobre la microcuenca.');
 });
 
-/* --- Contorno con trazo animado ------------------------------------- */
-var zonePoly=null;
-
-function coverColor(pct){
-  var t = Math.max(0, Math.min(1, (pct-56)/(74-56)));
-  return lerpColor('#C98E2E','#6FBF8E',t);
+/* --- Capas geográficas: límite, divisoria, sectores (semáforo) y red hídrica --- */
+var unionFeature = ECO.boundary.features[0];
+var _ub = null;
+function unionBounds(){
+  if(_ub) return _ub;
+  var pts=[]; var g=unionFeature.geometry;
+  var rings = g.type==='Polygon' ? [g.coordinates[0]] : g.coordinates.map(function(p){ return p[0]; });
+  rings.forEach(function(r){ r.forEach(function(c){ pts.push([c[1],c[0]]); }); });
+  _ub = L.latLngBounds(pts); return _ub;
 }
 
 /* El satélite necesita un trazo más marcado; los mapas planos, más fino. */
-function outlineWeight(){ return currentBase==='satelite' ? 3 : 2; }
+function outlineWeight(){ return currentBase==='satelite' ? 3.2 : 2.4; }
+function sectorFill(){ return currentBase==='satelite' ? 0.46 : 0.5; }
 
-function drawOutline(){
-  if(zonePoly) return;
-  zonePoly = L.polygon(ZONE.outline, {
-    className:'zone-path', color:'#EAF7C8', weight:outlineWeight(),
-    fillColor:coverColor(COVER[2024]), fillOpacity:0
+var sectorLayers = {};     // id -> L.Layer
+var selSector = null;
+var layersDrawn = false;
+
+function sectorStyle(f, sel){
+  return { pane:'sectors', className:'sector-path', color: sel ? '#FFFFFF' : 'rgba(7,13,11,.55)', weight: sel ? 3 : 1,
+           fillColor: SEM_COLOR[f.properties.color], fillOpacity: sel ? Math.min(.6, sectorFill()+.2) : sectorFill() };
+}
+
+var STREAM_STYLE = {
+  rio:       { color:'#9ADBFA', weight:3.6, opacity:.98 },
+  riachuelo: { color:'#7CC8F0', weight:1.9, opacity:.92 },
+  quebrada:  { color:'#7CC8F0', weight:.95, opacity:.72 }
+};
+var STREAM_GROUP = { rio:riverGroup, riachuelo:creekGroup, quebrada:gullyGroup };
+
+function drawLayers(){
+  if(layersDrawn) return; layersDrawn = true;
+
+  // 1) Sectores con semáforo (relleno que aparece con transición)
+  var sectorsGeo = L.geoJSON(ECO.sectors, {
+    style:function(f){ var st=sectorStyle(f,false); st.fillOpacity=0; return st; },
+    onEachFeature:function(f, layer){
+      sectorLayers[f.properties.id] = layer;
+      var p=f.properties;
+      layer.bindTooltip(p.nombre+' · '+p.score+'/100 · '+SEM_LABEL[p.color].toUpperCase(), { sticky:true, direction:'top' });
+      layer.on('mouseover', function(){ if(selSector!==p.id) layer.setStyle({ fillOpacity: sectorFill()+.14 }); });
+      layer.on('mouseout',  function(){ if(selSector!==p.id) layer.setStyle({ fillOpacity: sectorFill() }); });
+      layer.on('click', function(){ selectSector(p.id, true); });
+    }
+  }).addTo(sectorGroup);
+  window.setTimeout(function(){ Object.keys(sectorLayers).forEach(function(k){ sectorLayers[k].setStyle({ fillOpacity: sectorFill() }); }); }, 60);
+
+  // 2) Divisoria interna Cirí Grande | Trinidad (se ve donde el contorno exterior no la tapa)
+  L.geoJSON({ type:'FeatureCollection', features: ECO.boundary.features.slice(1) }, {
+    style:{ pane:'divide', color:'#F2ECDC', weight:1.6, opacity:.85, dashArray:'5 5', fill:false, interactive:false }
+  }).addTo(divideGroup);
+
+  // 3) Red hídrica por clase (no interactiva para no tapar los clics sobre los sectores)
+  ['quebrada','riachuelo','rio'].forEach(function(cls){
+    L.geoJSON(ECO.streams, {
+      filter:function(f){ return f.properties.c===cls; },
+      style:function(){ var s=STREAM_STYLE[cls]; return { pane:'streams', color:s.color, weight:s.weight, opacity:0, lineCap:'round', lineJoin:'round', interactive:false }; }
+    }).addTo(STREAM_GROUP[cls]);
+  });
+  window.setTimeout(fadeStreams, 700);
+
+  // 4) Contorno exterior con trazo animado
+  var outline = L.geoJSON(unionFeature, {
+    style:{ pane:'outline', className:'zone-path', color:'#F4F1DF', weight:outlineWeight(), fill:false, interactive:false }
   }).addTo(outlineGroup);
+  outlineLayer = outline;
+  outline.eachLayer(function(l){
+    var path = l._path;
+    if(path && path.getTotalLength){
+      var len = path.getTotalLength();
+      path.style.strokeDasharray = len+' '+len; path.style.strokeDashoffset = len;
+      path.style.transition = 'stroke-dashoffset 2s cubic-bezier(.6,.05,.2,1)';
+      window.requestAnimationFrame(function(){ path.style.strokeDashoffset='0'; });
+      window.setTimeout(function(){ path.style.strokeDasharray=''; path.style.strokeDashoffset=''; path.style.transition=''; }, 2100);
+    }
+  });
+}
+var outlineLayer = null;
 
-  zonePoly.bindTooltip('Microcuenca Ciri Grande–Trinidad · 145 km²', { sticky:true });
-  zonePoly.on('mouseover', function(){ zonePoly.setStyle({ weight:outlineWeight()+1.5 }); });
-  zonePoly.on('mouseout',  function(){ zonePoly.setStyle({ weight:outlineWeight() }); });
-  zonePoly.on('click', function(){ fitZone(); if(isNarrow()) openSheet(); });
+function fadeStreams(){
+  Object.keys(STREAM_GROUP).forEach(function(cls){
+    STREAM_GROUP[cls].eachLayer(function(gj){ gj.setStyle({ opacity: STREAM_STYLE[cls].opacity }); });
+  });
+}
 
-  var path = zonePoly._path;
-  if(path && path.getTotalLength){
-    var len = path.getTotalLength();
-    path.style.strokeDasharray = len+' '+len;
-    path.style.strokeDashoffset = len;
-    path.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(.6,.05,.2,1)';
-    window.requestAnimationFrame(function(){ path.style.strokeDashoffset='0'; });
-    window.setTimeout(function(){
-      path.style.strokeDasharray='7 5';
-      path.style.transition='';
-      applyYearToMap();
-    }, 1550);
-  } else {
-    applyYearToMap();
+/* Ajuste de estilos al cambiar el mapa base */
+function restyleForBase(){
+  Object.keys(sectorLayers).forEach(function(id){ var l=sectorLayers[id]; l.setStyle(sectorStyle(l.feature, +id===selSector)); });
+  if(outlineLayer) outlineLayer.setStyle({ weight:outlineWeight() });
+}
+
+/* Sector que contiene un punto (ray casting sobre la geometría exportada) */
+function ringHas(pt, ring){
+  var c=false, x=pt[0], y=pt[1];
+  for(var i=0,j=ring.length-1;i<ring.length;j=i++){
+    var xi=ring[i][0], yi=ring[i][1], xj=ring[j][0], yj=ring[j][1];
+    if(((yi>y)!==(yj>y)) && (x < (xj-xi)*(y-yi)/(yj-yi)+xi)) c=!c;
   }
+  return c;
+}
+function polyHas(pt, poly){
+  if(!ringHas(pt, poly[0])) return false;
+  for(var h=1;h<poly.length;h++){ if(ringHas(pt, poly[h])) return false; }
+  return true;
+}
+function sectorAt(lat, lng){
+  var pt=[lng,lat];
+  for(var i=0;i<SECS.length;i++){
+    var g=SECS[i].geometry, parts = g.type==='Polygon' ? [g.coordinates] : g.coordinates;
+    for(var k=0;k<parts.length;k++){ if(polyHas(pt, parts[k])) return SECS[i].properties; }
+  }
+  return null;
 }
 
 /* --- Marcadores de puntos ------------------------------------------- */
@@ -1797,7 +1988,12 @@ function checkSvg(){ return "<svg viewBox='0 0 24 24' fill='none' stroke='curren
 layersPop.innerHTML =
   '<div class="layers-pop">'+
     '<h5>Capas</h5>'+
-    '<label class="lrow"><input type="checkbox" id="lyOutline" checked><span class="lbox">'+checkSvg()+'</span>Límite de microcuenca</label>'+
+    '<label class="lrow"><input type="checkbox" id="lyOutline" checked><span class="lbox">'+checkSvg()+'</span>Límite de la microcuenca</label>'+
+    '<label class="lrow"><input type="checkbox" id="lyDivide" checked><span class="lbox">'+checkSvg()+'</span>Divisoria Cirí | Trinidad</label>'+
+    '<label class="lrow"><input type="checkbox" id="lySectors" checked><span class="lbox">'+checkSvg()+'</span>Semáforo por sectores</label>'+
+    '<label class="lrow"><input type="checkbox" id="lyRivers" checked><span class="lbox">'+checkSvg()+'</span>Ríos</label>'+
+    '<label class="lrow"><input type="checkbox" id="lyCreeks" checked><span class="lbox">'+checkSvg()+'</span>Riachuelos</label>'+
+    '<label class="lrow"><input type="checkbox" id="lyGullies" checked><span class="lbox">'+checkSvg()+'</span>Quebradas</label>'+
     '<label class="lrow"><input type="checkbox" id="lyPoints" checked><span class="lbox">'+checkSvg()+'</span>Puntos de interés</label>'+
     '<label class="lrow"><input type="checkbox" id="lyReports" checked><span class="lbox">'+checkSvg()+'</span>Reportes ciudadanos</label>'+
     '<h5>Mapa base</h5>'+
@@ -1826,6 +2022,11 @@ function bindLayer(chkId, group, label){
   });
 }
 bindLayer('lyOutline', outlineGroup, 'Capa de límite');
+bindLayer('lyDivide',  divideGroup,  'Divisoria entre subcuencas');
+bindLayer('lySectors', sectorGroup,  'Semáforo por sectores');
+bindLayer('lyRivers',  riverGroup,   'Capa de ríos');
+bindLayer('lyCreeks',  creekGroup,   'Capa de riachuelos');
+bindLayer('lyGullies', gullyGroup,   'Capa de quebradas');
 bindLayer('lyPoints',  poiGroup,     'Capa de puntos');
 bindLayer('lyReports', repGroup,     'Capa de reportes');
 
@@ -1837,7 +2038,7 @@ Array.prototype.forEach.call(layersPop.querySelectorAll('.base-btn'), function(b
     BASES[key].group.addTo(map);
     BASES[key].tiles.forEach(function(t){ t.bringToBack(); });
     currentBase=key;
-    applyYearToMap();             // reajusta grosor/opacidad del límite al nuevo fondo
+    restyleForBase();             // reajusta grosor/opacidad al nuevo fondo
     Array.prototype.forEach.call(layersPop.querySelectorAll('.base-btn'), function(x){
       x.setAttribute('aria-pressed', String(x.dataset.base===key));
     });
@@ -1849,7 +2050,8 @@ Array.prototype.forEach.call(layersPop.querySelectorAll('.base-btn'), function(b
    6 · PESTAÑAS DEL PANEL
    =================================================================== */
 
-var TABS=[['tab-ficha','p-ficha'],['tab-puntos','p-puntos'],['tab-rep','p-rep']];
+var TABS=[['tab-ficha','p-ficha'],['tab-sem','p-sem'],['tab-puntos','p-puntos'],['tab-rep','p-rep']];
+var TAB={ FICHA:0, SEM:1, PUNTOS:2, REP:3 };
 
 function selectTab(idx){
   TABS.forEach(function(pair,i){
@@ -1872,47 +2074,240 @@ TABS.forEach(function(pair,i){
 });
 
 /* ===================================================================
-   7 · SERIE TEMPORAL DE COBERTURA
+   7 · FICHA CALCULADA, PÉRDIDA FORESTAL Y SEMÁFORO
    =================================================================== */
 
-var yearRange=$('yearRange'), coverNum=$('coverNum'), coverFill=$('coverFill');
-var coverYear=$('coverYear'), coverDelta=$('coverDelta'), ticksEl=$('ticks');
-var activeYear = 2024;
-
-function applyYearToMap(){
-  if(!zonePoly) return;
-  var c = coverColor(COVER[activeYear]);
-  // Trazo claro fijo (legible sobre satélite); solo el relleno refleja el año.
-  var base = currentBase==='satelite' ? 0.10 : 0.14;
-  var op = base + (COVER[activeYear]-56)/(74-56)*0.16;
-  zonePoly.setStyle({ color:'#EAF7C8', weight:outlineWeight(), fillColor:c, fillOpacity:op });
+function cellHtml(k, v, sub, num){
+  return '<div class="cell"><div class="k">'+k+'</div><div class="v'+(num?' num':'')+'">'+v+'</div>'+
+    (sub ? '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:9px;letter-spacing:.05em;color:var(--paper-3);margin-top:5px;line-height:1.5">'+sub+'</div>' : '')+'</div>';
 }
 
-function setYear(idx, silent){
-  var y = YEARS[idx], pct = COVER[y];
-  activeYear = y;
+function fillFicha(){
+  var H=ST.hansen, cv=ST.cover;
+  $('kpiGrid').innerHTML =
+    cellHtml('Área', f0(ST.areaKm2)+'<small style="font-size:13px"> km²</small>', '', true)+
+    cellHtml('Ríos principales', 'Cirí Grande · Trinidad')+
+    cellHtml('Comité de gestión', 'Activo')+
+    cellHtml('Rango altitudinal', f0(ST.elevMin)+'–'+f0(ST.elevMax)+' m')+
+    cellHtml('Vierte hacia', 'Lago Gatún')+
+    cellHtml('Sectores analizados', String(SECS.length), '', true);
 
-  coverNum.innerHTML = pct+'<small>%</small>';
-  coverNum.style.color = coverColor(pct);
-  coverYear.textContent = y;
-  coverFill.style.width = pct+'%';
-  coverFill.style.background = 'linear-gradient(90deg, rgba(0,0,0,.25), '+coverColor(pct)+')';
+  $('fichaProse').innerHTML =
+    'La microcuenca <strong>Ciri Grande–Trinidad</strong> reúne las subcuencas de los ríos <strong>Cirí Grande</strong> ('+f1(ST.subKm2.ciri)+' km²) y '+
+    '<strong>Trinidad</strong> ('+f1(ST.subKm2.trinidad)+' km²), en el occidente de la Cuenca del Canal. Ambos nacen en las montañas del borde sur (hasta '+f0(ST.elevMax)+' m), '+
+    'corren hacia el norte por un valle largo y angosto y desembocan en el lago Gatún, que alimenta la operación del Canal. '+
+    'La forma es muy alargada (índice de compacidad Kc = '+ST.kc+'): el agua tarda en llegar a la salida y lo que ocurre en la parte alta se siente aguas abajo. '+
+    'En 2021 el <strong>'+f0(cv.arbol)+' %</strong> del área tenía árboles; el resto son pastos, concentrados en la cuenca baja. '+
+    'El proyecto indica un <strong>comité de gestión activo</strong>.';
 
-  var d = pct - COVER[2005];
-  coverDelta.innerHTML = (y===2005)
-    ? 'Año base de la serie ilustrativa'
-    : '▲ <b>+'+d+' pts</b> respecto a 2005';
+  $('morfoGrid').innerHTML =
+    cellHtml('Área total', f1(ST.areaKm2)+' km²', 'Cirí Grande '+f1(ST.subKm2.ciri)+' · Trinidad '+f1(ST.subKm2.trinidad))+
+    cellHtml('Perímetro', f1(ST.perimKm)+' km')+
+    cellHtml('Compacidad Kc', String(ST.kc), 'cuenca alargada (1 = círculo)')+
+    cellHtml('Pendiente media', f1(ST.slopeMean)+' %', f1(ST.steepPct)+' % del área supera el 30 %')+
+    cellHtml('Cauce principal Cirí Grande', f1(ST.lfp.ciri.km)+' km', 'nace a ~'+f0(ST.lfp.ciri.elevSrc)+' m')+
+    cellHtml('Cauce principal Trinidad', f1(ST.lfp.trinidad.km)+' km', 'nace a ~'+f0(ST.lfp.trinidad.elevSrc)+' m')+
+    cellHtml('Densidad de drenaje', String(ST.drainDensity)+' km/km²')+
+    cellHtml('Red hídrica total', f0(ST.streamKm)+' km', 'ríos '+f0(ST.streamBy.rio)+' · riachuelos '+f0(ST.streamBy.riachuelo)+' · quebradas '+f0(ST.streamBy.quebrada));
 
-  Array.prototype.forEach.call(ticksEl.children, function(s,i){ s.classList.toggle('on', i===idx); });
-  Array.prototype.forEach.call($('timeline').children, function(li){
-    li.classList.toggle('on', li.dataset.year===String(y));
-  });
+  $('coverNum').innerHTML = f0(cv.arbol)+'<small>%</small>';
+  $('coverNum').style.color = SEM_COLOR.verde;
+  $('coverSub').textContent = 'ESA WorldCover 2021';
+  window.requestAnimationFrame(function(){ $('coverFill').style.width = cv.arbol+'%'; });
+  $('coverDelta').innerHTML = 'Pastos <b>'+f1(cv.pasto)+' %</b> · franja ribereña con árboles <b>'+f1(cv.ribera)+' %</b>';
 
-  yearRange.setAttribute('aria-valuetext', y+', '+pct+' por ciento de cobertura');
-  applyYearToMap();
-  if(!silent) announce(y+': '+pct+' por ciento de cobertura boscosa.');
+  // presiones detectadas (todas calculadas)
+  var bajaKm=0, bajaGrass=0; SECS.forEach(function(f){ var p=f.properties; if(p.zona==='baja'){ bajaKm+=p.km2; bajaGrass+=p.km2*p.grass; } });
+  var peakI=0; H.lossByYear.forEach(function(v,i){ if(v>H.lossByYear[peakI]) peakI=i; });
+  var worstEro = SECS.map(function(f){ return f.properties; }).sort(function(a,b){ return b.steepBare-a.steepBare; })[0];
+  var P = [
+    { lvl: cv.pasto>=25?'mid':'low', n:'Pastos y uso agropecuario', d: f1(cv.pasto)+' % del área está en pastos (WorldCover 2021); en la cuenca baja sube a '+f1(bajaGrass/bajaKm)+' %.' },
+    { lvl: H.lossPct>=10?'mid':'low', n:'Pérdida de cobertura arbórea', d: f0(H.lossHaTotal)+' ha perdidos entre 2001 y 2023 ('+f1(H.lossPct)+' % del bosque de 2000). El pico fue en '+(2001+peakI)+' ('+f0(H.lossByYear[peakI])+' ha).' },
+    { lvl: ST.steepBarePct>=5?'mid':'low', n:'Laderas empinadas sin árboles', d: f1(ST.steepBarePct)+' % del área tiene pendiente > 30 % sin cobertura arbórea; la mayor proporción está en «'+worstEro.nombre+'» ('+f1(worstEro.steepBare)+' %).' },
+    { lvl: (100-cv.ribera)>=20?'mid':'low', n:'Franja ribereña desprotegida', d: f1(100-cv.ribera)+' % de la franja de ±40 m a lado y lado de los cauces no tiene árboles.' }
+  ];
+  $('pressureList').innerHTML = P.map(function(r){
+    return '<li class="risk '+r.lvl+'"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><div><div class="rn">'+r.n+'</div><div class="rd">'+r.d+'</div><span class="rl">Nivel '+(r.lvl==='mid'?'medio':'bajo')+'</span></div></li>';
+  }).join('');
+
+  $('srcList').innerHTML =
+    '<li>· Relieve: '+ECO.fuentes.dem+'</li>'+
+    '<li>· Cobertura del suelo: '+ECO.fuentes.cobertura+'</li>'+
+    '<li>· Pérdida forestal: '+ECO.fuentes.bosque+'</li>'+
+    '<li>· Procesamiento propio (hidrología D8, Strahler, estadística por sector) · generado el '+ECO.generado+'</li>'+
+    '<li>· WorldCover agrupa pastizales y herbazales en una sola clase («herbáceas»); aquí se leen como pastos.</li>'+
+    '<li>· Los umbrales y pesos del semáforo son una propuesta de trabajo, ajustable con el profesor.</li>';
+
+  buildLossChart();
+  buildLegend();
+  var g=ECO.global, col=semOf(g.score);
+  $('statusText').textContent = 'Semáforo general: '+SEM_LABEL[col]+' · '+g.score+'/100'+(g.rojo>0 ? ' — '+f0(g.rojo)+' % del área en rojo' : '');
+  $('statusLine').style.color = SEM_COLOR[col];
+  var cc=unionBounds().getCenter(); $('coverCoord').textContent = cc.lat.toFixed(3)+'°N · '+Math.abs(cc.lng).toFixed(3)+'°W · CUENCA DEL CANAL';
+}
+
+/* --- Leyenda del mapa (escritorio) --- */
+function buildLegend(){
+  $('mapLegend').innerHTML =
+    '<h6>Semáforo</h6>'+
+    '<div class="lg"><span class="sw" style="background:'+SEM_COLOR.verde+'"></span>Verde ≥ '+CFG.umbral.verde+'</div>'+
+    '<div class="lg"><span class="sw" style="background:'+SEM_COLOR.amarillo+'"></span>Amarillo '+CFG.umbral.amarillo+'–'+(CFG.umbral.verde-1)+'</div>'+
+    '<div class="lg"><span class="sw" style="background:'+SEM_COLOR.rojo+'"></span>Rojo &lt; '+CFG.umbral.amarillo+'</div>'+
+    '<h6>Red hídrica</h6>'+
+    '<div class="lg"><span class="ln r"></span>Río</div>'+
+    '<div class="lg"><span class="ln a"></span>Riachuelo</div>'+
+    '<div class="lg"><span class="ln q"></span>Quebrada</div>'+
+    '<h6>Límites</h6>'+
+    '<div class="lg"><span class="ln" style="border-top:3px solid #F4F1DF"></span>Microcuenca</div>'+
+    '<div class="lg"><span class="ln" style="border-top:2px dashed #F2ECDC"></span>Cirí | Trinidad</div>';
+}
+
+/* --- Serie de pérdida forestal (Hansen) --- */
+var yearRange=$('yearRange');
+function buildLossChart(){
+  var a=ST.hansen.lossByYear, mx=Math.max.apply(null,a), n=a.length, w=230/n, svg='';
+  for(var i=0;i<n;i++){ var h=Math.max(1.5, a[i]/mx*66); svg += '<rect x="'+(i*w+.7).toFixed(2)+'" y="'+(70-h).toFixed(2)+'" width="'+(w-1.4).toFixed(2)+'" height="'+h.toFixed(2)+'" rx="1"></rect>'; }
+  $('lossChart').innerHTML = svg;
+}
+function setYear(y, silent){
+  var H=ST.hansen, cum=H.cumLoss[y], pct=100*cum/H.forest2000Ha;
+  $('lossNum').innerHTML = f0(cum)+'<small> ha</small>';
+  $('lossYear').textContent = 2000+y;
+  $('lossAnnual').textContent = (2000+y)+': '+f0(H.lossByYear[y-1])+' ha';
+  $('lossDelta').innerHTML = '<b>'+f1(pct)+' %</b> del bosque que había en 2000 ('+f0(H.forest2000Ha)+' ha)';
+  var rs=$('lossChart').children; for(var i=0;i<rs.length;i++){ rs[i].setAttribute('class', i===y-1 ? 'on' : i<y-1 ? 'past' : ''); }
+  yearRange.value = y;
+  yearRange.setAttribute('aria-valuetext', 'hasta '+(2000+y)+': '+f0(cum)+' hectáreas, '+f1(pct)+' por ciento del bosque de 2000');
+  if(!silent) announce('Hasta '+(2000+y)+': '+f0(cum)+' hectáreas de cobertura arbórea perdidas, '+f1(pct)+' por ciento del bosque del año 2000.');
 }
 yearRange.addEventListener('input', function(){ setYear(parseInt(this.value,10)); });
+
+/* --- Semáforo: panel general, lista de sectores y detalle --- */
+var SEC_ORDER = [];
+var semListView=$('semListView'), semDetailView=$('semDetailView');
+
+function buildSemaforo(){
+  var g=ECO.global, col=semOf(g.score);
+  var redKm=0, redBaja=0, redNames=[];
+  SECS.forEach(function(f){ var p=f.properties; if(p.color==='rojo'){ redKm+=p.km2; if(p.zona==='baja') redBaja+=p.km2; } });
+  var alertas = g.rojo>=15;
+  $('semHero').className = 'sem-hero regmark c-'+col;
+  $('semHero').innerHTML =
+    '<div class="sem-top"><div class="sem-score">'+g.score+'<small>/100</small></div>'+
+      '<span class="sem-badge"><i></i>'+SEM_LABEL[col]+(alertas?' · con alertas':'')+'</span></div>'+
+    '<div class="stackbar" role="img" aria-label="Área por color: '+f0(g.verde)+' % verde, '+f0(g.amarillo)+' % amarillo, '+f0(g.rojo)+' % rojo">'+
+      '<span class="s-verde" style="width:'+g.verde+'%"></span><span class="s-amarillo" style="width:'+g.amarillo+'%"></span><span class="s-rojo" style="width:'+g.rojo+'%"></span></div>'+
+    '<div class="stack-legend">'+
+      '<span><i style="background:'+SEM_COLOR.verde+'"></i><b>'+f0(g.verde)+' %</b> verde</span>'+
+      '<span><i style="background:'+SEM_COLOR.amarillo+'"></i><b>'+f0(g.amarillo)+' %</b> amarillo</span>'+
+      '<span><i style="background:'+SEM_COLOR.rojo+'"></i><b>'+f0(g.rojo)+' %</b> rojo</span></div>'+
+    '<p class="sem-note">El índice general es el promedio de los '+SECS.length+' sectores ponderado por área. '+
+      (redKm>0 ? '<strong>'+f0(redBaja/redKm*100)+' % del área en rojo está en la cuenca baja</strong> ('+f0(redKm)+' km²), donde el bosque dejó paso a pastos y además llega el agua de toda la cuenca. ' : '')+
+      'La cuenca alta se mantiene en verde.</p>';
+
+  // cómo se calcula
+  var rows = CFG.params.map(function(p){
+    var rule = p.bad<p.good ? '0 pts con ≤ '+p.bad+' % · 100 pts con ≥ '+p.good+' %' : '100 pts con ≤ '+p.good+' % · 0 pts con ≥ '+p.bad+' %';
+    return '<div class="prow"><div class="pt"><span>'+p.label+'</span><span class="pw">'+p.w+' %</span></div>'+
+           '<div class="pr">'+p.mide+'.<br>'+rule+'.<br>Fuente: '+p.fuente+'.</div></div>';
+  }).join('');
+  $('semHowBody').innerHTML =
+    '<p>Cada <strong>sector</strong> (un tramo de río de orden ≥ 3 más las laderas y afluentes menores que drenan a él) recibe un puntaje de 0 a 100. '+
+    'Se calcula con <strong>cinco parámetros</strong>; cada uno se convierte a puntos con una escala lineal entre un valor «malo» (0 pts) y uno «bueno» (100 pts), y se suman según su peso.</p>'+
+    '<div class="ptable">'+rows+'</div>'+
+    '<p><strong>Umbrales de color</strong></p>'+
+    '<div class="thr"><div class="c-verde"><b>Verde</b><span>≥ '+CFG.umbral.verde+'</span></div><div class="c-amarillo"><b>Amarillo</b><span>'+CFG.umbral.amarillo+' a '+(CFG.umbral.verde-1)+'</span></div><div class="c-rojo"><b>Rojo</b><span>&lt; '+CFG.umbral.amarillo+'</span></div></div>'+
+    '<p><strong>Por qué lo rojo suele quedar abajo.</strong> Arriba el relieve es empinado y el bosque ha sido difícil de convertir; abajo el terreno es plano y accesible, se convierte a pastos, y el sector además recibe el agua de todos los de arriba. '+
+    'Por eso el parámetro «condición aguas arriba» pesa un 20 %: un sector bajo con bosque aceptable pero con una cuenca alta deteriorada no debería salir verde. '+
+    'Esto <em>no está forzado</em>: sale de los datos; si la parte alta se deteriora, también se pondría amarilla o roja.</p>'+
+    '<p><strong>Todavía no entra</strong> (requiere trabajo de campo): calidad del agua (oxígeno disuelto, turbidez, coliformes), caudal en estiaje, puntos de contaminación, presencia de comité y pagos por servicios ambientales por sector. '+
+    'Cuando existan se agregan como parámetros con su propio peso y se reponderan los demás.</p>';
+
+  // lista de sectores
+  SEC_ORDER = [];
+  var html='';
+  ['alta','media','baja'].forEach(function(z){
+    var gset = SECS.map(function(f){ return f.properties; }).filter(function(p){ return p.zona===z; }).sort(function(a,b){ return b.elevMean-a.elevMean; });
+    if(!gset.length) return;
+    var A=0, S=0; gset.forEach(function(p){ A+=p.km2; S+=p.score*p.km2; });
+    html += '<div class="zone-h"><span>'+ZONA_LABEL[z]+'</span><em>'+gset.length+' sectores · índice '+Math.round(S/A)+'</em></div><ul class="sector-list">';
+    gset.forEach(function(p){
+      SEC_ORDER.push(p.id);
+      html += '<li><button type="button" class="sector-item c-'+p.color+'" data-id="'+p.id+'" aria-label="'+p.nombre+', '+SEM_LABEL[p.color]+', '+p.score+' de 100. Ver detalle.">'+
+        '<span class="dot"></span><span><span class="n">'+p.nombre+'</span><span class="k" style="display:block">'+f1(p.km2)+' km² · '+f0(p.elevMean)+' m · '+f0(p.tree)+' % árboles</span></span>'+
+        '<span class="sc">'+p.score+'</span></button></li>';
+    });
+    html += '</ul>';
+  });
+  $('semSectors').innerHTML = html;
+  Array.prototype.forEach.call($('semSectors').querySelectorAll('.sector-item'), function(b){
+    b.addEventListener('click', function(){ selectSector(parseInt(b.dataset.id,10), false); });
+  });
+}
+
+var PARAM_TXT = {
+  arbol:     function(c,p){ return f1(c.v)+' % del sector está cubierto por árboles'; },
+  ribera:    function(c,p){ return f1(c.v)+' % de la franja de ±40 m junto a los cauces tiene árboles'; },
+  erosion:   function(c,p){ return f1(c.v)+' % del área tiene pendiente > 30 % y no tiene árboles'; },
+  perdida:   function(c,p){ return f1(c.v)+' % del bosque del año 2000 se perdió entre 2014 y 2023'; },
+  acumulada: function(c,p){ return f1(c.v)+' % de árboles en promedio sobre '+f0(p.upKm2)+' km² que drenan hacia este sector'; }
+};
+
+function selectSector(id, fromMap){
+  var p=secProps(id); if(!p) return;
+  if(fromMap && typeof placing!=='undefined' && placing) return;
+  var prev=selSector; selSector=id;
+  if(prev && sectorLayers[prev]) sectorLayers[prev].setStyle(sectorStyle(sectorLayers[prev].feature,false));
+  var l=sectorLayers[id]; if(l){ l.setStyle(sectorStyle(l.feature,true)); l.bringToFront(); }
+  selectTab(TAB.SEM);
+  renderSectorDetail(p);
+  if(mapReady && l) map.flyToBounds(l.getBounds(), { paddingTopLeft:[40,40], paddingBottomRight:[40, isNarrow()?90:40], maxZoom:14, duration:.85 });
+  if(fromMap && isNarrow()) openSheet();
+  announce('Sector '+p.nombre+': '+SEM_LABEL[p.color]+', '+p.score+' de 100.');
+}
+
+function renderSectorDetail(p){
+  semListView.setAttribute('hidden',''); semDetailView.removeAttribute('hidden');
+  var comps = CFG.params.map(function(par){
+    var c=p.comp[par.id], cc=semOf(c.pts);
+    return '<div class="comp"><div class="comp-top"><span>'+par.label+'</span><span>'+c.pts+' pts · peso '+par.w+' %</span></div>'+
+      '<div class="bar"><i style="width:'+c.pts+'%;background:'+SEM_COLOR[cc]+'"></i></div><div class="cv">'+PARAM_TXT[par.id](c,p)+'</div></div>';
+  }).join('');
+  var lost = CFG.params.map(function(par){ return { par:par, lost:(100-p.comp[par.id].pts)*par.w/100 }; }).sort(function(a,b){ return b.lost-a.lost; });
+  var why = 'Este sector queda en <strong>'+SEM_LABEL[p.color]+'</strong> ('+p.score+'/100). Lo que más le resta es <strong>'+lost[0].par.label.toLowerCase()+'</strong> (−'+Math.round(lost[0].lost)+' pts) y <strong>'+lost[1].par.label.toLowerCase()+'</strong> (−'+Math.round(lost[1].lost)+' pts). '+
+    (p.upKm2>p.km2+0.05 ? 'Recibe además el drenaje de otros '+f0(p.upKm2-p.km2)+' km² aguas arriba.' : 'Es una cabecera: no recibe drenaje de otros sectores.');
+  var idx=SEC_ORDER.indexOf(p.id);
+  semDetailView.innerHTML =
+    '<button class="back-btn" id="semBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>Todos los sectores</button>'+
+    '<div class="sem-hero c-'+p.color+'" style="margin-bottom:0">'+
+      '<div class="sem-top"><div><div style="font-family:\'IBM Plex Mono\',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-3);margin-bottom:8px">'+ZONA_LABEL[p.zona]+'</div>'+
+        '<div class="detail-h" style="margin:0">'+p.nombre+'</div></div>'+
+        '<span class="sem-badge"><i></i>'+SEM_LABEL[p.color]+'</span></div>'+
+      '<div style="display:flex;align-items:flex-end;gap:12px;margin-top:14px"><div class="sem-score">'+p.score+'<small>/100</small></div>'+
+        '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:9.5px;color:var(--paper-3);letter-spacing:.05em;padding-bottom:4px">'+f1(p.km2)+' km² · '+f0(p.elevMean)+' m · pend. '+f0(p.slopeMean)+' %</div></div>'+
+    '</div>'+
+    '<div class="why c-'+p.color+'">'+why+'</div>'+
+    '<p class="eyebrow">Parámetros del semáforo</p>'+comps+
+    '<div class="mini-facts"><div class="mini"><div class="k">Árboles</div><div class="v">'+f0(p.tree)+' %</div></div>'+
+      '<div class="mini"><div class="k">Pastos</div><div class="v">'+f0(p.grass)+' %</div></div>'+
+      '<div class="mini"><div class="k">Altitud</div><div class="v">'+f0(p.elevMin)+'–'+f0(p.elevMax)+' m</div></div>'+
+      '<div class="mini"><div class="k">Subcuenca</div><div class="v">'+riverOf(p.sub)+'</div></div></div>'+
+    '<div style="margin-top:18px; display:flex; gap:8px; flex-wrap:wrap">'+
+      '<button class="mini-btn" id="semCenter">Centrar en el mapa</button>'+
+      '<button class="mini-btn" id="semNext">Siguiente sector →</button></div>';
+  $('semBack').addEventListener('click', backToSemList);
+  $('semCenter').addEventListener('click', function(){ var l=sectorLayers[p.id]; if(l && mapReady) map.flyToBounds(l.getBounds(), { padding:[40,40], maxZoom:14, duration:.8 }); });
+  $('semNext').addEventListener('click', function(){ selectSector(SEC_ORDER[(idx+1)%SEC_ORDER.length], false); });
+  $('p-sem').scrollTop = 0;
+}
+
+function backToSemList(){
+  semDetailView.setAttribute('hidden',''); semListView.removeAttribute('hidden');
+  if(selSector && sectorLayers[selSector]) sectorLayers[selSector].setStyle(sectorStyle(sectorLayers[selSector].feature,false));
+  var keep=selSector; selSector=null;
+  var b = keep ? $('semSectors').querySelector('[data-id="'+keep+'"]') : $('semSectors').querySelector('.sector-item');
+  if(b){ b.focus(); }
+}
 
 /* ===================================================================
    8 · PUNTOS DE INTERÉS — lista y detalle
@@ -1947,7 +2342,7 @@ function selectPoi(id, fromMap){
   if(!p) return;
   selectedPoi = id;
 
-  selectTab(1);
+  selectTab(TAB.PUNTOS);
   renderPoiDetail(p);
   markSelected(id);
 
@@ -2030,7 +2425,7 @@ function repIcon(drop){
 function addRepMarker(r, drop){
   var m = L.marker([r.lat,r.lng], { icon:repIcon(drop), keyboard:true, alt:'Reporte: '+r.type });
   m.bindTooltip(r.type.toUpperCase(), { direction:'top', offset:[0,-14] });
-  m.on('click', function(){ selectTab(2); });
+  m.on('click', function(){ selectTab(TAB.REP); });
   m.addTo(repGroup);
   repMarkers[r.id]=m;
 }
@@ -2061,7 +2456,7 @@ function renderReports(){
         '</div>'+
         '<div class="rep-desc">'+r.desc.replace(/[<>]/g,'')+'</div>'+
         '<div class="rep-foot">'+
-          '<span class="rep-coord">◎ '+r.lat.toFixed(4)+', '+r.lng.toFixed(4)+'</span>'+
+          '<span class="rep-coord">◎ '+r.lat.toFixed(4)+', '+r.lng.toFixed(4)+(r.sector ? '<br>Sector: '+r.sector : '')+'</span>'+
           '<span class="rep-acts">'+
             '<button class="mini-btn" data-go="'+r.id+'">Ver</button>'+
             '<button class="mini-btn danger" data-del="'+r.id+'">Borrar</button>'+
@@ -2119,6 +2514,7 @@ var fab=$('fab'), placingBar=$('placingBar');
 var repOverlay=$('repOverlay'), repSheet=$('repSheet');
 var coordChip=$('coordChip'), repType=$('repType'), repDesc=$('repDesc');
 var fType=$('fType'), fDesc=$('fDesc'), descCount=$('descCount');
+var pendingSector=null;
 var placing=false, pendingLL=null, ghostMarker=null, lastFocus=null;
 
 function startPlacing(){
@@ -2153,7 +2549,8 @@ map.on('click', function(e){
   if(ghostMarker) map.removeLayer(ghostMarker);
   ghostMarker = L.marker(pendingLL, { icon:repIcon(true), interactive:false }).addTo(map);
 
-  coordChip.textContent = '◎ '+fmt(pendingLL);
+  pendingSector = sectorAt(pendingLL.lat, pendingLL.lng);
+  coordChip.textContent = '◎ '+fmt(pendingLL)+(pendingSector ? ' · '+pendingSector.nombre : ' · fuera de la microcuenca');
   coordChip.classList.add('set');
   openRepModal();
 });
@@ -2194,7 +2591,8 @@ $('repSubmit').addEventListener('click', function(){
     var r = {
       id:'r'+Date.now()+Math.floor(Math.random()*999),
       type:repType.value, desc:repDesc.value.trim(),
-      lat:pendingLL.lat, lng:pendingLL.lng, ts:Date.now()
+      lat:pendingLL.lat, lng:pendingLL.lng, ts:Date.now(),
+      sector: pendingSector ? pendingSector.nombre : null, color: pendingSector ? pendingSector.color : null
     };
     reports.push(r); persist();
     if(ghostMarker){ map.removeLayer(ghostMarker); ghostMarker=null; }
@@ -2209,7 +2607,7 @@ $('repSubmit').addEventListener('click', function(){
     coordChip.textContent='◎ Sin ubicar'; coordChip.classList.remove('set');
     pendingLL=null;
 
-    selectTab(2);
+    selectTab(TAB.REP);
     showToast('Reporte registrado — gracias por contribuir');
     announce('Reporte guardado. Ahora hay '+reports.length+' reportes.');
   }, 620);
@@ -2306,6 +2704,7 @@ document.addEventListener('keydown', function(e){
     if(repOverlay.classList.contains('show')) return closeRepModal();
     if(!layersPop.hasAttribute('hidden')) return toggleLayers(false);
     if(placing) return stopPlacing();
+    if(semDetailView && !semDetailView.hasAttribute('hidden')) return backToSemList();
     if(poiDetailView && !poiDetailView.hasAttribute('hidden')) return backToPoiList();
     if(isNarrow() && panel.classList.contains('open')) return closeSheet();
   }

@@ -1,0 +1,5 @@
+{
+  "name": "ecocuenca-tools",
+  "private": true,
+  "dependencies": { "geotiff": "*", "pngjs": "*" }
+}
