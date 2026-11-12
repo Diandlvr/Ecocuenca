@@ -204,6 +204,7 @@ body{
   letter-spacing:.14em; text-transform:uppercase;
   transition:background .18s var(--ease),border-color .18s var(--ease);
 }
+.icon-btn.always{ display:inline-flex; }
 .icon-btn:hover{ background:rgba(242,236,220,.11); border-color:rgba(242,236,220,.26); }
 .icon-btn svg{ width:16px; height:16px; }
 
@@ -799,7 +800,7 @@ input[type=range]:focus-visible::-webkit-slider-thumb{ box-shadow:0 0 0 5px rgba
 .fab[aria-pressed="true"]{ background:var(--ochre); box-shadow:0 12px 32px rgba(226,172,66,.38); }
 
 .placing{
-  position:absolute; top:14px; left:50%; z-index:420;
+  position:absolute; top:68px; left:50%; z-index:430;
   transform:translateX(-50%) translateY(-180%);
   display:flex; align-items:center; gap:13px;
   min-height:var(--tap); padding:0 8px 0 17px;
@@ -1056,8 +1057,213 @@ details.sem-how[open] summary::after{ transform:rotate(45deg); }
 .map-legend .ln.r{ border-top-width:3.5px; } .map-legend .ln.a{ border-top-width:2px; } .map-legend .ln.q{ border-top-width:1px; opacity:.8; }
 .sector-path{ transition:fill-opacity .9s var(--ease); }
 
+/* ===================== SEMÁFORO REAL (rojo arriba) ===================== */
+.tlight{
+  display:inline-flex; flex-direction:column; gap:6px; padding:7px 6px; flex-shrink:0;
+  background:linear-gradient(180deg,#1c2622,#0b120f); border:1px solid rgba(242,236,220,.16);
+  border-radius:12px; box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 6px 18px rgba(0,0,0,.35);
+}
+.tlight .lamp{ width:18px; height:18px; border-radius:50%; background:var(--c); opacity:.16; transition:opacity .3s, box-shadow .3s; }
+.tlight .lamp.on{ opacity:1; box-shadow:0 0 12px 2px color-mix(in srgb, var(--c) 70%, transparent); }
+.tlight.lg .lamp{ width:24px; height:24px; }
+.sem-hero .sem-row{ display:flex; gap:16px; align-items:center; }
+.sem-hero .sem-row > div{ flex:1; min-width:0; }
+.sem-row .sem-top{ flex-wrap:wrap; align-items:center; gap:8px 12px; }
+
+.map-legend .tl-legend{ display:flex; gap:10px; align-items:stretch; }
+.map-legend .tl-legend .tlight{ gap:9px; padding:6px 5px; }
+.map-legend .tl-legend .tlight .lamp{ width:14px; height:14px; opacity:.95; }
+.map-legend .tl-legend .tlight .lamp.off{ opacity:.15; box-shadow:none; }
+.map-legend .tl-rows{ display:flex; flex-direction:column; justify-content:space-between; gap:9px; flex:1; padding:5px 0; }
+.lg-btn{ all:unset; cursor:pointer; display:block; font-size:11px; line-height:14px; color:var(--paper-2); border-radius:4px; }
+.lg-btn b{ font-weight:500; color:var(--paper); }
+.lg-btn[aria-pressed="false"]{ opacity:.4; text-decoration:line-through; }
+.lg-btn:focus-visible{ outline:2px solid var(--lime); outline-offset:2px; }
+.lg-hint{ font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.08em; color:var(--paper-3); margin-top:8px; line-height:1.5; }
+
+.thr{ grid-template-columns:1fr; }
+.thr div{ display:flex; justify-content:space-between; align-items:center; }
+
+/* --- Filtros, orden y chips -------------------------------------------- */
+.chips{ display:flex; flex-wrap:wrap; gap:6px; }
+.chip{
+  display:inline-flex; align-items:center; gap:7px; min-height:34px; padding:0 12px; border-radius:100px; cursor:pointer;
+  background:rgba(242,236,220,.04); border:1px solid var(--rule); color:var(--paper-2);
+  font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.1em; text-transform:uppercase;
+}
+.chip i{ width:9px; height:9px; border-radius:50%; background:var(--c,var(--paper-3)); }
+.chip[aria-pressed="true"]{ border-color:var(--c,var(--moss)); background:color-mix(in srgb, var(--c,var(--moss)) 16%, transparent); color:var(--paper); }
+.chip[aria-pressed="false"] i{ opacity:.3; }
+.chip:hover{ color:var(--paper); }
+.toolbar-row{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin:22px 0 4px; }
+.sel-mini{
+  min-height:34px; padding:0 30px 0 10px; border-radius:var(--r-sm); appearance:none; cursor:pointer;
+  background:var(--ink-800) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2393A093' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 8px center/14px;
+  border:1px solid var(--rule); color:var(--paper-2); font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.06em;
+}
+.sector-item.dim{ opacity:.38; }
+
+/* --- Modo de color del mapa (temas) ------------------------------------ */
+.theme-grid{ display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.theme-btn{
+  text-align:left; padding:9px 10px; border-radius:var(--r-sm); cursor:pointer; min-height:var(--tap);
+  background:rgba(242,236,220,.04); border:1px solid var(--rule); color:var(--paper-2); font:inherit; font-size:11.5px; line-height:1.3;
+}
+.theme-btn small{ display:block; font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:.06em; color:var(--paper-3); margin-top:3px; }
+.theme-btn[aria-pressed="true"]{ border-color:var(--moss); background:rgba(111,191,142,.12); color:var(--paper); }
+.layers-pop .theme-grid{ grid-template-columns:1fr; gap:4px; }
+.layers-pop .theme-btn{ min-height:32px; padding:6px 9px; }
+.layers-pop .theme-btn small{ display:none; }
+.layers-pop{ max-height:calc(100vh - 190px); overflow-y:auto; }
+
+/* --- Buscador ------------------------------------------------------------ */
+.search{ position:absolute; left:14px; top:14px; z-index:420; width:min(330px, calc(100% - 210px)); }
+.search-box{
+  display:flex; align-items:center; gap:8px; height:var(--tap); padding:0 12px;
+  background:var(--glass); backdrop-filter:blur(10px); border:1px solid var(--rule); border-radius:var(--r-md);
+}
+.search-box:focus-within{ border-color:var(--moss); box-shadow:0 0 0 3px rgba(111,191,142,.16); }
+.search-box svg{ width:15px; height:15px; color:var(--paper-3); flex-shrink:0; }
+.search-box input{ flex:1; min-width:0; background:none; border:none; outline:none; color:var(--paper); font:inherit; font-size:13px; }
+.search-box input::placeholder{ color:var(--paper-3); }
+.search-box kbd{ font-family:'IBM Plex Mono',monospace; font-size:9px; border:1px solid var(--rule); border-radius:4px; padding:1px 5px; color:var(--paper-3); }
+.search-res{
+  margin:6px 0 0; padding:5px; list-style:none; max-height:min(380px, 60vh); overflow-y:auto;
+  background:var(--ink-700); border:1px solid var(--rule); border-radius:var(--r-md); box-shadow:0 22px 48px rgba(0,0,0,.55);
+}
+.search-res[hidden]{ display:none; }
+.search-res li{ display:flex; align-items:center; gap:10px; padding:8px 9px; border-radius:var(--r-sm); cursor:pointer; min-height:40px; }
+.search-res li[aria-selected="true"], .search-res li:hover{ background:var(--ink-500); }
+.search-res .ic{ width:10px; height:10px; border-radius:50%; background:var(--c,var(--river)); flex-shrink:0; }
+.search-res .t{ font-size:12.5px; color:var(--paper); line-height:1.3; }
+.search-res .s{ font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:.08em; color:var(--paper-3); text-transform:uppercase; margin-top:2px; }
+.search-res .none{ cursor:default; color:var(--paper-3); font-size:12px; }
+.map-hint{ top:68px; }
+
+/* --- Diagnóstico multicriterio ----------------------------------------- */
+.diag-list{ display:flex; flex-direction:column; gap:9px; }
+.diag{
+  border:1px solid var(--rule); border-left:3px solid var(--c,var(--paper-3)); border-radius:var(--r-md);
+  background:var(--ink-600); padding:13px 14px;
+}
+.diag.nodata{ --c:#6c7a70; }
+.diag-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+.diag-top h4{ margin:0; font-size:13.5px; font-weight:500; }
+.diag-top .w{ font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--paper-3); letter-spacing:.08em; margin-top:3px; display:block; }
+.diag p{ font-size:12px; color:var(--paper-2); font-weight:300; line-height:1.6; margin:8px 0 0; }
+.diag p strong{ color:var(--paper); font-weight:500; }
+.diag .src{ font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:.06em; color:var(--paper-3); margin-top:8px; line-height:1.5; }
+.minibar{ display:flex; height:7px; border-radius:100px; overflow:hidden; background:var(--ink-800); margin-top:9px; }
+.minibar span{ display:block; height:100%; }
+.crit{ width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
+.crit th, .crit td{ border:1px solid var(--rule-2); padding:6px 7px; vertical-align:top; text-align:left; color:var(--paper-2); font-weight:300; line-height:1.45; }
+.crit th{ font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--paper-3); font-weight:500; }
+.crit td.r{ color:var(--sr); } .crit td.a{ color:var(--sa); } .crit td.v{ color:var(--sv); }
+.cls-bars{ display:flex; flex-direction:column; gap:6px; margin-top:10px; }
+.cls-bar{ display:grid; grid-template-columns:34px 1fr 44px; gap:8px; align-items:center; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--paper-2); }
+.cls-bar .tr{ height:8px; border-radius:100px; background:var(--ink-800); overflow:hidden; }
+.cls-bar .tr i{ display:block; height:100%; background:var(--river); }
+.wq-form{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+.wq-form label{ display:flex; flex-direction:column; gap:4px; font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--paper-3); }
+.wq-form input, .wq-form select{
+  min-height:38px; padding:0 9px; border-radius:var(--r-sm); background:var(--ink-800); border:1px solid var(--rule);
+  color:var(--paper); font-family:'Spline Sans',sans-serif; font-size:13px; text-transform:none; letter-spacing:0;
+}
+.wq-form .full{ grid-column:1 / -1; }
+.wq-table{ width:100%; border-collapse:collapse; margin-top:10px; font-family:'IBM Plex Mono',monospace; font-size:10px; }
+.wq-table th, .wq-table td{ padding:6px 5px; border-bottom:1px solid var(--rule-2); text-align:left; color:var(--paper-2); }
+.wq-table th{ color:var(--paper-3); font-weight:500; font-size:8.5px; letter-spacing:.08em; text-transform:uppercase; }
+.wq-table .dotc{ display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--c); margin-right:5px; }
+.wq-table button{ background:none; border:none; color:var(--paper-3); cursor:pointer; font-size:12px; }
+.wq-table button:hover{ color:var(--clay); }
+.btn-row{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.sec-diag{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:6px 0 16px; }
+.sec-diag .mini{ border-left:3px solid var(--c,var(--rule)); }
+
+/* --- Reportes ampliados ------------------------------------------------- */
+.rep-meta{ display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
+.tag{ display:inline-flex; align-items:center; gap:5px; padding:3px 8px; border-radius:100px; border:1px solid var(--rule); font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--paper-3); }
+.tag.sev-alta{ color:var(--sr); border-color:color-mix(in srgb, var(--sr) 50%, transparent); }
+.tag.sev-media{ color:var(--sa); border-color:color-mix(in srgb, var(--sa) 50%, transparent); }
+.tag.st-verificado{ color:var(--river); border-color:rgba(99,172,203,.5); }
+.tag.st-resuelto{ color:var(--sv); border-color:color-mix(in srgb, var(--sv) 50%, transparent); }
+.rep-photo{ display:block; width:100%; max-height:170px; object-fit:cover; border-radius:var(--r-sm); margin-top:10px; border:1px solid var(--rule); }
+.rep.resuelto{ opacity:.62; }
+.rep-foot{ flex-wrap:wrap; }
+.rep-acts{ flex-wrap:wrap; justify-content:flex-end; }
+.rep-pin{ border-color:#F4F1DF; }
+.map-legend{ width:212px; }
+.seg{ display:flex; gap:4px; }
+.seg label{ flex:1; }
+.seg input{ position:absolute; opacity:0; width:0; height:0; }
+.seg span{
+  display:flex; align-items:center; justify-content:center; min-height:40px; border-radius:var(--r-sm); cursor:pointer;
+  border:1px solid var(--rule); background:var(--ink-800); color:var(--paper-3);
+  font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.1em; text-transform:uppercase;
+}
+.seg input:checked+span{ border-color:var(--c,var(--moss)); color:var(--paper); background:color-mix(in srgb, var(--c,var(--moss)) 16%, transparent); }
+.seg input:focus-visible+span{ outline:2px solid var(--lime); outline-offset:2px; }
+.field input[type=file]{ font-size:12px; color:var(--paper-3); }
+.photo-prev{ display:block; max-width:100%; max-height:140px; border-radius:var(--r-sm); margin-top:8px; }
+.photo-prev[hidden]{ display:none; }
+.field input[type=file]::file-selector-button{
+  margin-right:10px; min-height:36px; padding:0 12px; border-radius:var(--r-sm); cursor:pointer;
+  background:rgba(242,236,220,.07); border:1px solid var(--rule); color:var(--paper-2);
+  font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.1em; text-transform:uppercase;
+}
+.leaflet-popup-content-wrapper{ background:var(--ink-700); color:var(--paper); border:1px solid var(--rule); border-radius:var(--r-md); }
+.leaflet-popup-tip{ background:var(--ink-700); }
+.leaflet-popup-content{ margin:12px 14px; font-family:'Spline Sans',sans-serif; font-size:12.5px; line-height:1.55; min-width:200px; }
+.leaflet-container a.leaflet-popup-close-button{ color:var(--paper-3); }
+.pp-h{ font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--paper-3); margin-bottom:5px; }
+.pp-t{ font-size:14px; font-weight:500; margin-bottom:4px; }
+.pp-acts{ display:flex; gap:5px; flex-wrap:wrap; margin-top:9px; }
+.pp-acts button{ min-height:30px; padding:0 9px; border-radius:var(--r-sm); background:rgba(242,236,220,.07); border:1px solid var(--rule); color:var(--paper-2); cursor:pointer; font-family:'IBM Plex Mono',monospace; font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; }
+.pp-acts button:hover{ color:var(--paper); background:rgba(242,236,220,.14); }
+.wq-pin{ display:block; width:18px; height:18px; transform:rotate(45deg); border-radius:3px; background:var(--c,#63ACCB); border:2px solid #F4F1DF; box-shadow:0 2px 8px rgba(0,0,0,.5); }
+
+/* --- Acerca del proyecto ------------------------------------------------ */
+.sheet.wide{ width:760px; }
+.about h4{ font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--lime); margin:22px 0 8px; font-weight:500; }
+.about p, .about li{ font-size:13px; line-height:1.7; color:var(--paper-2); font-weight:300; }
+.about strong{ color:var(--paper); font-weight:500; }
+.about ul{ padding-left:18px; margin:6px 0; }
+.about a{ color:var(--river); }
+.about table{ width:100%; border-collapse:collapse; font-size:12px; margin-top:6px; }
+.about th, .about td{ border:1px solid var(--rule); padding:8px 9px; text-align:left; vertical-align:top; line-height:1.5; color:var(--paper-2); font-weight:300; }
+.about th{ font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--paper-3); font-weight:500; background:var(--ink-800); }
+.about tr.ours td{ background:rgba(111,191,142,.08); color:var(--paper); }
+.about-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px; }
+.about-stats div{ border:1px solid var(--rule); border-radius:var(--r-sm); padding:10px; background:var(--ink-800); }
+.about-stats b{ display:block; font-family:'Instrument Serif',serif; font-size:30px; font-weight:400; color:var(--lime); line-height:1; }
+.about-stats span{ font-size:11px; color:var(--paper-3); }
+.sheet-x{ float:right; width:36px; height:36px; border-radius:50%; border:1px solid var(--rule); background:none; color:var(--paper-2); cursor:pointer; font-size:15px; }
+.sheet-x:hover{ color:var(--paper); background:rgba(242,236,220,.08); }
+
+/* --- Impresión: la ficha completa como informe ------------------------- */
+@media print{
+  body{ overflow:visible; background:#fff; color:#111; }
+  .atmos,.grain,.map-area,.topbar-right,.tabs,.edge-btn,.sheet-handle,.cover,.skip-link,.no-print,.overlay,.lightbox,.toast,.status-line .pulse{ display:none!important; }
+  .app,.main,.panel,.panel-inner,.tabwrap{ display:block!important; position:static!important; width:100%!important; height:auto!important; overflow:visible!important; transform:none!important; box-shadow:none!important; border:none!important; background:#fff!important; }
+  .tabpanel,.tabpanel[hidden]{ display:block!important; position:static!important; overflow:visible!important; padding:8px 0!important; page-break-before:always; }
+  #p-ficha{ page-break-before:avoid; }
+  #semDetailView,#poiDetailView{ display:none!important; }
+  #semListView,#poiListView{ display:block!important; }
+  *{ color:#111!important; box-shadow:none!important; text-shadow:none!important; }
+  .sem-hero,.diag,.cell,.sector-item,.rep,.cover-card,.mini,.prow,.grid-2,.mgrid,.ptable,.risks,.risk,.how-body,details.sem-how,.thr div,.tlight{ background:#fff!important; }
+  details.sem-how .how-body{ display:block!important; }
+  .topbar{ background:#fff!important; border-bottom:2px solid #111!important; height:auto!important; padding:0 0 10px!important; }
+  .topbar::after{ display:none!important; }
+  .brand-mark{ background:#fff!important; border-color:#bbb!important; }
+  .brand .sub{ display:block!important; }
+  .reveal{ opacity:1!important; transform:none!important; animation:none!important; }
+  .stackbar span,.minibar span,.tlight .lamp,.dot,.sector-item .dot,.chip i,.cls-bar .tr i,.comp .bar i{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .stackbar .s-verde{ background:#4CCB84!important; } .stackbar .s-amarillo{ background:#F5BE3A!important; } .stackbar .s-rojo{ background:#F25C3F!important; }
+  .sector-item,.diag,.cell,.rep{ border:1px solid #bbb!important; break-inside:avoid; }
+}
+
 .tab{ padding:0 4px; }
-@media (min-width:861px){ .tab{ font-size:10px; letter-spacing:.1em; } }
+@media (min-width:861px){ .tab{ font-size:9.5px; letter-spacing:.06em; gap:5px; } }
 
 /* ========================= RESPONSIVE ================================= */
 
@@ -1120,7 +1326,12 @@ details.sem-how[open] summary::after{ transform:rotate(45deg); }
     width:38px; height:4px; border-radius:100px; background:var(--paper-3); opacity:.5;
   }
   .sheet-handle svg{ width:13px; height:13px; transition:transform .35s var(--ease); }
-  .map-legend{ display:none; }
+  /* Leyenda compacta: solo el semáforo, encima del zoom */
+  .map-legend{ width:auto; left:10px; bottom:104px; padding:8px 10px; }
+  .map-legend h6:not(:first-of-type), .map-legend .lg, .map-legend .lg-hint{ display:none; }
+  .map-legend h6{ font-size:7.5px; margin-bottom:6px; }
+  .map-legend .lg-btn{ font-size:10px; }
+  .panel.open ~ .map-area .map-legend{ opacity:0; pointer-events:none; }
   .panel.open .sheet-handle svg{ transform:rotate(180deg); }
 
   /* Espacio inferior seguro dentro de la ficha al abrir la hoja */
@@ -1137,8 +1348,9 @@ details.sem-how[open] summary::after{ transform:rotate(45deg); }
   .layers-pop{ width:min(240px, 78vw); }
 
   /* Aviso: nunca invade los controles ni el borde */
+  .search{ left:10px; top:10px; width:calc(100% - 196px); }
   .map-hint{
-    left:10px; top:10px; right:auto;
+    left:10px; top:60px; right:auto;
     max-width:min(58vw, 240px); padding:9px 30px 9px 11px;
     font-size:11px; line-height:1.5;
   }
@@ -1194,6 +1406,11 @@ details.sem-how[open] summary::after{ transform:rotate(45deg); }
 
   .fab{ font-size:10px; }
   .map-hint{ max-width:62vw; }
+  .search{ width:calc(100% - 118px); }
+  .search-box kbd{ display:none; }
+  .wq-form{ grid-template-columns:1fr; }
+  .about-stats{ grid-template-columns:1fr; }
+  .theme-grid{ grid-template-columns:1fr; }
 }
 
 /* Pantallas muy bajas (móvil apaisado): la hoja abierta ocupa casi todo */
@@ -1239,6 +1456,14 @@ details.sem-how[open] summary::after{ transform:rotate(45deg); }
         <span class="sep"></span>
         <span>Z <b id="roZ">—</b></span>
       </div>
+      <button class="icon-btn always" id="printBtn" aria-label="Imprimir o guardar la ficha como PDF">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg>
+        <span>Informe</span>
+      </button>
+      <button class="icon-btn always" id="aboutBtn" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-5M12 8h.01"/></svg>
+        <span>Proyecto</span>
+      </button>
       <button class="icon-btn" id="sheetToggle" aria-expanded="false" aria-controls="panel">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
         <span>Ficha</span>
@@ -1292,6 +1517,7 @@ details.sem-how[open] summary::after{ transform:rotate(45deg); }
         <div class="tabs" role="tablist" aria-label="Secciones de la ficha">
           <button class="tab" role="tab" id="tab-ficha" aria-controls="p-ficha" aria-selected="true">Ficha</button>
           <button class="tab" role="tab" id="tab-sem" aria-controls="p-sem" aria-selected="false" tabindex="-1">Semáforo</button>
+          <button class="tab" role="tab" id="tab-diag" aria-controls="p-diag" aria-selected="false" tabindex="-1">Diagnóstico</button>
           <button class="tab" role="tab" id="tab-puntos" aria-controls="p-puntos" aria-selected="false" tabindex="-1">Puntos <span class="count" id="cntPoints">6</span></button>
           <button class="tab" role="tab" id="tab-rep" aria-controls="p-rep" aria-selected="false" tabindex="-1">Reportes <span class="count" id="cntReports">0</span></button>
         </div>
@@ -1403,10 +1629,43 @@ details.sem-how[open] summary::after{ transform:rotate(45deg); }
                 <div class="how-body" id="semHowBody"></div>
               </details>
 
-              <p class="eyebrow" style="margin-top:26px">Sectores · de la cabecera a la parte baja</p>
+              <div class="toolbar-row no-print">
+                <div class="chips" id="colorChips" role="group" aria-label="Mostrar sectores por color"></div>
+                <label class="sr-only" for="secSort">Ordenar sectores</label>
+                <select class="sel-mini" id="secSort">
+                  <option value="prio">Prioridad (rojos primero)</option>
+                  <option value="zona">Por zona (baja → alta)</option>
+                  <option value="score">Puntaje (menor → mayor)</option>
+                  <option value="area">Área (mayor primero)</option>
+                </select>
+              </div>
+              <p class="eyebrow" style="margin-top:16px" id="secListTitle">Sectores</p>
               <div id="semSectors"></div>
+              <div class="btn-row no-print">
+                <button class="mini-btn" id="dlSecCsv">Descargar sectores (CSV)</button>
+                <button class="mini-btn" id="dlSecGeo">Descargar sectores (GeoJSON)</button>
+              </div>
             </div>
             <div id="semDetailView" hidden></div>
+          </div>
+
+          <!-- ---------------- DIAGNÓSTICO ---------------- -->
+          <div class="tabpanel" role="tabpanel" id="p-diag" aria-labelledby="tab-diag" tabindex="0" hidden>
+            <p class="eyebrow">Diagnóstico multicriterio</p>
+            <div class="sem-hero regmark" id="diagHero"></div>
+            <div class="diag-list" id="diagList" style="margin-top:12px"></div>
+
+            <p class="eyebrow no-print" style="margin-top:26px">Colorear el mapa por</p>
+            <div class="theme-grid no-print" id="themeGrid" role="group" aria-label="Variable con la que se colorean los sectores"></div>
+
+            <p class="eyebrow" style="margin-top:26px">Aptitud del suelo (clases agrológicas)</p>
+            <div class="cover-card regmark" id="aptBox"></div>
+
+            <p class="eyebrow" style="margin-top:26px">Calidad de agua · registro de mediciones</p>
+            <div class="cover-card regmark" id="wqBox"></div>
+
+            <p class="eyebrow" style="margin-top:26px">Criterios del semáforo por variable</p>
+            <div id="critBox"></div>
           </div>
 
           <!-- ---------------- PUNTOS ---------------- -->
@@ -1427,7 +1686,25 @@ details.sem-how[open] summary::after{ transform:rotate(45deg); }
           <!-- ---------------- REPORTES ---------------- -->
           <div class="tabpanel" role="tabpanel" id="p-rep" aria-labelledby="tab-rep" tabindex="0" hidden>
             <p class="eyebrow">Reportes ciudadanos</p>
+            <div class="toolbar-row no-print" style="margin-top:0" id="repTools" hidden>
+              <label class="sr-only" for="repFilter">Filtrar reportes por tipo</label>
+              <select class="sel-mini" id="repFilter"><option value="">Todos los tipos</option></select>
+              <label class="sr-only" for="repStatusFilter">Filtrar por estado</label>
+              <select class="sel-mini" id="repStatusFilter">
+                <option value="">Todos los estados</option><option value="nuevo">Nuevos</option><option value="verificado">Verificados</option><option value="resuelto">Resueltos</option>
+              </select>
+            </div>
             <div id="repArea"></div>
+            <div class="btn-row no-print">
+              <button class="mini-btn" id="dlRepGeo">Exportar GeoJSON</button>
+              <button class="mini-btn" id="dlRepCsv">Exportar CSV</button>
+              <button class="mini-btn" id="impRepBtn">Importar…</button>
+              <input type="file" id="impRepFile" accept=".geojson,.json,application/geo+json,application/json" hidden />
+            </div>
+            <p class="prose no-print" style="font-size:11.5px; color:var(--paper-3); margin-top:12px">
+              Los reportes viven en este navegador. Para reunir los del equipo, cada integrante exporta su GeoJSON y otra persona los importa:
+              se combinan sin duplicarse.
+            </p>
           </div>
 
         </div>
@@ -1443,6 +1720,17 @@ details.sem-how[open] summary::after{ transform:rotate(45deg); }
       <div id="map" role="application" tabindex="-1"
            aria-label="Mapa de la microcuenca Ciri Grande–Trinidad. Use las teclas de flecha para desplazar y más o menos para acercar."></div>
       <div class="map-vignette" aria-hidden="true"></div>
+
+      <div class="search" id="search">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="searchInput" type="search" autocomplete="off" spellcheck="false"
+                 placeholder="Buscar sector, río, punto, reporte o coordenada…"
+                 role="combobox" aria-expanded="false" aria-controls="searchRes" aria-autocomplete="list" aria-label="Buscar en la microcuenca" />
+          <kbd>/</kbd>
+        </div>
+        <ul class="search-res" id="searchRes" role="listbox" aria-label="Resultados de búsqueda" hidden></ul>
+      </div>
 
       <div class="map-hint" id="mapHint" hidden>
         Toca un <strong>sector de color</strong> o un <strong>punto</strong> para ver su detalle.
@@ -1499,12 +1787,27 @@ details.sem-how[open] summary::after{ transform:rotate(45deg); }
       <label for="repType">Tipo de problema</label>
       <select id="repType">
         <option value="">Selecciona una opción…</option>
-        <option>Deforestación</option>
-        <option>Residuos sólidos</option>
-        <option>Contaminación del agua</option>
-        <option>Construcción no autorizada</option>
-        <option>Erosión / sedimentación</option>
-        <option>Otro</option>
+        <optgroup label="Bosque y suelo">
+          <option>Deforestación</option>
+          <option>Quema</option>
+          <option>Erosión / sedimentación</option>
+          <option>Deslizamiento</option>
+          <option>Extracción de material</option>
+        </optgroup>
+        <optgroup label="Agua">
+          <option>Contaminación del agua</option>
+          <option>Mortandad de peces</option>
+          <option>Captación o desvío ilegal</option>
+        </optgroup>
+        <optgroup label="Residuos">
+          <option>Residuos sólidos</option>
+          <option>Vertedero ilegal</option>
+          <option>Sitio de disposición autorizado</option>
+        </optgroup>
+        <optgroup label="Otros">
+          <option>Construcción no autorizada</option>
+          <option>Otro</option>
+        </optgroup>
       </select>
       <span class="err">Elige un tipo de problema.</span>
     </div>
@@ -1515,10 +1818,84 @@ details.sem-how[open] summary::after{ transform:rotate(45deg); }
       <span class="err">Escribe al menos 4 caracteres.</span>
     </div>
 
+    <div class="field">
+      <label id="lblSev">Gravedad</label>
+      <div class="seg" role="radiogroup" aria-labelledby="lblSev">
+        <label class="c-verde"><input type="radio" name="sev" value="baja"><span>Baja</span></label>
+        <label class="c-amarillo"><input type="radio" name="sev" value="media" checked><span>Media</span></label>
+        <label class="c-rojo"><input type="radio" name="sev" value="alta"><span>Alta</span></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="repPhoto">Foto (opcional)</label>
+      <input type="file" id="repPhoto" accept="image/*" />
+      <img id="repPhotoPrev" class="photo-prev" alt="Vista previa de la foto adjunta" hidden />
+    </div>
+
+    <div class="field">
+      <label for="repName">Nombre o comunidad (opcional)</label>
+      <input type="text" id="repName" maxlength="60" placeholder="Ej.: comunidad de La Trinidad" />
+    </div>
+
     <div class="acts">
       <button class="btn btn-ghost" id="repCancel" type="button">Cancelar</button>
       <button class="btn btn-primary" id="repSubmit" type="button">Guardar reporte</button>
     </div>
+  </div>
+</div>
+
+<!-- ===================== ACERCA DEL PROYECTO ===================== -->
+<div class="overlay" id="aboutOverlay">
+  <div class="sheet wide about" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" id="aboutSheet">
+    <button class="sheet-x" id="aboutX" aria-label="Cerrar">✕</button>
+    <h3 id="aboutTitle">EcoCuenca Panamá</h3>
+    <p class="sheet-sub">Plataforma web de diagnóstico y gestión participativa de microcuencas hidrográficas ·
+      Ingeniería Ambiental, Universidad Tecnológica de Panamá (UTP) · 2026</p>
+
+    <h4>El vacío que atiende</h4>
+    <div class="about-stats">
+      <div><b>52</b><span>cuencas hidrográficas en Panamá (34 en el Pacífico y 18 en el Atlántico)</span></div>
+      <div><b>~95 %</b><span>del agua potable de Panamá, Colón y San Miguelito sale de la Cuenca del Canal</span></div>
+      <div><b>2</b><span>comités de microcuenca en todo el país, frente a 44 de cuenca y 43 de subcuenca</span></div>
+    </div>
+    <p>Al nivel más local, donde ocurren la deforestación, la contaminación y el uso del suelo que degradan el agua, casi no hay gestión
+      organizada ni información pública. EcoCuenca reúne datos dispersos en un mapa que cualquier persona, autoridad o comunidad puede usar
+      para ver <strong>qué partes de la microcuenca necesitan atención</strong>.</p>
+
+    <h4>Qué integra esta plataforma</h4>
+    <ul>
+      <li><strong>Límite y red hídrica calculados</strong> desde el relieve (SRTM), no dibujados a mano.</li>
+      <li><strong>Semáforo por sector</strong> (22 sectores): cobertura arbórea, ribera, erosión, pérdida forestal y condición aguas arriba.</li>
+      <li><strong>Diagnóstico multicriterio</strong> de la propuesta: calidad de agua, uso del suelo frente a su aptitud (clases I–VIII), erosión y residuos.</li>
+      <li><strong>Buscador</strong> de sectores, ríos, puntos, reportes y coordenadas, y <strong>filtro por color</strong> («solo rojos»).</li>
+      <li><strong>Reporte ciudadano georreferenciado</strong> con tipo, gravedad, foto y estado de seguimiento; se exporta a GeoJSON o CSV.</li>
+      <li><strong>Fuentes visibles</strong> en cada ficha, para que cada dato se pueda rastrear.</li>
+    </ul>
+
+    <h4>Comparación con lo existente</h4>
+    <table>
+      <thead><tr><th>Herramienta</th><th>Qué ofrece</th><th>Limitación</th></tr></thead>
+      <tbody>
+        <tr><td>Mapa Interactivo de Cuencas (MiAmbiente)</td><td>Contornos de las 52 cuencas en Google My Maps.</td><td>Sin buscador, filtros, fichas ni interacción; no baja a microcuenca.</td></tr>
+        <tr><td>Atlas de Riesgo Climático (Gobierno–BID)</td><td>Riesgos climáticos nacionales: inundación, sequía, deslizamiento.</td><td>No se organiza por microcuenca ni por estado de gestión hídrica.</td></tr>
+        <tr><td>Nuestra Agua (México)</td><td>Mapa colaborativo de reportes ciudadanos sobre el agua.</td><td>No existe un equivalente en Panamá.</td></tr>
+        <tr class="ours"><td><strong>EcoCuenca Panamá</strong></td><td>Microcuenca a detalle, semáforo por sector, capas integradas y reporte ciudadano.</td><td>Alcance inicial de una microcuenca, replicable a otras.</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Marco legal</h4>
+    <p>Ley 44 de 2002 (Régimen Administrativo Especial de Cuencas Hidrográficas) y Decreto Ejecutivo 479 de 2013, que la reglamenta y define
+      la jerarquía cuenca → subcuenca → microcuenca.</p>
+
+    <h4>Fuentes de datos</h4>
+    <ul>
+      <li>Relieve: SRTM 30 m (NASA) vía AWS Terrain Tiles. Cobertura: ESA WorldCover 2021 (CC BY 4.0). Pérdida forestal: Hansen/UMD GFC v1.11 (CC BY 4.0).</li>
+      <li>Calidad de agua: <a href="https://pancanal.com/cuenca-hidrografica/" target="_blank" rel="noopener">ACP, informes de calidad de agua de la CHCP</a> (estaciones Los Cañones en el Cirí Grande y El Chorro en el Trinidad).</li>
+      <li>Plan de manejo de las subcuencas Cirí Grande y Trinidad (CICH/ACP): <a href="https://cich.org/" target="_blank" rel="noopener">cich.org</a>.</li>
+      <li>Clasificación agrológica I–VIII: ANATI / IDIAP. Comités de cuenca: <a href="https://cuencas.miambiente.gob.pa/" target="_blank" rel="noopener">MiAmbiente</a>.</li>
+    </ul>
+    <p style="font-size:11.5px; color:var(--paper-3)">Proyecto académico. Los cálculos de gabinete deben contrastarse con los datos oficiales y con trabajo de campo antes de usarse para tomar decisiones.</p>
   </div>
 </div>
 
@@ -1570,6 +1947,76 @@ var SEM_COLOR = { verde:'#4CCB84', amarillo:'#F5BE3A', rojo:'#F25C3F' };
 var SEM_LABEL = { verde:'Verde', amarillo:'Amarillo', rojo:'Rojo' };
 var ZONA_LABEL = { alta:'Cuenca alta', media:'Cuenca media', baja:'Cuenca baja' };
 function semOf(score){ return score>=CFG.umbral.verde ? 'verde' : score>=CFG.umbral.amarillo ? 'amarillo' : 'rojo'; }
+/* Orden de un semáforo real: rojo arriba, amarillo al centro, verde abajo. */
+var SEM_ORDER = ['rojo','amarillo','verde'];
+var SEM_RANK  = { rojo:0, amarillo:1, verde:2 };
+var SEM_PTS   = { rojo:20, amarillo:60, verde:100 };
+function lampsHtml(on, filter){
+  return SEM_ORDER.map(function(c){
+    var cls = 'lamp c-'+c + (on ? (on===c ? ' on' : '') : ' on') + (filter && !filter[c] ? ' off' : '');
+    return '<span class="'+cls+'"></span>';
+  }).join('');
+}
+function worst(cols){ var w=null; cols.forEach(function(c){ if(c && (w===null || SEM_RANK[c]<SEM_RANK[w])) w=c; }); return w; }
+function esc(t){ return String(t==null?'':t).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function norm(t){ return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+
+/* Aptitud agrológica ESTIMADA por la pendiente media del sector (DEM SRTM).
+   Es una aproximación de gabinete: el mapa oficial ANATI/IDIAP considera además
+   profundidad, drenaje, pedregosidad y fertilidad. */
+function aptClass(p){ var s=p.slopeMean; return s<8 ? 'III' : s<15 ? 'IV' : s<30 ? 'VI' : s<50 ? 'VII' : 'VIII'; }
+var APT_USE = {
+  I:'Agricultura intensiva (no reportada en Panamá)', II:'Agricultura con conservación moderada',
+  III:'Agricultura con prácticas de conservación exigentes', IV:'Agricultura marginal o cultivos permanentes',
+  V:'Pastoreo y uso forestal (encharcamiento o pedregosidad)', VI:'Pastos y bosques con restricciones de manejo',
+  VII:'Uso forestal exclusivo o vida silvestre', VIII:'Protección, sin uso productivo directo'
+};
+function aptConflict(p){
+  var c=aptClass(p), g=p.grass;
+  if(c==='III' || c==='IV') return 'verde';
+  if(c==='VI') return g<=35 ? 'verde' : g<=55 ? 'amarillo' : 'rojo';
+  return g<=10 ? 'verde' : g<=25 ? 'amarillo' : 'rojo';
+}
+function erosionOf(p){ return p.steepBare<2 ? 'verde' : p.steepBare<5 ? 'amarillo' : 'rojo'; }
+var WASTE_TYPES = ['Residuos sólidos','Vertedero ilegal'];
+function wasteReports(sid){
+  return (typeof reports!=='undefined' ? reports : []).filter(function(r){
+    return WASTE_TYPES.indexOf(r.type)>=0 && r.status!=='resuelto' && (sid==null || r.sectorId===sid);
+  });
+}
+function wasteCol(list){
+  if(!list.length) return 'verde';
+  var grave = list.some(function(r){ return r.type==='Vertedero ilegal' && r.sev==='alta'; });
+  return (list.length>=3 || grave) ? 'rojo' : 'amarillo';
+}
+
+/* Variables con las que se puede colorear el mapa (todas en clave de semáforo). */
+var THEMES = {
+  general:  { label:'Semáforo general', sub:'Índice 0–100 · 5 parámetros',
+              col:function(p){ return p.color; }, val:function(p){ return p.score+'/100'; },
+              leg:{ rojo:'< '+CFG.umbral.amarillo, amarillo:CFG.umbral.amarillo+'–'+(CFG.umbral.verde-1), verde:'≥ '+CFG.umbral.verde } },
+  cobertura:{ label:'Cobertura arbórea', sub:'% del sector con árboles',
+              col:function(p){ return p.tree>=70?'verde':p.tree>=50?'amarillo':'rojo'; }, val:function(p){ return f0(p.tree)+' % árboles'; },
+              leg:{ rojo:'< 50 %', amarillo:'50–69 %', verde:'≥ 70 %' } },
+  erosion:  { label:'Riesgo de erosión', sub:'Ladera > 30 % sin árboles',
+              col:erosionOf, val:function(p){ return f1(p.steepBare)+' % ladera desnuda'; },
+              leg:{ rojo:'≥ 5 % del área', amarillo:'2–5 %', verde:'< 2 %' } },
+  aptitud:  { label:'Uso vs. aptitud', sub:'Pastos en clases VI–VIII',
+              col:aptConflict, val:function(p){ return 'clase '+aptClass(p)+' · '+f0(p.grass)+' % pastos'; },
+              leg:{ rojo:'muy sobre su aptitud', amarillo:'algo más intensivo', verde:'uso acorde' } },
+  perdida:  { label:'Pérdida forestal', sub:'Bosque perdido 2014–2023',
+              col:function(p){ return p.perdidaPct<5?'verde':p.perdidaPct<10?'amarillo':'rojo'; }, val:function(p){ return f1(p.perdidaPct)+' % perdido'; },
+              leg:{ rojo:'≥ 10 %', amarillo:'5–10 %', verde:'< 5 %' } },
+  ribera:   { label:'Bosque de ribera', sub:'Franja de ±40 m del cauce',
+              col:function(p){ return p.ripTree>=80?'verde':p.ripTree>=60?'amarillo':'rojo'; }, val:function(p){ return f0(p.ripTree)+' % ribera con árboles'; },
+              leg:{ rojo:'< 60 %', amarillo:'60–79 %', verde:'≥ 80 %' } },
+  residuos: { label:'Residuos (reportes)', sub:'Reportes ciudadanos activos',
+              col:function(p){ return wasteCol(wasteReports(p.id)); }, val:function(p){ var n=wasteReports(p.id).length; return n+' reporte'+(n===1?'':'s')+' de residuos'; },
+              leg:{ rojo:'≥ 3 o vertedero grave', amarillo:'1–2 reportes', verde:'sin reportes' } }
+};
+var theme = 'general';
+var colorOn = { rojo:true, amarillo:true, verde:true };
+function colOf(p){ return THEMES[theme].col(p); }
 
 /* Créditos de imagen — todas de Wikimedia Commons, de la Cuenca Hidrográfica
    del Canal de Panamá (sistema Chagres–Pequení). Reales de la cuenca, no del
@@ -1701,6 +2148,8 @@ window.setTimeout(function(){
   buildPoiList();
   buildCredits();
   renderReports();
+  buildThemeButtons();
+  renderDiag();
 }, 620);
 
 function buildCredits(){
@@ -1757,6 +2206,7 @@ var gullyGroup   = L.layerGroup().addTo(map);
 var outlineGroup = L.layerGroup().addTo(map);
 var poiGroup     = L.layerGroup().addTo(map);
 var repGroup     = L.layerGroup().addTo(map);
+var wqGroup      = L.layerGroup().addTo(map);
 
 var mapOverlay=$('mapOverlay'), overlayMsg=$('overlayMsg');
 var tileErrors=0, mapReady=false, settled=false, guard=null;
@@ -1785,7 +2235,8 @@ function settle(){
   window.setTimeout(function(){ map.invalidateSize(); fitZone(false); }, 220);
   window.setTimeout(function(){ fitZone(true); }, 520);
   window.setTimeout(drawLayers, 1500);
-  window.setTimeout(addPoiMarkers, 2900);
+  window.setTimeout(function(){ addPoiMarkers(); addWqMarkers(); }, 2900);
+  window.setTimeout(applyHash, 3300);
   announce('Mapa cargado. Microcuenca Ciri Grande–Trinidad: '+f0(ST.areaKm2)+' kilómetros cuadrados, '+SECS.length+' sectores y 6 puntos de interés.');
 }
 
@@ -1845,9 +2296,11 @@ var selSector = null;
 var layersDrawn = false;
 
 function sectorStyle(f, sel){
-  return { pane:'sectors', className:'sector-path', color: sel ? '#FFFFFF' : 'rgba(7,13,11,.55)', weight: sel ? 3 : 1,
-           fillColor: SEM_COLOR[f.properties.color], fillOpacity: sel ? Math.min(.6, sectorFill()+.2) : sectorFill() };
+  var c = colOf(f.properties), on = colorOn[c];
+  return { pane:'sectors', className:'sector-path', color: sel ? '#FFFFFF' : (on ? 'rgba(7,13,11,.55)' : 'rgba(242,236,220,.22)'), weight: sel ? 3 : 1,
+           fillColor: SEM_COLOR[c], fillOpacity: !on ? 0.03 : sel ? Math.min(.6, sectorFill()+.2) : sectorFill() };
 }
+function tipOf(p){ var c=colOf(p); return p.nombre+' · '+(theme==='general' ? p.score+'/100' : THEMES[theme].val(p))+' · '+SEM_LABEL[c].toUpperCase(); }
 
 var STREAM_STYLE = {
   rio:       { color:'#9ADBFA', weight:3.6, opacity:.98 },
@@ -1865,13 +2318,13 @@ function drawLayers(){
     onEachFeature:function(f, layer){
       sectorLayers[f.properties.id] = layer;
       var p=f.properties;
-      layer.bindTooltip(p.nombre+' · '+p.score+'/100 · '+SEM_LABEL[p.color].toUpperCase(), { sticky:true, direction:'top' });
-      layer.on('mouseover', function(){ if(selSector!==p.id) layer.setStyle({ fillOpacity: sectorFill()+.14 }); });
-      layer.on('mouseout',  function(){ if(selSector!==p.id) layer.setStyle({ fillOpacity: sectorFill() }); });
+      layer.bindTooltip(function(){ return tipOf(p); }, { sticky:true, direction:'top' });
+      layer.on('mouseover', function(){ if(selSector!==p.id && colorOn[colOf(p)]) layer.setStyle({ fillOpacity: sectorFill()+.14 }); });
+      layer.on('mouseout',  function(){ if(selSector!==p.id) layer.setStyle(sectorStyle(layer.feature,false)); });
       layer.on('click', function(){ selectSector(p.id, true); });
     }
   }).addTo(sectorGroup);
-  window.setTimeout(function(){ Object.keys(sectorLayers).forEach(function(k){ sectorLayers[k].setStyle({ fillOpacity: sectorFill() }); }); }, 60);
+  window.setTimeout(restyleForBase, 60);
 
   // 2) Divisoria interna Cirí Grande | Trinidad (se ve donde el contorno exterior no la tapa)
   L.geoJSON({ type:'FeatureCollection', features: ECO.boundary.features.slice(1) }, {
@@ -1996,6 +2449,10 @@ layersPop.innerHTML =
     '<label class="lrow"><input type="checkbox" id="lyGullies" checked><span class="lbox">'+checkSvg()+'</span>Quebradas</label>'+
     '<label class="lrow"><input type="checkbox" id="lyPoints" checked><span class="lbox">'+checkSvg()+'</span>Puntos de interés</label>'+
     '<label class="lrow"><input type="checkbox" id="lyReports" checked><span class="lbox">'+checkSvg()+'</span>Reportes ciudadanos</label>'+
+    '<label class="lrow"><input type="checkbox" id="lyWater" checked><span class="lbox">'+checkSvg()+'</span>Calidad de agua</label>'+
+    '<h5 style="margin-top:14px">Colorear sectores por</h5>'+
+    '<div class="theme-grid" id="themeGridPop"></div>'+
+    '<h5 style="margin-top:14px"></h5>'+
     '<h5>Mapa base</h5>'+
     '<div class="base-grid">'+
       '<button class="base-btn" data-base="satelite" aria-pressed="true">Satélite</button>'+
@@ -2029,6 +2486,7 @@ bindLayer('lyCreeks',  creekGroup,   'Capa de riachuelos');
 bindLayer('lyGullies', gullyGroup,   'Capa de quebradas');
 bindLayer('lyPoints',  poiGroup,     'Capa de puntos');
 bindLayer('lyReports', repGroup,     'Capa de reportes');
+bindLayer('lyWater',   wqGroup,      'Capa de calidad de agua');
 
 Array.prototype.forEach.call(layersPop.querySelectorAll('.base-btn'), function(b){
   b.addEventListener('click', function(){
@@ -2050,8 +2508,8 @@ Array.prototype.forEach.call(layersPop.querySelectorAll('.base-btn'), function(b
    6 · PESTAÑAS DEL PANEL
    =================================================================== */
 
-var TABS=[['tab-ficha','p-ficha'],['tab-sem','p-sem'],['tab-puntos','p-puntos'],['tab-rep','p-rep']];
-var TAB={ FICHA:0, SEM:1, PUNTOS:2, REP:3 };
+var TABS=[['tab-ficha','p-ficha'],['tab-sem','p-sem'],['tab-diag','p-diag'],['tab-puntos','p-puntos'],['tab-rep','p-rep']];
+var TAB={ FICHA:0, SEM:1, DIAG:2, PUNTOS:3, REP:4 };
 
 function selectTab(idx){
   TABS.forEach(function(pair,i){
@@ -2148,18 +2606,67 @@ function fillFicha(){
 
 /* --- Leyenda del mapa (escritorio) --- */
 function buildLegend(){
+  var T=THEMES[theme];
+  var rows = SEM_ORDER.map(function(c){
+    return '<button type="button" class="lg-btn" data-c="'+c+'" aria-pressed="'+colorOn[c]+'"><b>'+SEM_LABEL[c]+'</b> · '+T.leg[c]+'</button>';
+  }).join('');
   $('mapLegend').innerHTML =
-    '<h6>Semáforo</h6>'+
-    '<div class="lg"><span class="sw" style="background:'+SEM_COLOR.verde+'"></span>Verde ≥ '+CFG.umbral.verde+'</div>'+
-    '<div class="lg"><span class="sw" style="background:'+SEM_COLOR.amarillo+'"></span>Amarillo '+CFG.umbral.amarillo+'–'+(CFG.umbral.verde-1)+'</div>'+
-    '<div class="lg"><span class="sw" style="background:'+SEM_COLOR.rojo+'"></span>Rojo &lt; '+CFG.umbral.amarillo+'</div>'+
+    '<h6>'+T.label+'</h6>'+
+    '<div class="tl-legend"><span class="tlight" aria-hidden="true">'+lampsHtml(null, colorOn)+'</span><div class="tl-rows">'+rows+'</div></div>'+
+    '<div class="lg-hint">Toca un color para ocultarlo o mostrarlo</div>'+
     '<h6>Red hídrica</h6>'+
     '<div class="lg"><span class="ln r"></span>Río</div>'+
     '<div class="lg"><span class="ln a"></span>Riachuelo</div>'+
     '<div class="lg"><span class="ln q"></span>Quebrada</div>'+
-    '<h6>Límites</h6>'+
+    '<h6>Límites y puntos</h6>'+
     '<div class="lg"><span class="ln" style="border-top:3px solid #F4F1DF"></span>Microcuenca</div>'+
-    '<div class="lg"><span class="ln" style="border-top:2px dashed #F2ECDC"></span>Cirí | Trinidad</div>';
+    '<div class="lg"><span class="ln" style="border-top:2px dashed #F2ECDC"></span>Cirí | Trinidad</div>'+
+    '<div class="lg"><span class="wq-pin" style="width:10px;height:10px;margin:0 5px"></span>Calidad de agua</div>';
+  Array.prototype.forEach.call($('mapLegend').querySelectorAll('.lg-btn'), function(b){
+    b.addEventListener('click', function(){ toggleColor(b.dataset.c); });
+  });
+}
+
+/* --- Filtro por color y cambio de variable ------------------------------ */
+function toggleColor(c, only){
+  if(only){ SEM_ORDER.forEach(function(k){ colorOn[k] = (k===c); }); }
+  else { colorOn[c] = !colorOn[c]; }
+  syncColorUI();
+  var vis = SEM_ORDER.filter(function(k){ return colorOn[k]; }).map(function(k){ return SEM_LABEL[k].toLowerCase(); });
+  announce(vis.length ? 'Mostrando sectores en '+vis.join(', ')+'.' : 'Todos los colores ocultos.');
+}
+function syncColorUI(){
+  restyleForBase(); buildLegend(); buildChips(); renderSectorList();
+}
+function setTheme(key, silent){
+  if(!THEMES[key]) return;
+  theme = key;
+  SEM_ORDER.forEach(function(k){ colorOn[k]=true; });
+  syncColorUI(); buildThemeButtons();
+  if(!silent){ announce('Mapa coloreado por '+THEMES[key].label.toLowerCase()+'.'); showToast('Mapa coloreado por: '+THEMES[key].label); }
+}
+function buildChips(){
+  var box=$('colorChips'); if(!box) return;
+  var cnt={rojo:0,amarillo:0,verde:0}; SECS.forEach(function(f){ cnt[colOf(f.properties)]++; });
+  box.innerHTML = SEM_ORDER.map(function(c){
+    return '<button type="button" class="chip c-'+c+'" data-c="'+c+'" aria-pressed="'+colorOn[c]+'"><i></i>'+SEM_LABEL[c]+' '+cnt[c]+'</button>';
+  }).join('') + '<button type="button" class="chip c-rojo" id="onlyRed" aria-pressed="'+(colorOn.rojo&&!colorOn.amarillo&&!colorOn.verde)+'">Solo rojos</button>';
+  Array.prototype.forEach.call(box.querySelectorAll('[data-c]'), function(b){ b.addEventListener('click', function(){ toggleColor(b.dataset.c); }); });
+  $('onlyRed').addEventListener('click', function(){
+    var isOnly = colorOn.rojo && !colorOn.amarillo && !colorOn.verde;
+    if(isOnly){ SEM_ORDER.forEach(function(k){ colorOn[k]=true; }); syncColorUI(); announce('Mostrando todos los sectores.'); }
+    else toggleColor('rojo', true);
+  });
+}
+function buildThemeButtons(){
+  var html = Object.keys(THEMES).map(function(k){
+    var T=THEMES[k];
+    return '<button type="button" class="theme-btn" data-theme="'+k+'" aria-pressed="'+(k===theme)+'">'+T.label+'<small>'+T.sub+'</small></button>';
+  }).join('');
+  ['themeGrid','themeGridPop'].forEach(function(id){
+    var g=$(id); if(!g) return; g.innerHTML=html;
+    Array.prototype.forEach.call(g.querySelectorAll('.theme-btn'), function(b){ b.addEventListener('click', function(){ setTheme(b.dataset.theme); }); });
+  });
 }
 
 /* --- Serie de pérdida forestal (Hansen) --- */
@@ -2188,22 +2695,23 @@ var semListView=$('semListView'), semDetailView=$('semDetailView');
 
 function buildSemaforo(){
   var g=ECO.global, col=semOf(g.score);
-  var redKm=0, redBaja=0, redNames=[];
+  var redKm=0, redBaja=0;
   SECS.forEach(function(f){ var p=f.properties; if(p.color==='rojo'){ redKm+=p.km2; if(p.zona==='baja') redBaja+=p.km2; } });
   var alertas = g.rojo>=15;
+  var share = { rojo:g.rojo, amarillo:g.amarillo, verde:g.verde };
   $('semHero').className = 'sem-hero regmark c-'+col;
   $('semHero').innerHTML =
-    '<div class="sem-top"><div class="sem-score">'+g.score+'<small>/100</small></div>'+
+    '<div class="sem-row"><span class="tlight lg" role="img" aria-label="Semáforo general en '+SEM_LABEL[col]+'">'+lampsHtml(col)+'</span>'+
+    '<div><div class="sem-top"><div class="sem-score">'+g.score+'<small>/100</small></div>'+
       '<span class="sem-badge"><i></i>'+SEM_LABEL[col]+(alertas?' · con alertas':'')+'</span></div>'+
-    '<div class="stackbar" role="img" aria-label="Área por color: '+f0(g.verde)+' % verde, '+f0(g.amarillo)+' % amarillo, '+f0(g.rojo)+' % rojo">'+
-      '<span class="s-verde" style="width:'+g.verde+'%"></span><span class="s-amarillo" style="width:'+g.amarillo+'%"></span><span class="s-rojo" style="width:'+g.rojo+'%"></span></div>'+
+    '<div class="stackbar" role="img" aria-label="Área por color: '+f0(g.rojo)+' % rojo, '+f0(g.amarillo)+' % amarillo, '+f0(g.verde)+' % verde">'+
+      SEM_ORDER.map(function(c){ return '<span class="s-'+c+'" style="width:'+share[c]+'%"></span>'; }).join('')+'</div>'+
     '<div class="stack-legend">'+
-      '<span><i style="background:'+SEM_COLOR.verde+'"></i><b>'+f0(g.verde)+' %</b> verde</span>'+
-      '<span><i style="background:'+SEM_COLOR.amarillo+'"></i><b>'+f0(g.amarillo)+' %</b> amarillo</span>'+
-      '<span><i style="background:'+SEM_COLOR.rojo+'"></i><b>'+f0(g.rojo)+' %</b> rojo</span></div>'+
+      SEM_ORDER.map(function(c){ return '<span><i style="background:'+SEM_COLOR[c]+'"></i><b>'+f0(share[c])+' %</b> '+SEM_LABEL[c].toLowerCase()+'</span>'; }).join('')+
+    '</div></div></div>'+
     '<p class="sem-note">El índice general es el promedio de los '+SECS.length+' sectores ponderado por área. '+
-      (redKm>0 ? '<strong>'+f0(redBaja/redKm*100)+' % del área en rojo está en la cuenca baja</strong> ('+f0(redKm)+' km²), donde el bosque dejó paso a pastos y además llega el agua de toda la cuenca. ' : '')+
-      'La cuenca alta se mantiene en verde.</p>';
+      (redKm>0 ? '<strong>'+f0(redBaja/redKm*100)+' % del área en rojo está en la cuenca baja</strong> ('+f0(redKm)+' km², al norte, junto al lago Gatún), donde el bosque dejó paso a pastos y además llega el agua de toda la cuenca. ' : '')+
+      'La cuenca alta, al sur, se mantiene en verde.</p>';
 
   // cómo se calcula
   var rows = CFG.params.map(function(p){
@@ -2211,39 +2719,63 @@ function buildSemaforo(){
     return '<div class="prow"><div class="pt"><span>'+p.label+'</span><span class="pw">'+p.w+' %</span></div>'+
            '<div class="pr">'+p.mide+'.<br>'+rule+'.<br>Fuente: '+p.fuente+'.</div></div>';
   }).join('');
+  var thrTxt = { rojo:'menos de '+CFG.umbral.amarillo, amarillo:CFG.umbral.amarillo+' a '+(CFG.umbral.verde-1), verde:CFG.umbral.verde+' o más' };
   $('semHowBody').innerHTML =
     '<p>Cada <strong>sector</strong> (un tramo de río de orden ≥ 3 más las laderas y afluentes menores que drenan a él) recibe un puntaje de 0 a 100. '+
     'Se calcula con <strong>cinco parámetros</strong>; cada uno se convierte a puntos con una escala lineal entre un valor «malo» (0 pts) y uno «bueno» (100 pts), y se suman según su peso.</p>'+
     '<div class="ptable">'+rows+'</div>'+
-    '<p><strong>Umbrales de color</strong></p>'+
-    '<div class="thr"><div class="c-verde"><b>Verde</b><span>≥ '+CFG.umbral.verde+'</span></div><div class="c-amarillo"><b>Amarillo</b><span>'+CFG.umbral.amarillo+' a '+(CFG.umbral.verde-1)+'</span></div><div class="c-rojo"><b>Rojo</b><span>&lt; '+CFG.umbral.amarillo+'</span></div></div>'+
-    '<p><strong>Por qué lo rojo suele quedar abajo.</strong> Arriba el relieve es empinado y el bosque ha sido difícil de convertir; abajo el terreno es plano y accesible, se convierte a pastos, y el sector además recibe el agua de todos los de arriba. '+
-    'Por eso el parámetro «condición aguas arriba» pesa un 20 %: un sector bajo con bosque aceptable pero con una cuenca alta deteriorada no debería salir verde. '+
-    'Esto <em>no está forzado</em>: sale de los datos; si la parte alta se deteriora, también se pondría amarilla o roja.</p>'+
-    '<p><strong>Todavía no entra</strong> (requiere trabajo de campo): calidad del agua (oxígeno disuelto, turbidez, coliformes), caudal en estiaje, puntos de contaminación, presencia de comité y pagos por servicios ambientales por sector. '+
-    'Cuando existan se agregan como parámetros con su propio peso y se reponderan los demás.</p>';
+    '<p><strong>Umbrales de color</strong> (en el orden de un semáforo: rojo arriba, verde abajo)</p>'+
+    '<div class="thr">'+SEM_ORDER.map(function(c){ return '<div class="c-'+c+'"><b>'+SEM_LABEL[c]+'</b><span>'+thrTxt[c]+'</span></div>'; }).join('')+'</div>'+
+    '<p><strong>Por qué lo rojo queda en la cuenca baja.</strong> Se verificó contra los datos satelitales: en la cuenca baja (norte, junto al lago) WorldCover 2021 mide entre 23 % y 52 % de árboles, '+
+    'mientras que en la cuenca alta (sur, montañas) supera el 80 %. Arriba el relieve es empinado y el bosque ha sido difícil de convertir; abajo el terreno es plano y accesible, se convierte a pastos, y el sector además recibe el agua de todos los de arriba. '+
+    'Por eso el parámetro «condición aguas arriba» pesa un 20 %. Esto <em>no está forzado</em>: sale de los datos; si la parte alta se deteriora, también se pondría amarilla o roja.</p>'+
+    '<p><strong>Variables complementarias</strong> (calidad de agua, uso frente a aptitud, residuos) se evalúan en la pestaña <em>Diagnóstico</em>, con los criterios de la propuesta.</p>';
 
-  // lista de sectores
+  buildChips();
+  renderSectorList();
+}
+
+function renderSectorList(){
+  var box=$('semSectors'); if(!box) return;
+  var mode = ($('secSort') && $('secSort').value) || 'prio';
+  var all = SECS.map(function(f){ return f.properties; });
+  var groups = [];
+  if(mode==='zona'){
+    ['baja','media','alta'].forEach(function(z){
+      var g=all.filter(function(p){ return p.zona===z; }).sort(function(a,b){ return a.elevMean-b.elevMean; });
+      if(g.length) groups.push({ key:z, title:ZONA_LABEL[z], items:g });
+    });
+  } else if(mode==='prio'){
+    SEM_ORDER.forEach(function(c){
+      var g=all.filter(function(p){ return colOf(p)===c; }).sort(function(a,b){ return a.score-b.score; });
+      if(g.length) groups.push({ key:c, title:SEM_LABEL[c], items:g, col:c });
+    });
+  } else {
+    var g = all.slice().sort(mode==='score' ? function(a,b){ return a.score-b.score; } : function(a,b){ return b.km2-a.km2; });
+    groups.push({ key:'all', title:'Todos los sectores', items:g });
+  }
   SEC_ORDER = [];
   var html='';
-  ['alta','media','baja'].forEach(function(z){
-    var gset = SECS.map(function(f){ return f.properties; }).filter(function(p){ return p.zona===z; }).sort(function(a,b){ return b.elevMean-a.elevMean; });
-    if(!gset.length) return;
-    var A=0, S=0; gset.forEach(function(p){ A+=p.km2; S+=p.score*p.km2; });
-    html += '<div class="zone-h"><span>'+ZONA_LABEL[z]+'</span><em>'+gset.length+' sectores · índice '+Math.round(S/A)+'</em></div><ul class="sector-list">';
-    gset.forEach(function(p){
+  groups.forEach(function(gr){
+    var A=0, S=0; gr.items.forEach(function(p){ A+=p.km2; S+=p.score*p.km2; });
+    html += '<div class="zone-h"'+(gr.col?' style="color:'+SEM_COLOR[gr.col]+'"':'')+'><span>'+gr.title+'</span><em>'+gr.items.length+' sector'+(gr.items.length===1?'':'es')+' · '+f0(A)+' km² · índice '+Math.round(S/A)+'</em></div><ul class="sector-list">';
+    gr.items.forEach(function(p){
       SEC_ORDER.push(p.id);
-      html += '<li><button type="button" class="sector-item c-'+p.color+'" data-id="'+p.id+'" aria-label="'+p.nombre+', '+SEM_LABEL[p.color]+', '+p.score+' de 100. Ver detalle.">'+
-        '<span class="dot"></span><span><span class="n">'+p.nombre+'</span><span class="k" style="display:block">'+f1(p.km2)+' km² · '+f0(p.elevMean)+' m · '+f0(p.tree)+' % árboles</span></span>'+
+      var c=colOf(p);
+      html += '<li><button type="button" class="sector-item c-'+c+(colorOn[c]?'':' dim')+'" data-id="'+p.id+'" aria-label="'+p.nombre+', '+SEM_LABEL[c]+', '+p.score+' de 100. Ver detalle.">'+
+        '<span class="dot"></span><span><span class="n">'+p.nombre+'</span><span class="k" style="display:block">'+
+        (theme==='general' ? f1(p.km2)+' km² · '+f0(p.elevMean)+' m · '+f0(p.tree)+' % árboles' : THEMES[theme].val(p)+' · '+f1(p.km2)+' km²')+'</span></span>'+
         '<span class="sc">'+p.score+'</span></button></li>';
     });
     html += '</ul>';
   });
-  $('semSectors').innerHTML = html;
-  Array.prototype.forEach.call($('semSectors').querySelectorAll('.sector-item'), function(b){
+  box.innerHTML = html;
+  $('secListTitle').textContent = 'Sectores · coloreados por '+THEMES[theme].label.toLowerCase();
+  Array.prototype.forEach.call(box.querySelectorAll('.sector-item'), function(b){
     b.addEventListener('click', function(){ selectSector(parseInt(b.dataset.id,10), false); });
   });
 }
+$('secSort').addEventListener('change', renderSectorList);
 
 var PARAM_TXT = {
   arbol:     function(c,p){ return f1(c.v)+' % del sector está cubierto por árboles'; },
@@ -2263,6 +2795,7 @@ function selectSector(id, fromMap){
   renderSectorDetail(p);
   if(mapReady && l) map.flyToBounds(l.getBounds(), { paddingTopLeft:[40,40], paddingBottomRight:[40, isNarrow()?90:40], maxZoom:14, duration:.85 });
   if(fromMap && isNarrow()) openSheet();
+  setHash('sector='+id);
   announce('Sector '+p.nombre+': '+SEM_LABEL[p.color]+', '+p.score+' de 100.');
 }
 
@@ -2287,6 +2820,7 @@ function renderSectorDetail(p){
         '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:9.5px;color:var(--paper-3);letter-spacing:.05em;padding-bottom:4px">'+f1(p.km2)+' km² · '+f0(p.elevMean)+' m · pend. '+f0(p.slopeMean)+' %</div></div>'+
     '</div>'+
     '<div class="why c-'+p.color+'">'+why+'</div>'+
+    '<p class="eyebrow">Diagnóstico del sector</p>'+sectorDiagHtml(p)+
     '<p class="eyebrow">Parámetros del semáforo</p>'+comps+
     '<div class="mini-facts"><div class="mini"><div class="k">Árboles</div><div class="v">'+f0(p.tree)+' %</div></div>'+
       '<div class="mini"><div class="k">Pastos</div><div class="v">'+f0(p.grass)+' %</div></div>'+
@@ -2303,6 +2837,7 @@ function renderSectorDetail(p){
 
 function backToSemList(){
   semDetailView.setAttribute('hidden',''); semListView.removeAttribute('hidden');
+  setHash('');
   if(selSector && sectorLayers[selSector]) sectorLayers[selSector].setStyle(sectorStyle(sectorLayers[selSector].feature,false));
   var keep=selSector; selSector=null;
   var b = keep ? $('semSectors').querySelector('[data-id="'+keep+'"]') : $('semSectors').querySelector('.sector-item');
@@ -2348,6 +2883,7 @@ function selectPoi(id, fromMap){
 
   if(mapReady) map.flyTo(p.ll, Math.max(map.getZoom(), 13.5), { duration:.85 });
   if(fromMap && isNarrow()) openSheet();
+  setHash('punto='+id);
   announce('Punto seleccionado: '+p.name+'. '+KINDS[p.kind].label+'.');
 }
 
@@ -2400,7 +2936,7 @@ function renderPoiDetail(p){
 function backToPoiList(){
   poiDetailView.setAttribute('hidden','');
   poiListView.removeAttribute('hidden');
-  selectedPoi=null; markSelected(null);
+  selectedPoi=null; markSelected(null); setHash('');
   var b = $('poiList').querySelector('.poi-item');
   if(b) b.focus();
 }
@@ -2413,21 +2949,87 @@ var STORE='ecocuenca.reports.v2';
 var reports=[];
 try{ reports = JSON.parse(localStorage.getItem(STORE)) || []; }catch(e){ reports=[]; }
 
-function persist(){ try{ localStorage.setItem(STORE, JSON.stringify(reports)); }catch(e){} }
+function persist(){ try{ localStorage.setItem(STORE, JSON.stringify(reports)); return true; }catch(e){ return false; } }
 
 var repMarkers={};
 
-function repIcon(drop){
-  return L.divIcon({ className:'', html:'<span class="rep-pin'+(drop?' drop':'')+'"></span>',
-                     iconSize:[15,15], iconAnchor:[7,15] });
+var REP_CAT = {
+  'Deforestación':'bosque','Quema':'bosque','Erosión / sedimentación':'bosque','Deslizamiento':'bosque','Extracción de material':'bosque',
+  'Contaminación del agua':'agua','Mortandad de peces':'agua','Captación o desvío ilegal':'agua',
+  'Residuos sólidos':'residuo','Vertedero ilegal':'residuo','Sitio de disposición autorizado':'legal',
+  'Construcción no autorizada':'otro','Otro':'otro'
+};
+var REP_COLOR = { bosque:'#E2AC42', agua:'#63ACCB', residuo:'#E26E48', legal:'#4CCB84', otro:'#CBD2C2' };
+var STATUS_LABEL = { nuevo:'Nuevo', verificado:'Verificado', resuelto:'Resuelto' };
+var SEV_LABEL = { baja:'Gravedad baja', media:'Gravedad media', alta:'Gravedad alta' };
+function repColor(r){ return REP_COLOR[REP_CAT[r.type]||'otro']; }
+
+/* Reportes guardados por versiones anteriores: completa campos nuevos */
+reports.forEach(function(r){
+  if(!r.status) r.status='nuevo';
+  if(!r.sev) r.sev='media';
+  if(r.sectorId==null){ var sp=sectorAt(r.lat, r.lng); r.sectorId = sp ? sp.id : null; r.sector = sp ? sp.nombre : r.sector; }
+});
+
+function repIcon(drop, r){
+  var col = r ? repColor(r) : 'var(--clay)';
+  var op = r && r.status==='resuelto' ? ';opacity:.45' : '';
+  return L.divIcon({ className:'', html:'<span class="rep-pin'+(drop?' drop':'')+'" style="background:'+col+op+'"></span>',
+                     iconSize:[15,15], iconAnchor:[7,15], popupAnchor:[0,-14] });
+}
+
+function repPopupHtml(r){
+  return '<div class="pp-h">Reporte ciudadano · '+esc(STATUS_LABEL[r.status]||'Nuevo')+'</div>'+
+    '<div class="pp-t" style="color:'+repColor(r)+'">'+esc(r.type)+'</div>'+
+    '<div>'+esc(r.desc)+'</div>'+
+    (r.photo ? '<img src="'+r.photo+'" alt="Foto del reporte" style="width:100%;max-height:140px;object-fit:cover;border-radius:6px;margin-top:8px">' : '')+
+    '<div style="font-family:IBM Plex Mono,monospace;font-size:9.5px;color:var(--paper-3);margin-top:7px">'+
+      esc(SEV_LABEL[r.sev]||'')+' · '+relTime(r.ts)+(r.name ? ' · '+esc(r.name) : '')+'<br>'+(r.sector ? esc(r.sector) : 'Fuera de la microcuenca')+'</div>'+
+    '<div class="pp-acts">'+
+      (r.status!=='verificado' && r.status!=='resuelto' ? '<button data-st="verificado" data-id="'+r.id+'">Verificar</button>' : '')+
+      (r.status!=='resuelto' ? '<button data-st="resuelto" data-id="'+r.id+'">Resuelto</button>' : '<button data-st="nuevo" data-id="'+r.id+'">Reabrir</button>')+
+      '<button data-list="'+r.id+'">Ver en la lista</button></div>';
 }
 
 function addRepMarker(r, drop){
-  var m = L.marker([r.lat,r.lng], { icon:repIcon(drop), keyboard:true, alt:'Reporte: '+r.type });
+  var m = L.marker([r.lat,r.lng], { icon:repIcon(drop, r), keyboard:true, alt:'Reporte: '+r.type });
   m.bindTooltip(r.type.toUpperCase(), { direction:'top', offset:[0,-14] });
-  m.on('click', function(){ selectTab(TAB.REP); });
+  m.bindPopup(function(){ return repPopupHtml(r); }, { maxWidth:260 });
+  m.on('popupopen', function(e){
+    var node = e.popup.getElement(); if(!node) return;
+    Array.prototype.forEach.call(node.querySelectorAll('[data-st]'), function(b){
+      b.addEventListener('click', function(){ setRepStatus(b.dataset.id, b.dataset.st); map.closePopup(); });
+    });
+    Array.prototype.forEach.call(node.querySelectorAll('[data-list]'), function(b){
+      b.addEventListener('click', function(){ selectTab(TAB.REP); if(isNarrow()) openSheet(); map.closePopup();
+        var li=$('repArea').querySelector('[data-rid="'+b.dataset.list+'"]'); if(li){ li.scrollIntoView({ block:'center', behavior:'smooth' }); } });
+    });
+  });
   m.addTo(repGroup);
   repMarkers[r.id]=m;
+}
+function refreshRepMarker(r){
+  if(repMarkers[r.id]){ repGroup.removeLayer(repMarkers[r.id]); delete repMarkers[r.id]; }
+  addRepMarker(r, false);
+}
+
+function setRepStatus(id, st){
+  var r = reports.filter(function(x){ return x.id===id; })[0]; if(!r) return;
+  r.status = st; persist(); refreshRepMarker(r); renderReports(); afterReportsChange();
+  showToast('Reporte marcado como '+STATUS_LABEL[st].toLowerCase());
+}
+
+/* Lo que depende de los reportes: diagnóstico de residuos y el mapa si está coloreado por residuos */
+function afterReportsChange(){
+  renderDiag();
+  if(theme==='residuos') syncColorUI(); else buildChips();
+}
+
+function fillRepFilter(){
+  var sel=$('repFilter'), cur=sel.value, types={};
+  reports.forEach(function(r){ types[r.type]=(types[r.type]||0)+1; });
+  sel.innerHTML = '<option value="">Todos los tipos ('+reports.length+')</option>' +
+    Object.keys(types).sort().map(function(t){ return '<option value="'+esc(t)+'"'+(t===cur?' selected':'')+'>'+esc(t)+' ('+types[t]+')</option>'; }).join('');
 }
 
 function renderReports(){
@@ -2435,31 +3037,43 @@ function renderReports(){
   $('cntReports').textContent = String(reports.length);
 
   if(!reports.length){
+    $('repTools').setAttribute('hidden','');
     area.innerHTML =
       '<div class="empty">'+
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17.5h.01"/></svg>'+
         '<h4>Todavía no hay reportes</h4>'+
-        '<p>Usa <em>Reportar</em> para marcar un problema sobre el mapa. Los reportes se guardan solo en este navegador.</p>'+
+        '<p>Usa <em>Reportar</em> para marcar un problema sobre el mapa: basura, tala, quemas, agua contaminada… Los reportes se guardan solo en este navegador.</p>'+
         '<button class="btn btn-primary" id="emptyCta">Crear el primero</button>'+
       '</div>';
     $('emptyCta').addEventListener('click', startPlacing);
     return;
   }
+  $('repTools').removeAttribute('hidden');
+  fillRepFilter();
+  var ft=$('repFilter').value, fs=$('repStatusFilter').value;
+  var list = reports.slice().reverse().filter(function(r){ return (!ft || r.type===ft) && (!fs || r.status===fs); });
+
+  if(!list.length){ area.innerHTML='<p class="prose" style="font-size:12.5px;color:var(--paper-3)">Ningún reporte coincide con el filtro.</p>'; return; }
 
   var html='<ul class="rep-list">';
-  reports.slice().reverse().forEach(function(r,i){
+  list.forEach(function(r,i){
     html +=
-      '<li class="rep regmark" style="animation-delay:'+(i*0.04)+'s">'+
+      '<li class="rep regmark '+esc(r.status)+'" data-rid="'+r.id+'" style="animation-delay:'+(i*0.04)+'s">'+
         '<div class="rep-top">'+
-          '<span class="rep-type"><i class="kdot" style="background:var(--clay)"></i>'+r.type+'</span>'+
+          '<span class="rep-type"><i class="kdot" style="background:'+repColor(r)+'"></i>'+esc(r.type)+'</span>'+
           '<span class="rep-time">'+relTime(r.ts)+'</span>'+
         '</div>'+
-        '<div class="rep-desc">'+r.desc.replace(/[<>]/g,'')+'</div>'+
+        '<div class="rep-desc">'+esc(r.desc)+'</div>'+
+        (r.photo ? '<img class="rep-photo" src="'+r.photo+'" alt="Foto adjunta al reporte de '+esc(r.type)+'">' : '')+
+        '<div class="rep-meta"><span class="tag sev-'+esc(r.sev)+'">'+esc(SEV_LABEL[r.sev]||'')+'</span><span class="tag st-'+esc(r.status)+'">'+esc(STATUS_LABEL[r.status]||'')+'</span>'+
+          (r.name ? '<span class="tag">'+esc(r.name)+'</span>' : '')+'</div>'+
         '<div class="rep-foot">'+
-          '<span class="rep-coord">◎ '+r.lat.toFixed(4)+', '+r.lng.toFixed(4)+(r.sector ? '<br>Sector: '+r.sector : '')+'</span>'+
+          '<span class="rep-coord">◎ '+r.lat.toFixed(4)+', '+r.lng.toFixed(4)+(r.sector ? '<br>Sector: '+esc(r.sector) : '<br>Fuera de la microcuenca')+'</span>'+
           '<span class="rep-acts">'+
             '<button class="mini-btn" data-go="'+r.id+'">Ver</button>'+
-            '<button class="mini-btn danger" data-del="'+r.id+'">Borrar</button>'+
+            (r.status==='nuevo' ? '<button class="mini-btn" data-st="verificado" data-id="'+r.id+'">Verificar</button>' : '')+
+            (r.status!=='resuelto' ? '<button class="mini-btn" data-st="resuelto" data-id="'+r.id+'">Resuelto</button>' : '<button class="mini-btn" data-st="nuevo" data-id="'+r.id+'">Reabrir</button>')+
+            '<button class="mini-btn danger" data-del="'+r.id+'" aria-label="Borrar reporte">Borrar</button>'+
           '</span>'+
         '</div>'+
       '</li>';
@@ -2468,19 +3082,26 @@ function renderReports(){
   area.innerHTML=html;
 
   Array.prototype.forEach.call(area.querySelectorAll('[data-go]'), function(b){
-    b.addEventListener('click', function(){
-      var r = reports.filter(function(x){ return x.id===b.dataset.go; })[0];
-      if(r && mapReady){
-        map.flyTo([r.lat,r.lng], 15, { duration:.8 });
-        var m=repMarkers[r.id];
-        if(m && m.getElement()){ var pin=m.getElement().querySelector('.rep-pin'); if(pin){ pin.classList.remove('drop'); void pin.offsetWidth; pin.classList.add('drop'); } }
-        if(isNarrow()) closeSheet();
-      }
-    });
+    b.addEventListener('click', function(){ goToReport(b.dataset.go); });
+  });
+  Array.prototype.forEach.call(area.querySelectorAll('[data-st]'), function(b){
+    b.addEventListener('click', function(){ setRepStatus(b.dataset.id, b.dataset.st); });
   });
   Array.prototype.forEach.call(area.querySelectorAll('[data-del]'), function(b){
     b.addEventListener('click', function(){ deleteReport(b.dataset.del); });
   });
+}
+$('repFilter').addEventListener('change', renderReports);
+$('repStatusFilter').addEventListener('change', renderReports);
+
+function goToReport(id){
+  var r = reports.filter(function(x){ return x.id===id; })[0];
+  if(!r || !mapReady) return;
+  if(!map.hasLayer(repGroup)){ map.addLayer(repGroup); var ck=$('lyReports'); if(ck) ck.checked=true; }
+  map.flyTo([r.lat,r.lng], 15, { duration:.8 });
+  var m=repMarkers[r.id];
+  window.setTimeout(function(){ if(m){ m.openPopup(); var pin=m.getElement() && m.getElement().querySelector('.rep-pin'); if(pin){ pin.classList.remove('drop'); void pin.offsetWidth; pin.classList.add('drop'); } } }, 850);
+  if(isNarrow()) closeSheet();
 }
 
 var lastDeleted=null;
@@ -2490,7 +3111,7 @@ function deleteReport(id){
   lastDeleted = { r:reports[i], i:i };
   reports.splice(i,1);
   if(repMarkers[id]){ repGroup.removeLayer(repMarkers[id]); delete repMarkers[id]; }
-  persist(); renderReports();
+  persist(); renderReports(); afterReportsChange();
   showToast('Reporte eliminado', true);
   announce('Reporte eliminado. Puedes deshacer.');
 }
@@ -2499,7 +3120,7 @@ function undoDelete(){
   reports.splice(lastDeleted.i, 0, lastDeleted.r);
   addRepMarker(lastDeleted.r, true);
   lastDeleted=null;
-  persist(); renderReports(); hideToast();
+  persist(); renderReports(); afterReportsChange(); hideToast();
   announce('Reporte restaurado.');
 }
 
@@ -2514,7 +3135,28 @@ var fab=$('fab'), placingBar=$('placingBar');
 var repOverlay=$('repOverlay'), repSheet=$('repSheet');
 var coordChip=$('coordChip'), repType=$('repType'), repDesc=$('repDesc');
 var fType=$('fType'), fDesc=$('fDesc'), descCount=$('descCount');
-var pendingSector=null;
+var pendingSector=null, pendingPhoto=null;
+
+/* Foto: se reduce a 900 px y JPEG para que quepa en el almacenamiento del navegador */
+$('repPhoto').addEventListener('change', function(){
+  var f=this.files && this.files[0]; pendingPhoto=null; $('repPhotoPrev').setAttribute('hidden','');
+  if(!f) return;
+  if(!/^image\//.test(f.type)){ showToast('El archivo no es una imagen.'); this.value=''; return; }
+  var fr=new FileReader();
+  fr.onload=function(){
+    var img=new Image();
+    img.onload=function(){
+      var k=Math.min(1, 900/Math.max(img.width,img.height)), c=document.createElement('canvas');
+      c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      pendingPhoto=c.toDataURL('image/jpeg',0.7);
+      $('repPhotoPrev').src=pendingPhoto; $('repPhotoPrev').removeAttribute('hidden');
+    };
+    img.onerror=function(){ showToast('No se pudo leer la imagen.'); };
+    img.src=fr.result;
+  };
+  fr.readAsDataURL(f);
+});
 var placing=false, pendingLL=null, ghostMarker=null, lastFocus=null;
 
 function startPlacing(){
@@ -2588,13 +3230,21 @@ $('repSubmit').addEventListener('click', function(){
   btn.classList.add('busy'); btn.textContent='Guardando…';
 
   window.setTimeout(function(){
+    var sevEl = document.querySelector('input[name="sev"]:checked');
     var r = {
       id:'r'+Date.now()+Math.floor(Math.random()*999),
       type:repType.value, desc:repDesc.value.trim(),
       lat:pendingLL.lat, lng:pendingLL.lng, ts:Date.now(),
-      sector: pendingSector ? pendingSector.nombre : null, color: pendingSector ? pendingSector.color : null
+      sector: pendingSector ? pendingSector.nombre : null, sectorId: pendingSector ? pendingSector.id : null,
+      color: pendingSector ? pendingSector.color : null,
+      sev: sevEl ? sevEl.value : 'media', status:'nuevo',
+      name: $('repName').value.trim().slice(0,60) || null,
+      photo: pendingPhoto || null
     };
-    reports.push(r); persist();
+    reports.push(r);
+    var photoLost=false;
+    if(!persist() && r.photo){ r.photo=null; persist(); photoLost=true; }
+    afterReportsChange();
     if(ghostMarker){ map.removeLayer(ghostMarker); ghostMarker=null; }
     addRepMarker(r, true);
     renderReports();
@@ -2604,11 +3254,13 @@ $('repSubmit').addEventListener('click', function(){
     if(lastFocus && lastFocus.focus) lastFocus.focus();
 
     repDesc.value=''; repType.value=''; descCount.textContent='0 / 240';
+    $('repName').value=''; $('repPhoto').value=''; pendingPhoto=null; $('repPhotoPrev').setAttribute('hidden','');
+    var sm=document.querySelector('input[name="sev"][value="media"]'); if(sm) sm.checked=true;
     coordChip.textContent='◎ Sin ubicar'; coordChip.classList.remove('set');
     pendingLL=null;
 
     selectTab(TAB.REP);
-    showToast('Reporte registrado — gracias por contribuir');
+    showToast(photoLost ? 'Reporte guardado sin la foto: no cabía en el almacenamiento del navegador' : 'Reporte registrado — gracias por contribuir');
     announce('Reporte guardado. Ahora hay '+reports.length+' reportes.');
   }, 620);
 });
@@ -2701,6 +3353,8 @@ document.addEventListener('keydown', function(e){
   /* Escape: cierra en orden de profundidad */
   if(e.key==='Escape'){
     if(lightbox.classList.contains('show')) return closeLightbox();
+    if(aboutOverlay.classList.contains('show')) return closeAbout();
+    if(!searchRes.hasAttribute('hidden')){ closeSearch(); return; }
     if(repOverlay.classList.contains('show')) return closeRepModal();
     if(!layersPop.hasAttribute('hidden')) return toggleLayers(false);
     if(placing) return stopPlacing();
@@ -2717,9 +3371,10 @@ document.addEventListener('keydown', function(e){
     return;
   }
 
-  /* Retención de foco en el modal */
-  if(repOverlay.classList.contains('show') && e.key==='Tab'){
-    var f = repSheet.querySelectorAll('button, select, textarea, input, [href]');
+  /* Retención de foco en los diálogos modales */
+  var modal = repOverlay.classList.contains('show') ? repSheet : aboutOverlay.classList.contains('show') ? $('aboutSheet') : null;
+  if(modal && e.key==='Tab'){
+    var f = modal.querySelectorAll('button, select, textarea, input, [href]');
     if(!f.length) return;
     var first=f[0], last=f[f.length-1];
     if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
@@ -2732,7 +3387,450 @@ document.addEventListener('keydown', function(e){
   if(tag==='input'||tag==='textarea'||tag==='select') return;
   if(e.key==='r'||e.key==='R'){ e.preventDefault(); placing ? stopPlacing() : startPlacing(); }
   if(e.key==='f'||e.key==='F'){ e.preventDefault(); if(mapReady) fitZone(); }
+  if(e.key==='/'){ e.preventDefault(); searchInput.focus(); }
 });
+
+/* ===================================================================
+   14b · DIAGNÓSTICO MULTICRITERIO (criterios de la propuesta, §5.4)
+   =================================================================== */
+
+/* Calidad de agua: las dos estaciones de monitoreo de la ACP en la microcuenca.
+   La posición es de referencia (punto de cierre calculado de cada subcuenca);
+   la estación real puede estar aguas arriba: ajustar con el Informe de Calidad de Agua de la ACP. */
+var STATIONS = [
+  { id:'CNO', name:'Los Cañones', river:'Cirí Grande', sub:'ciri',     ll:[ST.outlets.ciri[1], ST.outlets.ciri[0]] },
+  { id:'CHO', name:'El Chorro',   river:'Trinidad',    sub:'trinidad', ll:[ST.outlets.trinidad[1], ST.outlets.trinidad[0]] }
+];
+/* Umbrales de trabajo (ajustables con el profesor y la normativa vigente / criterio ACP). */
+var WQ = {
+  od:   { label:'Oxígeno disuelto',   unit:'mg/L',       f:function(v){ return v>=6 ? 'verde' : v>=4 ? 'amarillo' : 'rojo'; },          rule:{ rojo:'< 4', amarillo:'4–6', verde:'≥ 6' } },
+  turb: { label:'Turbidez',           unit:'NTU',        f:function(v){ return v<=10 ? 'verde' : v<=50 ? 'amarillo' : 'rojo'; },        rule:{ rojo:'> 50', amarillo:'10–50', verde:'≤ 10' } },
+  ph:   { label:'pH',                 unit:'',           f:function(v){ return (v>=6.5&&v<=8.5) ? 'verde' : (v>=6&&v<=9) ? 'amarillo' : 'rojo'; }, rule:{ rojo:'< 6 o > 9', amarillo:'6–6,5 o 8,5–9', verde:'6,5–8,5' } },
+  coli: { label:'Coliformes fecales', unit:'NMP/100 mL', f:function(v){ return v<=200 ? 'verde' : v<=1000 ? 'amarillo' : 'rojo'; },     rule:{ rojo:'> 1000', amarillo:'200–1000', verde:'≤ 200' } }
+};
+var WQ_KEYS = ['od','turb','ph','coli'];
+var WQ_STORE = 'ecocuenca.agua.v1';
+var wqData = [];
+try{ wqData = JSON.parse(localStorage.getItem(WQ_STORE)) || []; }catch(e){ wqData=[]; }
+function wqPersist(){ try{ localStorage.setItem(WQ_STORE, JSON.stringify(wqData)); }catch(e){} }
+function wqCol(m){ return worst(WQ_KEYS.map(function(k){ return (m[k]!=null && m[k]!=='' && !isNaN(m[k])) ? WQ[k].f(+m[k]) : null; })); }
+function wqLatest(sid){
+  var l = wqData.filter(function(m){ return m.st===sid; }).sort(function(a,b){ return a.date<b.date ? 1 : -1; });
+  return l[0] || null;
+}
+
+function areaShare(fn){
+  var A=0, out={ rojo:0, amarillo:0, verde:0 };
+  SECS.forEach(function(f){ var p=f.properties; A+=p.km2; out[fn(p)]+=p.km2; });
+  SEM_ORDER.forEach(function(c){ out[c]=100*out[c]/A; });
+  out.pts = SEM_ORDER.reduce(function(a,c){ return a + out[c]*SEM_PTS[c]/100; }, 0);
+  return out;
+}
+function minibar(sh){
+  return '<div class="minibar" role="img" aria-label="'+SEM_ORDER.map(function(c){ return f0(sh[c])+' % '+SEM_LABEL[c].toLowerCase(); }).join(', ')+'">'+
+    SEM_ORDER.map(function(c){ return '<span style="width:'+sh[c]+'%;background:'+SEM_COLOR[c]+'"></span>'; }).join('')+'</div>';
+}
+
+function computeDiag(){
+  var V = [];
+  // 1) Calidad de agua
+  var lat = STATIONS.map(function(s){ return { s:s, m:wqLatest(s.id) }; });
+  var withData = lat.filter(function(x){ return x.m; });
+  var wCol = withData.length ? worst(withData.map(function(x){ return wqCol(x.m); })) : null;
+  V.push({ key:'agua', w:35, label:'Calidad de agua', col:wCol, theme:null,
+    txt: withData.length
+      ? withData.map(function(x){ var c=wqCol(x.m); return '<strong>'+x.s.name+'</strong> ('+x.s.river+', '+esc(x.m.date)+'): '+SEM_LABEL[c].toLowerCase(); }).join(' · ')+
+        (withData.length<STATIONS.length ? ' · falta la estación '+lat.filter(function(x){ return !x.m; }).map(function(x){ return x.s.name; }).join(', ')+'.' : '.')
+      : 'Aún <strong>sin mediciones cargadas</strong>. Registre los valores de las estaciones ACP Los Cañones (Cirí Grande) y El Chorro (Trinidad) o las tomadas en campo, más abajo.',
+    src:'ACP · Informe de Calidad de Agua de la CHCP (anual) / muestreo de campo' });
+  // 2) Uso del suelo vs. aptitud
+  var ap = areaShare(aptConflict);
+  V.push({ key:'aptitud', w:20, label:'Uso del suelo vs. aptitud', col:semOf(ap.pts), share:ap, theme:'aptitud',
+    txt:'<strong>'+f0(ap.rojo)+' %</strong> del área tiene un uso muy por encima de su aptitud y <strong>'+f0(ap.amarillo)+' %</strong> algo más intensivo (pastos en terrenos de clase VI–VIII). Clase estimada por pendiente.',
+    src:'WorldCover 2021 + pendiente SRTM · validar con mapa agrológico ANATI/IDIAP' });
+  // 3) Erosión
+  var er = areaShare(erosionOf);
+  V.push({ key:'erosion', w:20, label:'Riesgo de erosión', col:semOf(er.pts), share:er, theme:'erosion',
+    txt:'<strong>'+f1(ST.steepBarePct)+' %</strong> de la microcuenca son laderas de más de 30 % sin árboles. <strong>'+f0(er.rojo)+' %</strong> del área está en sectores en rojo (≥ 5 % de ladera desnuda).',
+    src:'Pendiente DEM SRTM × cobertura ESA WorldCover 2021' });
+  // 4) Residuos
+  var wl = wasteReports(null), legal = reports.filter(function(r){ return r.type==='Sitio de disposición autorizado'; }).length;
+  var rs = areaShare(function(p){ return wasteCol(wasteReports(p.id)); });
+  V.push({ key:'residuos', w:25, label:'Gestión de residuos', col:wasteCol(wl), share:rs, theme:'residuos',
+    txt: wl.length
+      ? '<strong>'+wl.length+'</strong> reporte'+(wl.length===1?'':'s')+' activo'+(wl.length===1?'':'s')+' de basura o vertederos'+(wl.some(function(r){ return r.type==='Vertedero ilegal'; }) ? ', con al menos un vertedero ilegal' : '')+'. '+legal+' sitio'+(legal===1?'':'s')+' de disposición autorizado'+(legal===1?'':'s')+' registrado'+(legal===1?'':'s')+'.'
+      : 'Sin reportes de botaderos en este navegador. El estado depende de la participación: invite a la comunidad a reportar. '+legal+' sitio'+(legal===1?'':'s')+' autorizado'+(legal===1?'':'s')+' registrado'+(legal===1?'':'s')+'.',
+    src:'Reportes ciudadanos (tipo «Residuos sólidos» o «Vertedero ilegal», no resueltos)' });
+  // índice: más peso a agua y residuos; las variables sin datos no cuentan y se reponderan
+  var W=0, S=0;
+  V.forEach(function(v){ if(v.col){ W+=v.w; S+=v.w*SEM_PTS[v.col]; } });
+  return { vars:V, score: W ? Math.round(S/W) : null, used: V.filter(function(v){ return v.col; }).length };
+}
+
+function renderDiag(){
+  if(!$('diagHero')) return;
+  var D = computeDiag(), col = D.score==null ? null : semOf(D.score);
+  $('diagHero').className = 'sem-hero regmark'+(col?' c-'+col:'');
+  $('diagHero').innerHTML =
+    '<div class="sem-row"><span class="tlight lg" role="img" aria-label="Diagnóstico multicriterio: '+(col?SEM_LABEL[col]:'sin datos')+'">'+lampsHtml(col||'none')+'</span>'+
+    '<div><div class="sem-top"><div class="sem-score">'+(D.score==null?'—':D.score)+'<small>/100</small></div>'+
+      (col ? '<span class="sem-badge"><i></i>'+SEM_LABEL[col]+'</span>' : '')+'</div>'+
+    '<p class="sem-note" style="margin-top:10px">Combina las cuatro variables de la propuesta, con <strong>más peso a la calidad de agua (35 %) y a los residuos (25 %)</strong> por su relación con la salud pública. '+
+      'Variables con datos: <strong>'+D.used+' de 4</strong>'+(D.used<4 ? '; las que faltan no cuentan y el resto se repondera' : '')+'.</p></div></div>'+
+    '<p class="sem-note">El semáforo por sectores del mapa (índice de cobertura por satélite: <strong>'+ECO.global.score+'/100</strong>) es independiente y está en la pestaña <em>Semáforo</em>.</p>';
+  $('diagList').innerHTML = D.vars.map(function(v){
+    return '<div class="diag '+(v.col?'c-'+v.col:'nodata')+'">'+
+      '<div class="diag-top"><div><h4>'+v.label+'</h4><span class="w">Peso '+v.w+' %</span></div>'+
+        '<span class="sem-badge"><i></i>'+(v.col?SEM_LABEL[v.col]:'Sin datos')+'</span></div>'+
+      (v.share ? minibar(v.share) : '')+
+      '<p>'+v.txt+'</p>'+
+      '<div class="src">Fuente: '+v.src+'</div>'+
+      '<div class="btn-row no-print" style="margin-top:9px">'+
+        (v.theme ? '<button class="mini-btn" data-theme-go="'+v.theme+'">Ver en el mapa</button>' : '<button class="mini-btn" data-wq-go="1">Ver estaciones</button>')+
+      '</div></div>';
+  }).join('');
+  Array.prototype.forEach.call($('diagList').querySelectorAll('[data-theme-go]'), function(b){
+    b.addEventListener('click', function(){ setTheme(b.dataset.themeGo); if(mapReady) fitZone(); if(isNarrow()) closeSheet(); });
+  });
+  Array.prototype.forEach.call($('diagList').querySelectorAll('[data-wq-go]'), function(b){
+    b.addEventListener('click', function(){ $('wqBox').scrollIntoView({ behavior:'smooth', block:'start' }); if(mapReady) map.flyToBounds(L.latLngBounds(STATIONS.map(function(s){ return s.ll; })), { padding:[80,80], maxZoom:13 }); });
+  });
+  renderApt(); renderWq(); renderCrit();
+}
+
+function renderApt(){
+  var A=0, by={}; SECS.forEach(function(f){ var p=f.properties, c=aptClass(p); A+=p.km2; by[c]=(by[c]||0)+p.km2; });
+  var classes=['III','IV','VI','VII','VIII'];
+  var bad = SECS.map(function(f){ return f.properties; }).filter(function(p){ return aptConflict(p)!=='verde'; })
+    .sort(function(a,b){ return SEM_RANK[aptConflict(a)]-SEM_RANK[aptConflict(b)] || b.grass-a.grass; });
+  $('aptBox').innerHTML =
+    '<p class="prose" style="font-size:12.5px">Proporción del área por clase de capacidad de uso <strong>estimada por la pendiente media</strong> de cada sector. A mayor clase, mayor limitación. Más del 80 % de Panamá es clase VI–VIII.</p>'+
+    '<div class="cls-bars">'+classes.filter(function(c){ return by[c]; }).map(function(c){
+      var pc=100*by[c]/A;
+      return '<div class="cls-bar" title="'+APT_USE[c]+'"><b>'+c+'</b><span class="tr"><i style="width:'+pc+'%"></i></span><span>'+f0(pc)+' %</span></div>';
+    }).join('')+'</div>'+
+    '<div class="src" style="font-family:IBM Plex Mono,monospace;font-size:9px;color:var(--paper-3);margin-top:10px;line-height:1.6">'+
+      classes.filter(function(c){ return by[c]; }).map(function(c){ return c+': '+APT_USE[c]; }).join('<br>')+'</div>'+
+    (bad.length ? '<p class="prose" style="font-size:12.5px;margin-top:12px"><strong>Sectores con uso más intensivo que su aptitud:</strong></p><ul class="sector-list" style="margin-top:8px">'+
+      bad.map(function(p){ var c=aptConflict(p);
+        return '<li><button type="button" class="sector-item c-'+c+'" data-apt="'+p.id+'"><span class="dot"></span><span><span class="n">'+p.nombre+'</span><span class="k" style="display:block">Clase '+aptClass(p)+' · '+f0(p.grass)+' % pastos · pend. '+f0(p.slopeMean)+' %</span></span><span class="sc" style="font-size:15px">'+SEM_LABEL[c]+'</span></button></li>';
+      }).join('')+'</ul>' : '')+
+    '<p class="prose" style="font-size:11px;color:var(--paper-3);margin-top:10px">Aproximación de gabinete: la clase oficial (ANATI/IDIAP) considera además profundidad, drenaje, pedregosidad y fertilidad. Reemplazar con el mapa oficial cuando esté disponible.</p>';
+  Array.prototype.forEach.call($('aptBox').querySelectorAll('[data-apt]'), function(b){
+    b.addEventListener('click', function(){ setTheme('aptitud', true); selectSector(parseInt(b.dataset.apt,10), false); });
+  });
+}
+
+function renderWq(){
+  var rows = wqData.slice().sort(function(a,b){ return a.date<b.date ? 1 : -1; });
+  var stName = {}; STATIONS.forEach(function(s){ stName[s.id]=s.name; });
+  $('wqBox').innerHTML =
+    '<p class="prose" style="font-size:12.5px">Estaciones de la ACP en la microcuenca: <strong>Los Cañones</strong> (río Cirí Grande) y <strong>El Chorro</strong> (río Trinidad). '+
+    'Cargue los valores del <a href="https://pancanal.com/cuenca-hidrografica/" target="_blank" rel="noopener" style="color:var(--river)">Informe de Calidad de Agua de la ACP</a> o los medidos en campo; el semáforo se calcula solo.</p>'+
+    '<form class="wq-form no-print" id="wqForm" novalidate>'+
+      '<label>Estación<select id="wqSt">'+STATIONS.map(function(s){ return '<option value="'+s.id+'">'+s.name+' · '+s.river+'</option>'; }).join('')+'</select></label>'+
+      '<label>Fecha<input type="date" id="wqDate" required></label>'+
+      WQ_KEYS.map(function(k){ return '<label>'+WQ[k].label+(WQ[k].unit?' ('+WQ[k].unit+')':'')+'<input type="number" step="any" min="0" inputmode="decimal" id="wq_'+k+'"></label>'; }).join('')+
+      '<label class="full">Fuente<input type="text" id="wqSrc" maxlength="80" placeholder="Ej.: Informe ACP 2021, tabla de la estación · o muestreo de campo"></label>'+
+      '<div class="full" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" type="submit">Guardar medición</button>'+
+        (rows.length ? '<button class="btn btn-ghost" type="button" id="wqCsv">Exportar CSV</button>' : '')+'</div>'+
+    '</form>'+
+    (rows.length ?
+      '<table class="wq-table"><thead><tr><th>Estación / fecha</th><th>OD</th><th>Turb.</th><th>pH</th><th>Colif.</th><th></th></tr></thead><tbody>'+
+      rows.map(function(m){
+        var c=wqCol(m);
+        return '<tr><td><span class="dotc c-'+c+'"></span>'+esc(stName[m.st]||m.st)+'<br><span style="color:var(--paper-3)">'+esc(m.date)+(m.src?' · '+esc(m.src):'')+'</span></td>'+
+          WQ_KEYS.map(function(k){ var v=m[k]; return '<td'+(v!=null&&v!==''?' class="c-'+WQ[k].f(+v)+'" style="color:var(--c)"':'')+'>'+(v!=null&&v!==''?esc(v):'—')+'</td>'; }).join('')+
+          '<td><button type="button" data-wqdel="'+m.id+'" aria-label="Borrar medición">✕</button></td></tr>';
+      }).join('')+'</tbody></table>'
+      : '<p class="prose" style="font-size:12px;color:var(--paper-3);margin-top:10px">Sin mediciones registradas todavía.</p>');
+  var d=$('wqDate'); if(d) d.value = new Date().toISOString().slice(0,10);
+  $('wqForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var m={ id:'m'+Date.now(), st:$('wqSt').value, date:$('wqDate').value, src:$('wqSrc').value.trim() };
+    var any=false;
+    WQ_KEYS.forEach(function(k){ var v=$('wq_'+k).value; m[k] = v==='' ? null : +v; if(v!=='') any=true; });
+    if(!m.date){ showToast('Indique la fecha de la medición.'); return; }
+    if(!any){ showToast('Escriba al menos un parámetro.'); return; }
+    wqData.push(m); wqPersist(); renderDiag(); refreshWqMarkers();
+    showToast('Medición guardada · '+SEM_LABEL[wqCol(m)]);
+    announce('Medición guardada. Calidad de agua: '+SEM_LABEL[wqCol(m)]+'.');
+  });
+  Array.prototype.forEach.call($('wqBox').querySelectorAll('[data-wqdel]'), function(b){
+    b.addEventListener('click', function(){ wqData = wqData.filter(function(m){ return m.id!==b.dataset.wqdel; }); wqPersist(); renderDiag(); refreshWqMarkers(); showToast('Medición borrada'); });
+  });
+  if($('wqCsv')) $('wqCsv').addEventListener('click', function(){
+    var head=['estacion','rio','fecha','od_mgL','turbidez_NTU','pH','coliformes_NMP100mL','semaforo','fuente'];
+    var lines=rows.map(function(m){ var s=STATIONS.filter(function(x){ return x.id===m.st; })[0]||{};
+      return [s.name,s.river,m.date,m.od,m.turb,m.ph,m.coli,SEM_LABEL[wqCol(m)],m.src].map(csvCell).join(','); });
+    download('ecocuenca_calidad_agua.csv','text/csv', '﻿'+head.join(',')+'\n'+lines.join('\n'));
+  });
+}
+
+function renderCrit(){
+  var T = [
+    ['Calidad de agua', 'OD bajo, turbidez y coliformes persistentemente altos', 'Turbidez o coliformes elevados de forma ocasional', 'OD alto, turbidez baja, sin coliformes fecales relevantes',
+      'Peor parámetro de la última medición: '+WQ_KEYS.map(function(k){ return WQ[k].label+' '+SEM_ORDER.map(function(c){ return WQ[k].rule[c]; }).join(' / ')+(WQ[k].unit?' '+WQ[k].unit:''); }).join('; ')+' (rojo / amarillo / verde).'],
+    ['Uso de suelo vs. aptitud', 'Agricultura o ganadería en clases VI–VIII', 'Uso ligeramente más intensivo que la aptitud', 'El uso coincide con la clase del terreno',
+      'Clase VI: pastos > 55 % rojo, 35–55 % amarillo. Clases VII–VIII: pastos > 25 % rojo, 10–25 % amarillo.'],
+    ['Riesgo de erosión', 'Pendiente pronunciada con suelo desnudo', 'Pendiente moderada con cobertura parcial', 'Pendiente baja y cobertura densa',
+      'Ladera > 30 % sin árboles: ≥ 5 % del sector rojo, 2–5 % amarillo, < 2 % verde.'],
+    ['Gestión de residuos', 'Vertedero ilegal activo o recurrente', 'Reportes aislados de basura', 'Sin reportes de botaderos',
+      '≥ 3 reportes activos o un vertedero ilegal de gravedad alta: rojo; 1–2: amarillo; ninguno: verde.']
+  ];
+  $('critBox').innerHTML =
+    '<div style="overflow-x:auto"><table class="crit"><thead><tr><th>Variable</th><th style="color:var(--sr)">Crítico</th><th style="color:var(--sa)">Alerta</th><th style="color:var(--sv)">Bueno</th></tr></thead><tbody>'+
+    T.map(function(r){ return '<tr><td><strong style="color:var(--paper);font-weight:500">'+r[0]+'</strong></td><td class="r">'+r[1]+'</td><td class="a">'+r[2]+'</td><td class="v">'+r[3]+'</td></tr>'+
+      '<tr><td colspan="4" style="color:var(--paper-3);font-size:10.5px">Cómo lo aplica la plataforma: '+r[4]+'</td></tr>'; }).join('')+
+    '</tbody></table></div>'+
+    '<p class="prose" style="font-size:11px;color:var(--paper-3);margin-top:8px">Umbrales de trabajo según la propuesta (§5.4), ajustables con el profesor y con la normativa y los criterios de la ACP.</p>';
+}
+
+function sectorDiagHtml(p){
+  var wl = wasteReports(p.id), allR = reports.filter(function(r){ return r.sectorId===p.id; });
+  var items = [
+    ['Erosión', erosionOf(p), f1(p.steepBare)+' % ladera desnuda'],
+    ['Uso vs. aptitud', aptConflict(p), 'Clase '+aptClass(p)+' · '+f0(p.grass)+' % pastos'],
+    ['Pérdida 2014–23', THEMES.perdida.col(p), f1(p.perdidaPct)+' % del bosque'],
+    ['Residuos', wasteCol(wl), wl.length+' activo'+(wl.length===1?'':'s')+' · '+allR.length+' reporte'+(allR.length===1?'':'s')+' en total']
+  ];
+  return '<div class="sec-diag">'+items.map(function(it){
+    return '<div class="mini c-'+it[1]+'"><div class="k">'+it[0]+'</div><div class="v" style="color:var(--c)">'+SEM_LABEL[it[1]]+'</div><div class="k" style="margin-top:4px;text-transform:none;letter-spacing:.02em">'+it[2]+'</div></div>';
+  }).join('')+'</div>';
+}
+
+/* --- Estaciones de calidad de agua en el mapa --------------------------- */
+var wqMarkers = {};
+function addWqMarkers(){
+  STATIONS.forEach(function(s){
+    var m=wqLatest(s.id), c=m?wqCol(m):null;
+    var mk = L.marker(s.ll, { keyboard:true, title:'Estación '+s.name,
+      icon:L.divIcon({ className:'', html:'<span class="wq-pin" style="--c:'+(c?SEM_COLOR[c]:'#63ACCB')+'"></span>', iconSize:[18,18], iconAnchor:[9,9], popupAnchor:[0,-10] }) });
+    mk.bindTooltip('Calidad de agua · '+s.name, { direction:'top', offset:[0,-10] });
+    mk.bindPopup(function(){
+      var mm=wqLatest(s.id);
+      return '<div class="pp-h">Estación de calidad de agua (ACP)</div><div class="pp-t">'+s.name+' · río '+s.river+'</div>'+
+        (mm ? WQ_KEYS.filter(function(k){ return mm[k]!=null; }).map(function(k){ var cc=WQ[k].f(+mm[k]); return '<div><span style="color:'+SEM_COLOR[cc]+'">●</span> '+WQ[k].label+': <b>'+mm[k]+'</b> '+WQ[k].unit+'</div>'; }).join('')+
+              '<div style="font-family:IBM Plex Mono,monospace;font-size:9.5px;color:var(--paper-3);margin-top:6px">Medición del '+esc(mm.date)+(mm.src?' · '+esc(mm.src):'')+'</div>'
+            : '<div>Sin mediciones cargadas. Agréguelas en <b>Diagnóstico → Calidad de agua</b>.</div>')+
+        '<div style="font-size:11px;color:var(--paper-3);margin-top:6px">Ubicación de referencia en el punto de cierre de la subcuenca; confirmar con la ACP.</div>'+
+        '<div class="pp-acts"><button data-wqopen="1">Abrir registro</button></div>';
+    }, { maxWidth:270 });
+    mk.on('popupopen', function(e){ var b=e.popup.getElement().querySelector('[data-wqopen]'); if(b) b.addEventListener('click', function(){ map.closePopup(); selectTab(TAB.DIAG); if(isNarrow()) openSheet(); window.setTimeout(function(){ $('wqBox').scrollIntoView({ behavior:'smooth', block:'start' }); }, 120); }); });
+    mk.addTo(wqGroup); wqMarkers[s.id]=mk;
+  });
+}
+function refreshWqMarkers(){ wqGroup.clearLayers(); wqMarkers={}; if(mapReady) addWqMarkers(); }
+
+/* ===================================================================
+   14c · BUSCADOR
+   =================================================================== */
+var searchInput=$('searchInput'), searchRes=$('searchRes'), searchItems=[], searchSel=-1, tmpMarker=null;
+
+function featBounds(feat){
+  var pts=[], g=feat.geometry, polys = g.type==='Polygon' ? [g.coordinates] : g.coordinates;
+  polys.forEach(function(pl){ pl[0].forEach(function(c){ pts.push([c[1],c[0]]); }); });
+  return L.latLngBounds(pts);
+}
+function secBounds(list){ var b=null; list.forEach(function(p){ var l=sectorLayers[p.id]; var bb = l ? l.getBounds() : featBounds(SECS.filter(function(f){ return f.properties.id===p.id; })[0]); b = b ? b.extend(bb) : L.latLngBounds(bb.getSouthWest(), bb.getNorthEast()); }); return b; }
+function flyB(b){ if(mapReady && b) map.flyToBounds(b, { padding:[50,50], maxZoom:14, duration:.9 }); if(isNarrow()) closeSheet(); }
+
+function searchIndex(){
+  var out=[];
+  SECS.forEach(function(f){ var p=f.properties, c=colOf(p);
+    out.push({ t:p.nombre, s:'Sector · '+SEM_LABEL[c]+' · '+p.score+'/100', c:SEM_COLOR[c], k:p.nombre+' sector '+p.id+' '+riverOf(p.sub)+' '+ZONA_LABEL[p.zona]+' '+SEM_LABEL[c],
+      go:function(){ selectSector(p.id, false); } });
+  });
+  POINTS.forEach(function(p){ out.push({ t:p.name, s:'Punto de interés · '+KINDS[p.kind].label, c:KINDS[p.kind].color, k:p.name+' punto '+KINDS[p.kind].label, go:function(){ selectPoi(p.id, false); } }); });
+  ECO.boundary.features.forEach(function(f){
+    var id=f.properties.id; if(id==='microcuenca') return;
+    var river = id==='ciri' ? 'Cirí Grande' : 'Trinidad';
+    out.push({ pri:1, t:'Río '+river, s:'Subcuenca · '+f1(f.properties.km2)+' km²', c:'#9ADBFA', k:'rio '+river+' subcuenca quebrada cauce', go:function(){ flyB(featBounds(f)); announce('Subcuenca del río '+river+'.'); } });
+  });
+  ['baja','media','alta'].forEach(function(z){
+    var l=SECS.map(function(f){ return f.properties; }).filter(function(p){ return p.zona===z; });
+    out.push({ t:ZONA_LABEL[z], s:l.length+' sectores', c:'#BFDD70', k:ZONA_LABEL[z]+' zona parte', go:function(){ flyB(secBounds(l)); } });
+  });
+  SEM_ORDER.forEach(function(c){
+    var l=SECS.map(function(f){ return f.properties; }).filter(function(p){ return colOf(p)===c; });
+    if(!l.length) return;
+    out.push({ t:'Solo sectores en '+SEM_LABEL[c].toLowerCase(), s:l.length+' sectores · filtro del mapa', c:SEM_COLOR[c], k:'solo '+SEM_LABEL[c]+'s filtro semaforo color',
+      go:function(){ toggleColor(c, true); selectTab(TAB.SEM); flyB(secBounds(l)); } });
+  });
+  STATIONS.forEach(function(s){ out.push({ t:'Estación '+s.name, s:'Calidad de agua · río '+s.river, c:'#63ACCB', k:'estacion calidad agua acp '+s.name+' '+s.river,
+    go:function(){ if(mapReady){ map.flyTo(s.ll, 14, { duration:.8 }); window.setTimeout(function(){ if(wqMarkers[s.id]) wqMarkers[s.id].openPopup(); }, 850); } if(isNarrow()) closeSheet(); } }); });
+  reports.forEach(function(r){ out.push({ t:r.type, s:'Reporte · '+(r.sector||'fuera de la microcuenca')+' · '+relTime(r.ts), c:repColor(r), k:r.type+' '+r.desc+' reporte '+(r.sector||'')+' '+(r.name||''),
+    go:function(){ goToReport(r.id); } }); });
+  Object.keys(THEMES).forEach(function(k){ out.push({ t:'Colorear por '+THEMES[k].label.toLowerCase(), s:'Variable del mapa', c:'#CBD2C2', k:'colorear mapa capa '+THEMES[k].label+' '+THEMES[k].sub, go:function(){ setTheme(k); } }); });
+  return out;
+}
+
+function parseCoord(q){
+  var m = q.trim().match(/^(-?\d{1,2}(?:[.,]\d+)?)[\s,;]+(-?\d{2,3}(?:[.,]\d+)?)\s*([wWoO])?$/);
+  if(!m) return null;
+  var a=+m[1].replace(',','.'), b=+m[2].replace(',','.');
+  if(b>0) b=-b;   // Panamá está al oeste de Greenwich
+  if(a<6 || a>11 || b<-84 || b>-76) return null;
+  return [a,b];
+}
+
+function runSearch(){
+  var q=searchInput.value.trim();
+  if(!q){ closeSearch(); return; }
+  var res=[], cc=parseCoord(q);
+  if(cc){
+    var sp=sectorAt(cc[0],cc[1]);
+    res.push({ t:'Ir a '+cc[0].toFixed(4)+'°, '+cc[1].toFixed(4)+'°', s: sp ? 'Coordenada · dentro de «'+sp.nombre+'»' : 'Coordenada · fuera de la microcuenca', c:'#F2ECDC',
+      go:function(){ goCoord(cc, sp); } });
+  }
+  var nq=norm(q).split(/\s+/).filter(Boolean);
+  searchIndex().forEach(function(it){
+    var hay=norm(it.t+' '+it.k);
+    if(nq.every(function(w){ return hay.indexOf(w)>=0; })){ it.rank = it.pri ? -1 : norm(it.t).indexOf(nq[0])===0 ? 0 : 1; res.push(it); }
+  });
+  res.sort(function(a,b){ return (a.rank||0)-(b.rank||0); });
+  searchItems=res.slice(0,12); searchSel = searchItems.length ? 0 : -1;
+  paintSearch();
+}
+function paintSearch(){
+  searchRes.removeAttribute('hidden'); searchInput.setAttribute('aria-expanded','true');
+  if(!searchItems.length){ searchRes.innerHTML='<li class="none" role="option" aria-disabled="true">Sin resultados. Pruebe «rojo», «Trinidad», «basura» o una coordenada como 8.85, -80.03.</li>'; return; }
+  searchRes.innerHTML = searchItems.map(function(it,i){
+    return '<li role="option" id="sr'+i+'" aria-selected="'+(i===searchSel)+'" data-i="'+i+'"><span class="ic" style="--c:'+it.c+'"></span><span><div class="t">'+esc(it.t)+'</div><div class="s">'+esc(it.s)+'</div></span></li>';
+  }).join('');
+  searchInput.setAttribute('aria-activedescendant', searchSel>=0 ? 'sr'+searchSel : '');
+  Array.prototype.forEach.call(searchRes.querySelectorAll('[data-i]'), function(li){
+    li.addEventListener('mousedown', function(e){ e.preventDefault(); pickSearch(+li.dataset.i); });
+  });
+}
+function pickSearch(i){
+  var it=searchItems[i]; if(!it) return;
+  closeSearch(); searchInput.blur();
+  it.go();
+}
+function closeSearch(){ searchRes.setAttribute('hidden',''); searchInput.setAttribute('aria-expanded','false'); searchInput.removeAttribute('aria-activedescendant'); }
+function goCoord(cc, sp){
+  if(!mapReady) return;
+  if(tmpMarker) map.removeLayer(tmpMarker);
+  tmpMarker = L.marker(cc, { icon:L.divIcon({ className:'', html:'<span class="ripple" style="animation-iteration-count:infinite"></span>', iconSize:[14,14], iconAnchor:[7,7] }) }).addTo(map);
+  tmpMarker.bindPopup('<div class="pp-h">Coordenada buscada</div><div class="pp-t">'+cc[0].toFixed(5)+'°, '+cc[1].toFixed(5)+'°</div>'+
+    (sp ? '<div>Sector «'+esc(sp.nombre)+'» · '+SEM_LABEL[sp.color]+' ('+sp.score+'/100)</div><div class="pp-acts"><button data-sec="'+sp.id+'">Ver sector</button></div>' : '<div>Fuera de la microcuenca.</div>'));
+  tmpMarker.on('popupopen', function(e){ var b=e.popup.getElement().querySelector('[data-sec]'); if(b) b.addEventListener('click', function(){ selectSector(+b.dataset.sec, false); if(isNarrow()) openSheet(); }); });
+  map.flyTo(cc, 14, { duration:.8 });
+  window.setTimeout(function(){ tmpMarker.openPopup(); }, 850);
+  if(isNarrow()) closeSheet();
+}
+searchInput.addEventListener('input', runSearch);
+searchInput.addEventListener('focus', function(){ if(searchInput.value.trim()) runSearch(); });
+searchInput.addEventListener('blur', function(){ window.setTimeout(closeSearch, 120); });
+searchInput.addEventListener('keydown', function(e){
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+    e.preventDefault(); if(searchRes.hasAttribute('hidden')) runSearch();
+    if(!searchItems.length) return;
+    searchSel = (searchSel + (e.key==='ArrowDown'?1:-1) + searchItems.length) % searchItems.length; paintSearch();
+    var li=$('sr'+searchSel); if(li) li.scrollIntoView({ block:'nearest' });
+  } else if(e.key==='Enter'){ e.preventDefault(); if(searchSel>=0) pickSearch(searchSel); }
+  else if(e.key==='Escape'){ e.stopPropagation(); if(searchRes.hasAttribute('hidden')){ searchInput.value=''; searchInput.blur(); } else closeSearch(); }
+});
+
+/* ===================================================================
+   14d · EXPORTAR / IMPORTAR
+   =================================================================== */
+function download(name, mime, text){
+  var blob=new Blob([text], { type:mime+';charset=utf-8' }), a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click();
+  window.setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 400);
+}
+function csvCell(v){ if(v==null) return ''; v=String(v); return /[",\n;]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+
+function sectorRow(p){
+  return { id:p.id, nombre:p.nombre, subcuenca:riverOf(p.sub), zona:p.zona, area_km2:p.km2, elev_media_m:p.elevMean, pendiente_media_pct:p.slopeMean,
+    arboles_pct:p.tree, pastos_pct:p.grass, ribera_arboles_pct:p.ripTree, ladera_desnuda_pct:p.steepBare, perdida_2014_2023_pct:p.perdidaPct,
+    arboles_aguas_arriba_pct:p.upTree, puntaje:p.score, semaforo:p.color, erosion:erosionOf(p), clase_agrologica_estimada:aptClass(p), uso_vs_aptitud:aptConflict(p),
+    reportes_residuos_activos:wasteReports(p.id).length };
+}
+$('dlSecCsv').addEventListener('click', function(){
+  var rows=SECS.map(function(f){ return sectorRow(f.properties); }), head=Object.keys(rows[0]);
+  download('ecocuenca_sectores.csv','text/csv', '﻿'+head.join(',')+'\n'+rows.map(function(r){ return head.map(function(h){ return csvCell(r[h]); }).join(','); }).join('\n'));
+  showToast('Descargado: ecocuenca_sectores.csv');
+});
+$('dlSecGeo').addEventListener('click', function(){
+  var fc={ type:'FeatureCollection', features:SECS.map(function(f){ return { type:'Feature', properties:sectorRow(f.properties), geometry:f.geometry }; }) };
+  download('ecocuenca_sectores.geojson','application/geo+json', JSON.stringify(fc));
+  showToast('Descargado: ecocuenca_sectores.geojson');
+});
+function repFeature(r){
+  return { type:'Feature', geometry:{ type:'Point', coordinates:[+r.lng.toFixed(6), +r.lat.toFixed(6)] },
+    properties:{ id:r.id, tipo:r.type, descripcion:r.desc, gravedad:r.sev, estado:r.status, autor:r.name, fecha:new Date(r.ts).toISOString(), sector:r.sector, foto:r.photo||null } };
+}
+$('dlRepGeo').addEventListener('click', function(){
+  if(!reports.length){ showToast('No hay reportes para exportar.'); return; }
+  download('ecocuenca_reportes.geojson','application/geo+json', JSON.stringify({ type:'FeatureCollection', features:reports.map(repFeature) }));
+  showToast('Exportados '+reports.length+' reportes');
+});
+$('dlRepCsv').addEventListener('click', function(){
+  if(!reports.length){ showToast('No hay reportes para exportar.'); return; }
+  var head=['id','tipo','descripcion','gravedad','estado','autor','fecha','sector','lat','lon','tiene_foto'];
+  var lines=reports.map(function(r){ return [r.id,r.type,r.desc,r.sev,r.status,r.name,new Date(r.ts).toISOString(),r.sector,r.lat.toFixed(6),r.lng.toFixed(6),r.photo?'si':'no'].map(csvCell).join(','); });
+  download('ecocuenca_reportes.csv','text/csv', '﻿'+head.join(',')+'\n'+lines.join('\n'));
+});
+$('impRepBtn').addEventListener('click', function(){ $('impRepFile').click(); });
+$('impRepFile').addEventListener('change', function(){
+  var f=this.files && this.files[0], input=this; if(!f) return;
+  var fr=new FileReader();
+  fr.onload=function(){
+    var n=0;
+    try{
+      var gj=JSON.parse(fr.result), feats = gj.type==='FeatureCollection' ? gj.features : [gj];
+      var have={}; reports.forEach(function(r){ have[r.id]=1; });
+      feats.forEach(function(ft){
+        if(!ft || !ft.geometry || ft.geometry.type!=='Point') return;
+        var pr=ft.properties||{}, c=ft.geometry.coordinates, lat=+c[1], lng=+c[0];
+        if(isNaN(lat)||isNaN(lng)) return;
+        var id = pr.id ? String(pr.id) : 'r'+Date.now()+n;
+        if(have[id]) return;
+        var sp=sectorAt(lat,lng);
+        var r={ id:id, type:String(pr.tipo||pr.type||'Otro'), desc:String(pr.descripcion||pr.desc||'').slice(0,240), lat:lat, lng:lng,
+          ts: pr.fecha ? (Date.parse(pr.fecha)||Date.now()) : Date.now(), sev:['baja','media','alta'].indexOf(pr.gravedad)>=0?pr.gravedad:'media',
+          status:['nuevo','verificado','resuelto'].indexOf(pr.estado)>=0?pr.estado:'nuevo', name:pr.autor?String(pr.autor).slice(0,60):null,
+          photo: typeof pr.foto==='string' && pr.foto.indexOf('data:image/')===0 ? pr.foto : null,
+          sector: sp?sp.nombre:null, sectorId: sp?sp.id:null, color: sp?sp.color:null };
+        reports.push(r); addRepMarker(r,true); have[id]=1; n++;
+      });
+    }catch(e){ showToast('El archivo no es un GeoJSON válido.'); input.value=''; return; }
+    if(!persist()){ showToast('Importados '+n+', pero no caben todos en el almacenamiento del navegador.'); }
+    else showToast(n ? 'Importados '+n+' reportes nuevos' : 'No había reportes nuevos en el archivo');
+    renderReports(); afterReportsChange(); input.value='';
+  };
+  fr.readAsText(f);
+});
+
+/* ===================================================================
+   14e · ACERCA, INFORME IMPRIMIBLE Y ENLACES DIRECTOS
+   =================================================================== */
+var aboutOverlay=$('aboutOverlay'), aboutFocus=null;
+function openAbout(){ aboutFocus=document.activeElement; aboutOverlay.classList.add('show'); window.setTimeout(function(){ $('aboutX').focus(); }, 60); }
+function closeAbout(){ aboutOverlay.classList.remove('show'); if(aboutFocus && aboutFocus.focus) aboutFocus.focus(); }
+$('aboutBtn').addEventListener('click', openAbout);
+$('aboutX').addEventListener('click', closeAbout);
+aboutOverlay.addEventListener('click', function(e){ if(e.target===aboutOverlay) closeAbout(); });
+
+$('printBtn').addEventListener('click', function(){
+  if(semDetailView && !semDetailView.hasAttribute('hidden')) backToSemList();
+  var how=$('semHow'), wasOpen=how.open; how.open=true;
+  window.setTimeout(function(){ window.print(); how.open=wasOpen; }, 60);
+});
+
+function setHash(h){
+  try{ history.replaceState(null, '', h ? '#'+h : location.pathname+location.search); }catch(e){}
+}
+function applyHash(){
+  var m = /^#(sector|punto)=([\w-]+)$/.exec(location.hash||'');
+  if(!m) return;
+  if(m[1]==='sector' && secProps(+m[2])){ selectSector(+m[2], false); if(isNarrow()) openSheet(); }
+  if(m[1]==='punto' && POINTS.some(function(p){ return p.id===m[2]; })){ selectPoi(m[2], false); if(isNarrow()) openSheet(); }
+}
+window.addEventListener('hashchange', applyHash);
 
 /* ===================================================================
    15 · CIERRE

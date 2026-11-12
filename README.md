@@ -8,6 +8,8 @@ Plataforma de diagnóstico ambiental de la microcuenca **Ciri Grande–Trinidad*
 
 🔗 **En vivo:** https://diandlvr.github.io/Ecocuenca/
 
+📄 **Cambios y mejoras (v3), para la exposición:** [docs/EcoCuenca_Cambios_y_Mejoras.pdf](docs/EcoCuenca_Cambios_y_Mejoras.pdf)
+
 ---
 
 ## Alcance
@@ -44,6 +46,29 @@ eliminó junto con la lista de zonas, el buscador entre zonas y el filtro "solo 
 ### Semáforo (por sector)
 Sector = tramo de río de orden ≥ 3 + sus laderas (22 sectores). Puntaje 0–100 = cobertura arbórea 30 % + árboles en ribera 20 % + ladera empinada sin árboles 15 % + pérdida forestal 2014–2023 15 % + condición aguas arriba 20 %. **Verde ≥ 70, amarillo 50–69, rojo < 50.** Resultado: índice general 72 (verde), 21 % del área en rojo, todo en la cuenca baja. Pendiente de campo: calidad del agua, caudal, comité por sector.
 
+**Orden visual (v3):** la leyenda, las barras y las listas siguen el orden de un semáforo real: **rojo arriba, amarillo al centro, verde abajo**. La lista de sectores se ordena por prioridad (rojos primero).
+
+**Verificación de la geografía:** se contrastó contra ESA WorldCover 2021 leyendo el ráster directamente: la cuenca baja (norte, junto al lago Gatún) tiene 23–52 % de árboles y la cuenca alta (sur) 85–95 %. Que los rojos queden al norte del mapa es real, no un error de orientación.
+
+### Diagnóstico multicriterio (pestaña «Diagnóstico», v3)
+Aplica la tabla de criterios de la propuesta (§5.4) con cuatro variables: **calidad de agua 35 %, residuos 25 %, uso del suelo vs. aptitud 20 %, erosión 20 %**. Las variables sin datos no cuentan y el resto se repondera.
+
+- **Calidad de agua:** registro de mediciones para las estaciones ACP *Los Cañones* (Cirí Grande) y *El Chorro* (Trinidad): OD, turbidez, pH y coliformes fecales. Se guarda en el navegador y se exporta a CSV. **No trae valores precargados**: cargar los del Informe de Calidad de Agua de la ACP o los de campo. Los marcadores están en el punto de cierre de cada subcuenca (ubicación de referencia).
+- **Uso vs. aptitud:** clase agrológica **estimada por la pendiente media** (III < 8 %, IV < 15 %, VI < 30 %, VII < 50 %, VIII) cruzada con el % de pastos. Reemplazar por el mapa ANATI/IDIAP cuando se tenga.
+- **Erosión:** % del sector con pendiente > 30 % sin árboles (rojo ≥ 5 %, amarillo 2–5 %).
+- **Residuos:** reportes ciudadanos activos de «Residuos sólidos» o «Vertedero ilegal» (rojo con ≥ 3 o un vertedero ilegal de gravedad alta).
+
+El mapa se puede **colorear por cualquiera de estas variables** (Capas → Colorear sectores por).
+
+### Otras funciones (v3)
+- **Buscador** sobre el mapa (tecla `/`): sectores, ríos/subcuencas, zonas, puntos, estaciones, reportes, «solo rojos» y coordenadas (`8.85, -80.03`).
+- **Filtro por color**: chips en la pestaña Semáforo y clic en la leyenda.
+- **Reportes ampliados**: más tipos, gravedad, foto (reducida a 900 px), autor/comunidad, estado *nuevo → verificado → resuelto*, filtros, exportar/importar GeoJSON y CSV para reunir los reportes del equipo.
+- **Descargas** de sectores en CSV y GeoJSON (con puntaje, erosión, clase estimada, etc.).
+- **Informe imprimible** (botón *Informe* → imprimir o guardar como PDF).
+- **Enlaces directos**: `#sector=5` o `#punto=p3` abren ese elemento.
+- **Proyecto**: diálogo con el problema, la comparación con herramientas existentes, el marco legal y las fuentes.
+
 **Datos:** SRTM (NASA), ESA WorldCover 2021 (CC BY 4.0), Hansen/UMD GFC v1.11 (CC BY 4.0). Scripts reproducibles en la carpeta tools/ (orden en tools/README.md); salida: cuenca_data.js.
 
 ---
@@ -68,7 +93,7 @@ las tipografías de Google Fonts y las **teselas de mapa** (Esri / OpenTopoMap).
 └─────────────┴───────────────────────────────────────────┘
 ```
 
-### Panel lateral — 3 pestañas
+### Panel lateral — 5 pestañas (Ficha · Semáforo · Diagnóstico · Puntos · Reportes)
 
 1. **Ficha** — indicadores clave, ficha ambiental, medidor de **cobertura boscosa**
    con **control temporal 2005 → 2024** (al mover el deslizador cambian el número,
