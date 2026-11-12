@@ -60,6 +60,12 @@ Aplica la tabla de criterios de la propuesta (§5.4) con cuatro variables: **cal
 
 El mapa se puede **colorear por cualquiera de estas variables** (Capas → Colorear sectores por).
 
+### Reportes con íconos y colores graduales (v4)
+- **Íconos por tipo de problema** en el mapa, la lista y la ventana del reporte (árbol talado, llama, gota, pez, basurero…). El color del círculo indica el grupo (bosque y suelo, agua, residuos, sitio autorizado, otros) y un punto en la esquina, la gravedad (rojo = alta, amarillo = media).
+- **Los reportes cambian el puntaje del sector.** Cada reporte vale *peso del tipo (0–3) × gravedad (1–3) × estado* (nuevo 0,5 · verificado 1 · resuelto 0). La suma se convierte en una resta de hasta 30 puntos con saturación: `30 × (1 − e^(−puntos/15))`. Un vertedero ilegal grave verificado resta 14 pts; tres, 25 pts. Puntaje final = satélite − reportes.
+- **Colores graduales** (por defecto): el tono cambia poco a poco con el puntaje (un 49 se ve naranja, un 15 rojo oscuro). Las tres categorías se mantienen como etiqueta oficial y se puede volver a «3 colores» desde la leyenda o Capas.
+- Nueva variable del mapa: **Presión ciudadana**.
+
 ### Otras funciones (v3)
 - **Buscador** sobre el mapa (tecla `/`): sectores, ríos/subcuencas, zonas, puntos, estaciones, reportes, «solo rojos» y coordenadas (`8.85, -80.03`).
 - **Filtro por color**: chips en la pestaña Semáforo y clic en la leyenda.
